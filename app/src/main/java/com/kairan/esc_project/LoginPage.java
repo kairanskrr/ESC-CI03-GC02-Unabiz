@@ -62,7 +62,7 @@ public class LoginPage extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(LoginPage.this,"Login In Successful",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                            Intent intent = new Intent(getApplicationContext(),SelectMenu.class);
                             startActivity(intent);    // Move to MainActivity Page if login credentials is correct
                         }
                         else{

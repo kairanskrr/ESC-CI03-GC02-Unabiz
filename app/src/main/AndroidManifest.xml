@@ -16,11 +16,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Esc_project">
-        <activity android:name=".SignUpPage"></activity>
+        <activity android:name=".MappingMode"></activity>
+        <activity android:name=".TestingMode" />
+        <activity android:name=".SelectMenu" />
+        <activity android:name=".SignUpPage" />
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

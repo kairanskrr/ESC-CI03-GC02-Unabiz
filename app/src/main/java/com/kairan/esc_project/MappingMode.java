@@ -95,8 +95,10 @@ public class MappingMode extends AppCompatActivity {
 
     private void openFileChoser() {
         Intent intent = new Intent();
-        intent.setType("image/");
+        intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
+        //openGallery();
+        //startActivityForResult(Intent.createChooser(intent, "Pick a picture"), PICK_IMAGE_REQUEST);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 

@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Esc_project">
-        <activity android:name=".MappingMode"></activity>
+        <activity android:name=".mappingModeDisplay.DisplayMap"></activity>
+        <activity android:name=".MappingMode" />
         <activity android:name=".TestingMode" />
         <activity android:name=".SelectMenu" />
         <activity android:name=".SignUpPage" />

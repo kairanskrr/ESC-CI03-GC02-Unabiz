@@ -32,6 +32,7 @@ public class SignUpPage extends AppCompatActivity {
         RegisterButton = findViewById(R.id.RegisterButton);
         fAuth = FirebaseAuth.getInstance();
 
+        // is the name used here?
 
         RegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override

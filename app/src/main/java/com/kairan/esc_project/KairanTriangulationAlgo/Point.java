@@ -1,4 +1,4 @@
-package com.kairan.esc_project;
+package com.kairan.esc_project.KairanTriangulationAlgo;
 
 import androidx.annotation.NonNull;
 

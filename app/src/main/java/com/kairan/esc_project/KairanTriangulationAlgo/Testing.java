@@ -1,6 +1,10 @@
-package com.kairan.esc_project;
+package com.kairan.esc_project.KairanTriangulationAlgo;
 
 import android.net.wifi.ScanResult;
+
+import com.kairan.esc_project.KairanTriangulationAlgo.Mapping;
+import com.kairan.esc_project.KairanTriangulationAlgo.NeuralNetwork;
+import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 
 import java.util.ArrayList;
 import java.util.HashMap;

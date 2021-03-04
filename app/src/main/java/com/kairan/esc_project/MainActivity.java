@@ -3,15 +3,11 @@ package com.kairan.esc_project;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -28,21 +24,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     final DatabaseReference database = FirebaseDatabase.getInstance().getReference("WIFI");    // create reference to firebase, create wifi header
 
-
-
-
-
-    private StringBuilder sb = new StringBuilder();
-    private TextView tv;
-    private Button button;
+    private StringBuilder stringBuilder = new StringBuilder();
+    private TextView textViewWifiNetworks;
+    private Button buttonClick;
     private List<ScanResult> scanList;
 
 
@@ -51,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv = findViewById(R.id.txtWifiNetworks);
-        button = findViewById(R.id.button_click);
-        button.setOnClickListener(new View.OnClickListener() {
+        textViewWifiNetworks = findViewById(R.id.txtWifiNetworks);
+        buttonClick = findViewById(R.id.button_click);
+        buttonClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getWifiNetworksList();
@@ -83,13 +72,13 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onReceive(Context context, Intent intent) {
-                sb = new StringBuilder();
+                stringBuilder = new StringBuilder();
                 scanList = wifiManager.getScanResults();
                 System.out.println(scanList.size());
-                sb.append("\n Number Of Wifi connections : " + " " + scanList.size() + "\n\n");
+                stringBuilder.append("\n Number Of Wifi connections : " + " " + scanList.size() + "\n\n");
                 for (int i = 0; i < scanList.size(); i++) {
-                    sb.append(new Integer(i + 1).toString() + ". ");
-                    sb.append(String.format("Name: %s,\nBSSID: %s,\nRSSI: %s\n",(scanList.get(i)).SSID,(scanList.get(i)).BSSID,(scanList.get(i)).level));
+                    stringBuilder.append(new Integer(i + 1).toString() + ". ");
+                    stringBuilder.append(String.format("Name: %s,\nBSSID: %s,\nRSSI: %s\n",(scanList.get(i)).SSID,(scanList.get(i)).BSSID,(scanList.get(i)).level));
                     String name = scanList.get(i).SSID;
                     Integer rssi = scanList.get(i).level; //multiple rssi values with the same network can be detected
                     database.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -106,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
                     //sb.append("\n\n");
                 }
 
-                tv.setText(sb);
-                System.out.println(sb);
+                textViewWifiNetworks.setText(stringBuilder);
+                System.out.println(stringBuilder);
             }
 
         }, filter);

@@ -14,7 +14,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewWifiNetworks;
     private Button buttonClick;
     private List<ScanResult> scanList;
+    private ListView listView_wifiList;
+    private ArrayList<String> wifiList;
+    private ArrayAdapter arrayAdapter;
 
 
     @Override
@@ -41,13 +47,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         textViewWifiNetworks = findViewById(R.id.txtWifiNetworks);
+        listView_wifiList = findViewById(R.id.listView_wifi);
+        wifiList = new ArrayList<>();
+        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,wifiList);
         buttonClick = findViewById(R.id.button_click);
+
         buttonClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getWifiNetworksList();
+
+
+                textViewWifiNetworks.setVisibility(View.GONE);
+                listView_wifiList.setAdapter(arrayAdapter);
+
             }
         });
+
+
+
+
+
 
 
 
@@ -72,13 +92,15 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void onReceive(Context context, Intent intent) {
-                stringBuilder = new StringBuilder();
+                //stringBuilder = new StringBuilder();
                 scanList = wifiManager.getScanResults();
                 System.out.println(scanList.size());
-                stringBuilder.append("\n Number Of Wifi connections : " + " " + scanList.size() + "\n\n");
+                wifiList.add("Number Of Wifi connections : " + " " + scanList.size() + "\n\n");
                 for (int i = 0; i < scanList.size(); i++) {
+                    stringBuilder = new StringBuilder();
                     stringBuilder.append(new Integer(i + 1).toString() + ". ");
                     stringBuilder.append(String.format("Name: %s,\nBSSID: %s,\nRSSI: %s\n",(scanList.get(i)).SSID,(scanList.get(i)).BSSID,(scanList.get(i)).level));
+                    wifiList.add(stringBuilder.toString());
                     String name = scanList.get(i).SSID;
                     Integer rssi = scanList.get(i).level; //multiple rssi values with the same network can be detected
                     database.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -94,9 +116,11 @@ public class MainActivity extends AppCompatActivity {
                     }); // Send name of wifi and the rssi number into database, only if the wifi data is not already inside firebase
                     //sb.append("\n\n");
                 }
+                arrayAdapter.notifyDataSetChanged();
+                //textViewWifiNetworks.setText(stringBuilder);
+                //System.out.println(stringBuilder);
 
-                textViewWifiNetworks.setText(stringBuilder);
-                System.out.println(stringBuilder);
+
             }
 
         }, filter);

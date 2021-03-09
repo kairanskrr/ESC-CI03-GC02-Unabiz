@@ -58,7 +58,8 @@
         app:layout_constraintTop_toBottomOf="@+id/MappingTitle"
         app:layout_constraintVertical_bias="0.048"
         app:srcCompat="@drawable/ic_launcher_background"
-        tools:srcCompat="?android:attr/scrollbarTrackVertical" />
+        tools:srcCompat="?android:attr/scrollbarTrackVertical"
+        tools:ignore="VectorDrawableCompat" />
 
     <EditText
         android:id="@+id/UrlEntry"
@@ -84,6 +85,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/UrlUpload"
         app:layout_constraintVertical_bias="0.714" />
+
+    <Button
+        android:id="@+id/button_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Mapping"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.841" />
+
+    <Button
+        android:id="@+id/button_changeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.935" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

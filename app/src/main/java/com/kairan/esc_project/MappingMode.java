@@ -9,6 +9,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -32,17 +37,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MappingMode extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST =1;
     private Uri mImageUri;
+    private String URLlink;
 
     EditText URLEntry;
     SubsamplingScaleImageView PreviewImage;
-    Button DeviceUpload, UrlUpload, ConfirmURL;
+    Button DeviceUpload, UrlUpload, ConfirmURL,ConfirmImage,ChangeImage;
     FirebaseUser user;
     DatabaseReference database;
     StorageReference storage;
+
+    static String IMAGE_URL = "IMAGE_URL";
+    static String IMAGE_DEVICE = "IMAGE_DEVICE";
 
 
     @Override
@@ -59,16 +70,42 @@ public class MappingMode extends AppCompatActivity {
         PreviewImage = (SubsamplingScaleImageView)findViewById(R.id.PreviewImage);
         ConfirmURL = findViewById(R.id.ConfirmURL);
         URLEntry = findViewById(R.id.UrlEntry);
+        ConfirmImage = findViewById(R.id.button_confirm);
+        ChangeImage = findViewById(R.id.button_changeImage);
 
         URLEntry.setVisibility(View.GONE);
         ConfirmURL.setVisibility(View.GONE);
+        ConfirmImage.setVisibility(View.GONE);
+        ChangeImage.setVisibility(View.GONE);
 
+        PreviewImage.setOnTouchListener(new View.OnTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    float x = e.getX();
+                    float y = e.getY();
+                    Log.i("MAPPOSITION",PreviewImage.viewToSourceCoord(x,y).toString());
+                    super.onLongPress(e);
+                }
+            });
 
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return false;
+            }
+        });
 
         DeviceUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChoser();
+                DeviceUpload.setVisibility(View.GONE);
+                UrlUpload.setVisibility(View.GONE);
+                URLEntry.setVisibility(View.GONE);
+                ConfirmURL.setVisibility(View.GONE);
+                ConfirmImage.setVisibility(View.VISIBLE);
+                ChangeImage.setVisibility(View.VISIBLE);
             }
         });
 
@@ -84,7 +121,7 @@ public class MappingMode extends AppCompatActivity {
         ConfirmURL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String URLlink = URLEntry.getText().toString();
+                URLlink = URLEntry.getText().toString();
                 if (URLlink.isEmpty()){
                     Toast.makeText(MappingMode.this, "Please Enter An URL", Toast.LENGTH_SHORT).show();
                 }
@@ -102,13 +139,27 @@ public class MappingMode extends AppCompatActivity {
                         }
                     });
                     //PreviewImage.setImage(ImageSource.uri(URLlink));
-                    UrlUpload.setVisibility(View.VISIBLE);
+                    DeviceUpload.setVisibility(View.GONE);
+                    UrlUpload.setVisibility(View.GONE);
                     URLEntry.setVisibility(View.GONE);
                     ConfirmURL.setVisibility(View.GONE);
+                    ConfirmImage.setVisibility(View.VISIBLE);
+                    ChangeImage.setVisibility(View.VISIBLE);
                 }
             }
         });
 
+        ChangeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeviceUpload.setVisibility(View.VISIBLE);
+                UrlUpload.setVisibility(View.VISIBLE);
+                URLEntry.setVisibility(View.GONE);
+                ConfirmURL.setVisibility(View.GONE);
+                ConfirmImage.setVisibility(View.GONE);
+                ChangeImage.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void openFileChoser() {
@@ -158,8 +209,14 @@ public class MappingMode extends AppCompatActivity {
         if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
             mImageUri = data.getData();
             PreviewImage.setImage(ImageSource.uri(mImageUri));
-
             //Picasso.with(this).load(mImageUri).into(PreviewImage);
+
+
+
+
+
+
         }
     }
 }
+

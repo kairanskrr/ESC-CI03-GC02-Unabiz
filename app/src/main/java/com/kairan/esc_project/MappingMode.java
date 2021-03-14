@@ -1,5 +1,6 @@
 package com.kairan.esc_project;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,12 +22,16 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -41,7 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MappingMode extends AppCompatActivity {
-    private static final int PICK_IMAGE_REQUEST =1;
     private Uri mImageUri;
     private String URLlink;
 
@@ -62,8 +66,8 @@ public class MappingMode extends AppCompatActivity {
         setContentView(R.layout.activity_mapping_mode);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance().getReference("WIFI").child(user.getUid());
-        storage = FirebaseStorage.getInstance().getReference("Uploads");
+        database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+
 
         DeviceUpload = findViewById(R.id.DeviceUpload);
         UrlUpload = findViewById(R.id.UrlUpload);
@@ -84,6 +88,9 @@ public class MappingMode extends AppCompatActivity {
                 public void onLongPress(MotionEvent e) {
                     float x = e.getX();
                     float y = e.getY();
+                    // Send the data to the database
+                    database.child("Scan").child("Scan Location").child("X").setValue(x);
+                    database.child("Scan").child("Scan Location").child("Y").setValue(y);
                     Log.i("MAPPOSITION",PreviewImage.viewToSourceCoord(x,y).toString());
                     super.onLongPress(e);
                 }
@@ -160,13 +167,32 @@ public class MappingMode extends AppCompatActivity {
                 ChangeImage.setVisibility(View.GONE);
             }
         });
+
+        ConfirmImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Uploads");
+                if(mImageUri!= null){storage.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(getApplicationContext(), "The Map has been uploaded into firebase", Toast.LENGTH_SHORT).show();
+                    }
+
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(),"The Map has failed to be uploaded into firebase", Toast.LENGTH_SHORT).show();
+                    }
+                });}
+            }
+        });
     }
 
     private void openFileChoser() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        startActivityForResult(intent, 1);
     }
 
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
@@ -206,15 +232,10 @@ public class MappingMode extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
             mImageUri = data.getData();
             PreviewImage.setImage(ImageSource.uri(mImageUri));
             //Picasso.with(this).load(mImageUri).into(PreviewImage);
-
-
-
-
-
 
         }
     }

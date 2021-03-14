@@ -53,17 +53,19 @@ public class LoginPage extends AppCompatActivity {
                     EditTextEmail.setError("Please Enter A Email");
                     return;
                 }
+                // Make sure that the Email and Password fields are not left empty, app will crash if it is empty
                 if (TextUtils.isEmpty(password)){
                     EditTextPassword.setError("Please Enter A Password");
-                    return;// Make sure that the Email and Password fields are not left empty, app will crash if it is empty
+                    return;
                 }
+                // Move to MainActivity Page if login credentials is correct
                 mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(LoginPage.this,"Login In Successful",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(),SelectMenu.class);
-                            startActivity(intent);    // Move to MainActivity Page if login credentials is correct
+                            startActivity(intent);
                         }
                         else{
                             Toast.makeText(LoginPage.this,"Authentication Failed",Toast.LENGTH_LONG).show();    // display an error message
@@ -73,12 +75,12 @@ public class LoginPage extends AppCompatActivity {
                 });
             }
         });
-
+        // move to Sign Up activity when sign up button is clicked
         SignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignUpPage.class);
-                startActivity(intent); // move to Sign Up activity when sign up button is clicked
+                startActivity(intent);
             }
         });
 

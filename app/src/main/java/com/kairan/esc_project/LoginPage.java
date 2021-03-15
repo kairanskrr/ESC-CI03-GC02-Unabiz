@@ -2,6 +2,7 @@ package com.kairan.esc_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,8 +37,10 @@ public class LoginPage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
+
         EditTextEmail = findViewById(R.id.EditTextEmail);
         EditTextPassword = findViewById(R.id.EditTextPassword);
         LoginButton = findViewById(R.id.LoginButton);

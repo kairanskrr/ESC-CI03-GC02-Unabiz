@@ -38,6 +38,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -171,6 +172,8 @@ public class MappingMode extends AppCompatActivity {
         ConfirmImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Uploads");
                 if(mImageUri!= null){storage.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -184,6 +187,16 @@ public class MappingMode extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"The Map has failed to be uploaded into firebase", Toast.LENGTH_SHORT).show();
                     }
                 });}
+              
+                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                intent.putExtra(IMAGE_URL,URLlink);
+                PreviewImage.buildDrawingCache();
+                Bitmap bitmap_device = PreviewImage.getDrawingCache();
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                bitmap_device.compress(Bitmap.CompressFormat.PNG,50,bs);
+                intent.putExtra(IMAGE_DEVICE,bs.toByteArray());
+                startActivity(intent);
+
             }
         });
     }
@@ -236,6 +249,7 @@ public class MappingMode extends AppCompatActivity {
             mImageUri = data.getData();
             PreviewImage.setImage(ImageSource.uri(mImageUri));
             //Picasso.with(this).load(mImageUri).into(PreviewImage);
+
 
         }
     }

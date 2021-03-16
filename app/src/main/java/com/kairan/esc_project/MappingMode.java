@@ -33,6 +33,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -160,6 +161,20 @@ public class MappingMode extends AppCompatActivity {
                 ChangeImage.setVisibility(View.GONE);
             }
         });
+
+        ConfirmImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                intent.putExtra(IMAGE_URL,URLlink);
+                PreviewImage.buildDrawingCache();
+                Bitmap bitmap_device = PreviewImage.getDrawingCache();
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                bitmap_device.compress(Bitmap.CompressFormat.PNG,50,bs);
+                intent.putExtra(IMAGE_DEVICE,bs.toByteArray());
+                startActivity(intent);
+            }
+        });
     }
 
     private void openFileChoser() {
@@ -210,6 +225,8 @@ public class MappingMode extends AppCompatActivity {
             mImageUri = data.getData();
             PreviewImage.setImage(ImageSource.uri(mImageUri));
             //Picasso.with(this).load(mImageUri).into(PreviewImage);
+
+
 
 
 

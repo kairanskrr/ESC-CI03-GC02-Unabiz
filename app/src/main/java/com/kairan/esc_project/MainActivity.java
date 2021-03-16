@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    final DatabaseReference database = FirebaseDatabase.getInstance().getReference("WIFI");    // create reference to firebase, create wifi header
+    FirebaseUser user;
+    DatabaseReference database;
+    // create reference to firebase, create wifi header
+
+
 
     private StringBuilder stringBuilder = new StringBuilder();
     private TextView textViewWifiNetworks;
@@ -45,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
 
         textViewWifiNetworks = findViewById(R.id.txtWifiNetworks);
         listView_wifiList = findViewById(R.id.listView_wifi);
@@ -101,19 +110,19 @@ public class MainActivity extends AppCompatActivity {
                     stringBuilder.append(new Integer(i + 1).toString() + ". ");
                     stringBuilder.append(String.format("Name: %s,\nBSSID: %s,\nRSSI: %s\n",(scanList.get(i)).SSID,(scanList.get(i)).BSSID,(scanList.get(i)).level));
                     wifiList.add(stringBuilder.toString());
-                    String name = scanList.get(i).SSID;
-                    Integer rssi = scanList.get(i).level; //multiple rssi values with the same network can be detected
+                    String Mac_address = scanList.get(i).BSSID;
+                    Integer rssi = scanList.get(i).level;
                     database.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (!snapshot.hasChild(name)){database.child(name).setValue(rssi);}
+                            if (!snapshot.hasChild(Mac_address)){database.child("Scan").child("Nearby WIFI Data Values").child(Mac_address).setValue(rssi);}
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
                         }
-                    }); // Send name of wifi and the rssi number into database, only if the wifi data is not already inside firebase
+                    });
                     //sb.append("\n\n");
                 }
                 arrayAdapter.notifyDataSetChanged();

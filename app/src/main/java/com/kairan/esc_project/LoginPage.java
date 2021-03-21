@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +16,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class LoginPage extends AppCompatActivity {
     FirebaseAuth mAuth; //Firebase Authentication
@@ -41,10 +39,10 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
 
-        EditTextEmail = findViewById(R.id.EditTextEmail);
-        EditTextPassword = findViewById(R.id.EditTextPassword);
-        LoginButton = findViewById(R.id.LoginButton);
-        SignUpButton = findViewById(R.id.SignUpButton);
+        EditTextEmail = findViewById(R.id.editTextEmail);
+        EditTextPassword = findViewById(R.id.editTextPassword);
+        LoginButton = findViewById(R.id.buttonLogin);
+        SignUpButton = findViewById(R.id.buttonSignUp);
         mAuth = FirebaseAuth.getInstance();
 
         LoginButton.setOnClickListener(new View.OnClickListener() {

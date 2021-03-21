@@ -17,13 +17,17 @@ import java.util.List;
 public class Testing {
 
     double[] x;
+
+    // initialise hashmap and list of bssid
     private HashMap<String,Integer> bssid_rssi;
     private List<String> bssid;
+
 
     public Testing(List<ScanResult> scanResults){
         x = new double[Mapping.ap_list.size()];
         bssid_rssi = new HashMap<>();
         bssid = new ArrayList<>();
+        // from the scanResults obtained, generate hashmap and List
         for(ScanResult ap: scanResults){
             if(20<Math.abs(ap.level)&&Math.abs(ap.level)<100){
                 bssid_rssi.put(ap.BSSID, ap.level);
@@ -33,8 +37,10 @@ public class Testing {
     }
 
     public Point getPrediction(){
+        // train everytime we call getPrediction()?
         NeuralNetwork nn = Mapping.train_data(bssid);
         List<Double> output = nn.predict(x);
+        // return user location
         return new Point(output.get(0),output.get(1));
     }
 

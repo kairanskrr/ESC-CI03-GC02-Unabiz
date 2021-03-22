@@ -1,6 +1,7 @@
 package com.kairan.esc_project.KairanTriangulationAlgo;
 
 import android.net.wifi.ScanResult;
+import android.util.Log;
 
 import com.kairan.esc_project.KairanTriangulationAlgo.NeuralNetwork;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
@@ -30,7 +31,7 @@ public class Mapping {
     /**
      * Collect data from wifi scan results (bssid, rssi) and map it with its position on the floor map (x,y)*/
 
-    public static void add_data(Point position, List<ScanResult> scanResult){
+    public void add_data(Point position, List<ScanResult> scanResult){
 
         mac_rssi = new HashMap<>();
         for(ScanResult ap:scanResult){
@@ -42,13 +43,21 @@ public class Mapping {
             }
         }
         position_ap.put(position, mac_rssi);
+        Log.i("TEST","position: " + position.toString());
+        Log.i("TEST","wifi ap: " + mac_rssi.toString());
+        Log.i("TEST",position_ap.toString());
+        System.out.println("\n");
 
         num_of_data++;
     }
 
+    public void send_data_to_database(){
+        // maybe send position_ap HashMap oxo
+    }
+
     /**
      * Based on receiving data(list of bssid), get appropriate data set from database*/
-    public static HashMap<Point,HashMap> get_data(List<String> bssid){
+    public static HashMap<Point,HashMap> get_data_for_testing(List<String> bssid){
         HashMap<Point,HashMap> dataSet = new HashMap<>();
 
         for(int i =0; i<num_of_data; i++){
@@ -84,7 +93,7 @@ public class Mapping {
      * Used in Neural Network model, train model using the data set that is obtained in get_data*/
     public static NeuralNetwork train_data(List<String> bssid){
 
-        HashMap<Point,HashMap> dataSet = get_data(bssid);
+        HashMap<Point,HashMap> dataSet = get_data_for_testing(bssid);
         ArrayList<Point> positionSet = new ArrayList<Point>(dataSet.keySet());
         int num_of_positions = dataSet.size();
         int num_of_bssids = bssid.size();

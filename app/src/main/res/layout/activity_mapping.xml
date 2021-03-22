@@ -15,11 +15,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.253" />
 
+    <TextView
+        android:id="@+id/textViw_currentPosition"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/scaleImage_waitingToMap"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/scaleImage_waitingToMap"
+        app:layout_constraintTop_toBottomOf="@+id/scaleImage_waitingToMap"
+        app:layout_constraintVertical_bias="0.051" />
+
     <Button
-        android:id="@+id/button"
+        android:id="@+id/button_save_position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I AM HERE"
+        android:text="Save Current Position"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -28,14 +40,15 @@
         app:layout_constraintVertical_bias="0.331" />
 
     <Button
+        android:id="@+id/button_complete_mapping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save Position"
+        android:text="Complete Mapping"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/button_save_position"
         app:layout_constraintVertical_bias="0.294" />
 
 

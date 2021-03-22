@@ -50,7 +50,7 @@ public class Testing {
      * 2. Compare dev, find the smallest and the second smallest and their positions
      * 3. Make prediction of current positions based on the positions found with smallest and second smallest dev*/
     public Point predict(List<String> bssid){
-        HashMap<Point,HashMap> dataSet = Mapping.get_data(bssid);
+        HashMap<Point,HashMap> dataSet = Mapping.get_data_for_testing(bssid);
         ArrayList<Point> positionSet = new ArrayList<Point>(dataSet.keySet());
         int num_of_positions = dataSet.size();
         int num_of_bssids = bssid.size();

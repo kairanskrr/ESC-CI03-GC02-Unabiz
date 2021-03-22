@@ -52,7 +52,7 @@ public class MappingMode extends AppCompatActivity {
 
     EditText URLEntry;
     SubsamplingScaleImageView PreviewImage;
-    Button DeviceUpload, UrlUpload, ConfirmURL,ConfirmImage,ChangeImage;
+    Button DeviceUpload, UrlUpload, ConfirmURL,ConfirmImage,ChangeImage, FirebaseUpload;
     FirebaseUser user;
     DatabaseReference database;
     StorageReference storage;
@@ -68,10 +68,12 @@ public class MappingMode extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+        storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Upload");
 
 
         DeviceUpload = findViewById(R.id.DeviceUpload);
         UrlUpload = findViewById(R.id.UrlUpload);
+        FirebaseUpload = findViewById(R.id.FirebaseUpload);
         PreviewImage = (SubsamplingScaleImageView)findViewById(R.id.PreviewImage);
         ConfirmURL = findViewById(R.id.ConfirmURL);
         URLEntry = findViewById(R.id.UrlEntry);
@@ -104,14 +106,16 @@ public class MappingMode extends AppCompatActivity {
             }
         });
 
+       /*
+        Either Upload a Map or choose a Map from the exisiting firebase storage
+         */
         DeviceUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChoser();
                 DeviceUpload.setVisibility(View.GONE);
                 UrlUpload.setVisibility(View.GONE);
-                URLEntry.setVisibility(View.GONE);
-                ConfirmURL.setVisibility(View.GONE);
+                FirebaseUpload.setVisibility(View.GONE);
                 ConfirmImage.setVisibility(View.VISIBLE);
                 ChangeImage.setVisibility(View.VISIBLE);
             }
@@ -120,11 +124,37 @@ public class MappingMode extends AppCompatActivity {
         UrlUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DeviceUpload.setVisibility(View.GONE);
+                FirebaseUpload.setVisibility(View.GONE);
                 UrlUpload.setVisibility(View.GONE);
                 URLEntry.setVisibility(View.VISIBLE);
                 ConfirmURL.setVisibility(View.VISIBLE);
             }
         });
+
+        FirebaseUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{storage.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                        PreviewImage.setImage(ImageSource.bitmap(bitmap));
+                        DeviceUpload.setVisibility(View.GONE);
+                        UrlUpload.setVisibility(View.GONE);
+                        FirebaseUpload.setVisibility(View.GONE);
+                        ConfirmImage.setVisibility(View.VISIBLE);
+                        ChangeImage.setVisibility(View.VISIBLE);
+                    }
+                });}
+                catch (NullPointerException e){
+                    System.out.println("Null pointer exception caught");}
+                }
+
+
+        });
+
+
 
         ConfirmURL.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +192,7 @@ public class MappingMode extends AppCompatActivity {
             public void onClick(View v) {
                 DeviceUpload.setVisibility(View.VISIBLE);
                 UrlUpload.setVisibility(View.VISIBLE);
+                FirebaseUpload.setVisibility(View.VISIBLE);
                 URLEntry.setVisibility(View.GONE);
                 ConfirmURL.setVisibility(View.GONE);
                 ConfirmImage.setVisibility(View.GONE);
@@ -174,7 +205,7 @@ public class MappingMode extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Uploads");
+                storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Upload");
                 if(mImageUri!= null){storage.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -188,14 +219,14 @@ public class MappingMode extends AppCompatActivity {
                     }
                 });}
               
-                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
-                intent.putExtra(IMAGE_URL,URLlink);
-                PreviewImage.buildDrawingCache();
-                Bitmap bitmap_device = PreviewImage.getDrawingCache();
-                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                bitmap_device.compress(Bitmap.CompressFormat.PNG,50,bs);
-                intent.putExtra(IMAGE_DEVICE,bs.toByteArray());
-                startActivity(intent);
+//                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+//                intent.putExtra(IMAGE_URL,URLlink);
+//                PreviewImage.buildDrawingCache();
+//                Bitmap bitmap_device = PreviewImage.getDrawingCache();
+//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+//                bitmap_device.compress(Bitmap.CompressFormat.PNG,50,bs);
+//                intent.putExtra(IMAGE_DEVICE,bs.toByteArray());
+//                startActivity(intent);
 
             }
         });

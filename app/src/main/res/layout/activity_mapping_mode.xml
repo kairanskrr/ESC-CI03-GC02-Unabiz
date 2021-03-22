@@ -110,16 +110,15 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="0dp"
         android:background="@drawable/my_button"
         android:text="Confirm URL"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/UrlBox"
-        />
+        app:layout_constraintVertical_bias="0.623" />
 
-        <Button
+    <Button
         android:id="@+id/button_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -140,6 +139,20 @@
         android:background="@drawable/my_button"
         android:text="Change Image"
        app:layout_constraintTop_toBottomOf="@id/button_confirm"/>
+
+    <Button
+        android:id="@+id/FirebaseUpload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/my_button"
+        android:text="Choose from Uploaded Maps"
+        app:layout_constraintBottom_toBottomOf="@id/UrlUpload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/DeviceUpload"
+        app:layout_constraintVertical_bias="0.597" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

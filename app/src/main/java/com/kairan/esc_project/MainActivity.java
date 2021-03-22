@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getWifiNetworksList();
                 textViewWifiNetworks.setVisibility(View.GONE);
+
                 listView_wifiList.setAdapter(arrayAdapter);
 
             }
@@ -92,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
     private void getWifiNetworksList() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+
+        // instantiate wifiManager
         final WifiManager wifiManager =
                 (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         registerReceiver(new BroadcastReceiver() {
@@ -100,16 +103,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 //stringBuilder = new StringBuilder();
+
                 scanList = wifiManager.getScanResults();
                 System.out.println(scanList.size());
+
+                // wifiList is ArrayList<>();
                 wifiList.add("Number Of Wifi connections : " + " " + scanList.size() + "\n\n");
                 for (int i = 0; i < scanList.size(); i++) {
                     stringBuilder = new StringBuilder();
                     stringBuilder.append(new Integer(i + 1).toString() + ". ");
                     stringBuilder.append(String.format("Name: %s,\nBSSID: %s,\nRSSI: %s\n",(scanList.get(i)).SSID,(scanList.get(i)).BSSID,(scanList.get(i)).level));
+
+                    // add built String to wifiList
                     wifiList.add(stringBuilder.toString());
                     String Mac_address = scanList.get(i).BSSID;
                     Integer rssi = scanList.get(i).level;
+
+
                     database.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {

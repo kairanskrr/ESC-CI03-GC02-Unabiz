@@ -37,6 +37,7 @@
 
     <TextView
         android:id="@+id/MenuTitle"
+        style="@style/appHeaders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -83,9 +84,8 @@
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
-        android:layout_marginBottom="326dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
@@ -95,6 +95,8 @@
         app:iconSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.364"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
 
     <com.google.android.material.button.MaterialButton

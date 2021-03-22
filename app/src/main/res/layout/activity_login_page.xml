@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:ems="10"
-            android:hint="Email"
+            android:hint="@string/hint_email"
             android:maxLines="1"
             android:text="zoezoe@gmail.com"
             tools:ignore="KeyboardInaccessibleWidget" />
@@ -74,6 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_marginTop="5dp"
+        android:hint="@string/hint_password"
         app:boxCornerRadiusBottomEnd="15dp"
         app:boxCornerRadiusBottomStart="15dp"
         app:boxCornerRadiusTopEnd="15dp"
@@ -99,14 +100,12 @@
 
     <Button
         android:id="@+id/buttonLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:background="@drawable/my_button"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PasswordBox" />
+        app:layout_constraintTop_toBottomOf="@+id/PasswordBox"
+        style="@style/confirmButton" />
 
     <Button
         android:id="@+id/buttonSignUp"

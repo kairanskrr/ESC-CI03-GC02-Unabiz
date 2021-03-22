@@ -25,11 +25,11 @@ public class SignUpPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_page);
-        newName = findViewById(R.id.EditTextName);
-        newEmail = findViewById(R.id.EditTextEmail2);
-        newPassword = findViewById(R.id.EditTextPassword2);
-        newPassword2 = findViewById(R.id.EditTextPassword3);
-        RegisterButton = findViewById(R.id.RegisterButton);
+        newName = findViewById(R.id.editTextName);
+        newEmail = findViewById(R.id.editTextEmail2);
+        newPassword = findViewById(R.id.editTextPassword2);
+        newPassword2 = findViewById(R.id.editTextPassword3);
+        RegisterButton = findViewById(R.id.buttonRegister);
         fAuth = FirebaseAuth.getInstance();
 
         // is the name used here?

@@ -85,7 +85,7 @@ public class MappingMode extends AppCompatActivity {
         ConfirmImage.setVisibility(View.GONE);
         ChangeImage.setVisibility(View.GONE);
 
-        PreviewImage.setOnTouchListener(new View.OnTouchListener() {
+        /*PreviewImage.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
                 @Override
                 public void onLongPress(MotionEvent e) {
@@ -104,7 +104,7 @@ public class MappingMode extends AppCompatActivity {
                 gestureDetector.onTouchEvent(event);
                 return false;
             }
-        });
+        });*/
 
        /*
         Either Upload a Map or choose a Map from the exisiting firebase storage
@@ -219,14 +219,14 @@ public class MappingMode extends AppCompatActivity {
                     }
                 });}
               
-//                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
 //                intent.putExtra(IMAGE_URL,URLlink);
 //                PreviewImage.buildDrawingCache();
 //                Bitmap bitmap_device = PreviewImage.getDrawingCache();
 //                ByteArrayOutputStream bs = new ByteArrayOutputStream();
 //                bitmap_device.compress(Bitmap.CompressFormat.PNG,50,bs);
 //                intent.putExtra(IMAGE_DEVICE,bs.toByteArray());
-//                startActivity(intent);
+                startActivity(intent);
 
             }
         });

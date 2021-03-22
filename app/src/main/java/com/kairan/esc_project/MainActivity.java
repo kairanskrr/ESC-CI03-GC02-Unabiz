@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getWifiNetworksList();
-
-
                 textViewWifiNetworks.setVisibility(View.GONE);
                 listView_wifiList.setAdapter(arrayAdapter);
 

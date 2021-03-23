@@ -110,8 +110,8 @@ public class MappingMode extends AppCompatActivity {
             }
         });*/
 
-       /*
-        Either Upload a Map or choose a Map from the exisiting firebase storage
+       /**
+        Either Upload a Map from device/URL or choose a Map from the existing firebase storage
          */
         DeviceUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,8 +144,6 @@ public class MappingMode extends AppCompatActivity {
 
         });
 
-
-
         ConfirmURL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +175,9 @@ public class MappingMode extends AppCompatActivity {
             }
         });
 
+        /**
+         Change current image after uploading
+         */
         ChangeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,6 +191,9 @@ public class MappingMode extends AppCompatActivity {
             }
         });
 
+        /**
+         Confirm the selected image: upload the image to firebase and go to mapping activity
+         */
         ConfirmImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -58,12 +58,13 @@ public class Mapping {
 
         // for 1 scan result itself, add the BSSID (MAC) and corresponding RSSI to mac_rssi hashmap
         for(ScanResult ap:scanResult){
-            if(20<Math.abs(ap.level)&&Math.abs(ap.level)<100){
-                mac_rssi.put(ap.BSSID,ap.level);
-            }
             if(!ap_list.contains(ap.BSSID)){
                 ap_list.add(ap.BSSID);
             }
+            if(20<Math.abs(ap.level)&&Math.abs(ap.level)<100){
+                mac_rssi.put(ap.BSSID,ap.level);
+            }
+
         }
 
         // add mac_rssi entry to global position_ap hashmap (position : mac_rssi)

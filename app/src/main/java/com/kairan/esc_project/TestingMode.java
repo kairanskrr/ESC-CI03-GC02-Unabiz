@@ -63,7 +63,7 @@ public class TestingMode extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
-        storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Upload");
+        storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
 
         button_getLocation.setOnClickListener(new View.OnClickListener() {

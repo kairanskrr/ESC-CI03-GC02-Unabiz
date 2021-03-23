@@ -67,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+//                database.setValue(null); Deleting some of the test cases
                 database.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                             currentchildnumber = (int) snapshot.getChildrenCount()+1; }
 
                     @Override

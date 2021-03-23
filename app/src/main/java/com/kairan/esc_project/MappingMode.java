@@ -34,6 +34,7 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
+import com.kairan.esc_project.mappingModeDisplay.StorageChoser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -138,22 +139,8 @@ public class MappingMode extends AppCompatActivity {
         FirebaseUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{storage.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        PreviewImage.setImage(ImageSource.bitmap(bitmap));
-                        DeviceUpload.setVisibility(View.GONE);
-                        UrlUpload.setVisibility(View.GONE);
-                        FirebaseUpload.setVisibility(View.GONE);
-                        ConfirmImage.setVisibility(View.VISIBLE);
-                        ChangeImage.setVisibility(View.VISIBLE);
-                    }
-                });}
-                catch (NullPointerException e){
-                    System.out.println("Null pointer exception caught");}
-                }
-
+                Intent intent = new Intent(MappingMode.this, StorageChoser.class);
+                startActivity(intent);}
 
         });
 
@@ -206,13 +193,6 @@ public class MappingMode extends AppCompatActivity {
         ConfirmImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storage.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                    @Override
-                    public void onSuccess(ListResult listResult) {
-                        StorageUploadCount = listResult.getItems().size();
-                        Log.i("test", Integer.toString(StorageUploadCount));
-                    }
-                });
                 StorageReference storage1 = storage.child(mImageUri.getPath());
                 if(mImageUri!= null){storage1.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override

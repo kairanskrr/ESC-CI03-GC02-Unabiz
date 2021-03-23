@@ -1,6 +1,7 @@
 package com.kairan.esc_project;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,8 +14,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -26,6 +29,8 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +38,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kairan.esc_project.KairanTriangulationAlgo.Mapping;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 import com.kairan.esc_project.KairanTriangulationAlgo.WifiScan;
@@ -40,6 +47,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -53,9 +65,12 @@ public class MappingActivity extends AppCompatActivity {
 
     DatabaseReference database;
     FirebaseUser user;
+    StorageReference storage;
+
+    Uri mImageUri;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapping);
 
@@ -66,10 +81,33 @@ public class MappingActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+        storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
 
-        // retrieve from database
-        imageToMap.setImage(ImageSource.resource(R.drawable.b2l2));
+//        // retrieve from database
+//        imageToMap.setImage(ImageSource.resource(R.drawable.b2l2));
+        String newString = null;
+        Bundle b = getIntent().getExtras();
+        if ( b!= null){
+            newString = (String) b.get("Imageselected");
+            mImageUri = Uri.parse(newString);
+
+        }
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(config);
+        imageLoader.loadImage(newString,new SimpleImageLoadingListener(){
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                //super.onLoadingComplete(imageUri, view, loadedImage);
+                imageToMap.setImage(ImageSource.bitmap(loadedImage));
+            }
+        });
+
+
+
+
+
 
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
@@ -149,6 +187,53 @@ public class MappingActivity extends AppCompatActivity {
         
 
     }
+
+    private class LoadImage extends AsyncTask<String, Void, Bitmap> {
+        SubsamplingScaleImageView imageView;
+        URL url;
+        public LoadImage(SubsamplingScaleImageView PreviewImage){
+            this.imageView = PreviewImage;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            String URLlink = strings[0];
+            Bitmap bitmap = null;
+            try {
+                if(!URLlink.isEmpty()){
+                    url = new URL(URLlink);
+                }
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                //InputStream inputStream = new java.net.URL(URLlink).openStream();
+                InputStream inputStream = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            //PreviewImage.setImageBitmap(bitmap);
+            imageToMap.setImage(ImageSource.bitmap(bitmap));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            mImageUri = data.getData();
+            imageToMap.setImage(ImageSource.uri(mImageUri));
+
+
+        }
+    }
+
+
 
     // make use of WifiManager to get the available Wifi APs nearby
 

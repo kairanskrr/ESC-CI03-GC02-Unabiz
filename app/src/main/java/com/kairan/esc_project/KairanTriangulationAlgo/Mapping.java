@@ -3,22 +3,38 @@ package com.kairan.esc_project.KairanTriangulationAlgo;
 import android.net.wifi.ScanResult;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kairan.esc_project.KairanTriangulationAlgo.NeuralNetwork;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Mapping {
 
     private static HashMap<String,Integer> mac_rssi;
     private static HashMap<Point,HashMap> position_ap;
+    static Map<String, HashMap> position_apclone = new HashMap<>();
     static List<String> ap_list;
     static List<Point> position_list;
     static int num_of_data;
 
     static NeuralNetwork nn;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
 
 
     public Mapping(){
@@ -30,10 +46,17 @@ public class Mapping {
 
     /**
      * Collect data from wifi scan results (bssid, rssi) and map it with its position on the floor map (x,y)*/
+    /**
+     * User inputs position on the map, along with the obtained scanResult at that position
+     * @param position
+     * @param scanResult
+     */
 
     public void add_data(Point position, List<ScanResult> scanResult){
 
         mac_rssi = new HashMap<>();
+
+        // for 1 scan result itself, add the BSSID (MAC) and corresponding RSSI to mac_rssi hashmap
         for(ScanResult ap:scanResult){
             if(20<Math.abs(ap.level)&&Math.abs(ap.level)<100){
                 mac_rssi.put(ap.BSSID,ap.level);
@@ -42,21 +65,44 @@ public class Mapping {
                 ap_list.add(ap.BSSID);
             }
         }
+
+        // add mac_rssi entry to global position_ap hashmap (position : mac_rssi)
         position_ap.put(position, mac_rssi);
+        if(mac_rssi != null){position_apclone.put(position.toString(), mac_rssi);}
         Log.i("TEST","position: " + position.toString());
         Log.i("TEST","wifi ap: " + mac_rssi.toString());
         Log.i("TEST",position_ap.toString());
         System.out.println("\n");
 
         num_of_data++;
+
     }
 
     public void send_data_to_database(){
         // maybe send position_ap HashMap oxo
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long number = snapshot.getChildrenCount()+1;
+                database.child("Scan " + number ).setValue(position_apclone);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("There is an error with the system");
+            }
+        });
+
     }
 
     /**
      * Based on receiving data(list of bssid), get appropriate data set from database*/
+
+    /**
+     *
+     * @param bssid
+     * @return dataset, a hashmap containing point x,y and a hashmap (BSSID : RSSI)
+     */
     public static HashMap<Point,HashMap> get_data_for_testing(List<String> bssid){
         //retrieve data from database
 
@@ -65,13 +111,19 @@ public class Mapping {
         /*for(int i =0; i<num_of_data; i++){
             HashMap<String,Integer> ap_info = new HashMap<>();
             for(String j: bssid){
+
+                // if position_ap contains this particular BSSID, j
+                // if the inner hashmap BSSID: RSSI contains key bssid
                 if(position_ap.get(position_list.get(i)).containsKey(j)){
+                    // put this bssid: RSSI into ap_info
                     ap_info.put(j,(int)position_ap.get(position_list.get(i)).get(j));
                 }
                 else{
                     break;
                 }
                 if(ap_info.size()==bssid.size()){
+                    // dataSet is a Hashmap containing
+                    // position : ap_info (bssid : RSSI)
                     dataSet.put(position_list.get(i),ap_info);
                 }
             }

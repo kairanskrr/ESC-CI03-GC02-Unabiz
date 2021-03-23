@@ -25,7 +25,7 @@ public class Point {
     @NonNull
     @Override
     public String toString() {
-        return String.format("( %f, %f )",x,y);
+        return "Point X= " + (int)x + " Point Y= " + (int)y;
     }
 
 }

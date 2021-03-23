@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> wifiList;
     private ArrayAdapter arrayAdapter;
 
+    int currentchildnumber =0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +64,19 @@ public class MainActivity extends AppCompatActivity {
         buttonClick = findViewById(R.id.button_click);
 
         buttonClick.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                database.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            currentchildnumber = (int) snapshot.getChildrenCount()+1; }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
                 getWifiNetworksList();
                 textViewWifiNetworks.setVisibility(View.GONE);
                 listView_wifiList.setAdapter(arrayAdapter);
@@ -110,22 +123,13 @@ public class MainActivity extends AppCompatActivity {
                     wifiList.add(stringBuilder.toString());
                     String Mac_address = scanList.get(i).BSSID;
                     Integer rssi = scanList.get(i).level;
-                    database.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (!snapshot.hasChild(Mac_address)){database.child("Scan").child("Nearby WIFI Data Values").child(Mac_address).setValue(rssi);}
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                    database.child("Scan " + currentchildnumber).child("Nearby WIFI Data Values").child(Mac_address).setValue(rssi);
                     //sb.append("\n\n");
                 }
                 arrayAdapter.notifyDataSetChanged();
                 //textViewWifiNetworks.setText(stringBuilder);
                 //System.out.println(stringBuilder);
+
 
 
             }

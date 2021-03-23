@@ -3,22 +3,38 @@ package com.kairan.esc_project.KairanTriangulationAlgo;
 import android.net.wifi.ScanResult;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kairan.esc_project.KairanTriangulationAlgo.NeuralNetwork;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Mapping {
 
     private static HashMap<String,Integer> mac_rssi;
     private static HashMap<Point,HashMap> position_ap;
+    static Map<String, HashMap> position_apclone = new HashMap<>();
     static List<String> ap_list;
     static List<Point> position_list;
     static int num_of_data;
 
     static NeuralNetwork nn;
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
 
 
     public Mapping(){
@@ -43,16 +59,31 @@ public class Mapping {
             }
         }
         position_ap.put(position, mac_rssi);
+        if(mac_rssi != null){position_apclone.put(position.toString(), mac_rssi);}
         Log.i("TEST","position: " + position.toString());
         Log.i("TEST","wifi ap: " + mac_rssi.toString());
         Log.i("TEST",position_ap.toString());
         System.out.println("\n");
 
         num_of_data++;
+
     }
 
     public void send_data_to_database(){
         // maybe send position_ap HashMap oxo
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long number = snapshot.getChildrenCount()+1;
+                database.child("Scan " + number ).setValue(position_apclone);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("There is an error with the system");
+            }
+        });
+
     }
 
     /**

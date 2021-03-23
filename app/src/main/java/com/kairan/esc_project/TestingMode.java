@@ -70,7 +70,13 @@ public class TestingMode extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Upload");
 
-
+        /**
+         Purpose: get prediction of user current position
+         Steps:
+         1. Get Wifi scan results
+         2. Retrieve data from database
+         3. Perform the algorithm written in Testing class to get predicted position
+         */
         button_getLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +96,9 @@ public class TestingMode extends AppCompatActivity {
             }
         });
 
+        /**
+         Select map which has been mapped from database
+         */
         button_selectMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

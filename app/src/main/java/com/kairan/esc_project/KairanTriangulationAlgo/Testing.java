@@ -23,6 +23,9 @@ public class Testing {
     private List<String> bssid;
 
 
+    /**
+     Initialize testing class with the scan result
+     */
     public Testing(List<ScanResult> scanResults){
         x = new double[Mapping.ap_list.size()];
         bssid_rssi = new HashMap<>();
@@ -50,6 +53,9 @@ public class Testing {
      * 2. Compare dev, find the smallest and the second smallest and their positions
      * 3. Make prediction of current positions based on the positions found with smallest and second smallest dev*/
     public Point predict(){
+        /**
+         Need to retrieve data from database first!! (either done here or in the testingMode activity)
+         */
         HashMap<Point,HashMap> dataSet = Mapping.get_data_for_testing(bssid);
         ArrayList<Point> positionSet = new ArrayList<Point>(dataSet.keySet());
         int num_of_positions = dataSet.size();

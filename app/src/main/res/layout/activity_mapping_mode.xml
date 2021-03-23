@@ -6,16 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".MappingMode">
 
+    <!--    <EditText-->
+    <!--        android:id="@+id/UrlEntry"-->
+    <!--        android:layout_width="328dp"-->
+    <!--        android:layout_height="54dp"-->
+    <!--        android:gravity="center"-->
+    <!--        android:hint="Enter URL Here"-->
+    <!--        android:textSize="24sp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.493"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/DeviceUpload"-->
+    <!--        app:layout_constraintVertical_bias="0.063" />-->
+
     <TextView
         android:id="@+id/MappingTitle"
+        style="@style/appHeaders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:text="Upload Floorplan"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,73 +39,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:layout_marginTop="12dp"
         android:background="@drawable/my_button"
         android:gravity="center"
         android:text="UPLOAD FROM DEVICE"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PreviewImage" />
+        app:layout_constraintTop_toBottomOf="@+id/PreviewImage"
+        tools:layout_editor_absoluteX="40dp" />
 
     <Button
         android:id="@+id/UrlUpload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:gravity="center"
+        android:layout_marginTop="8dp"
         android:background="@drawable/my_button"
+        android:gravity="center"
         android:text="UPLOAD FROM URL"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/UrlBox"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/button_changeImage"
+        tools:layout_editor_absoluteX="40dp" />
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/PreviewImage"
-        android:layout_width="match_parent"
-        android:layout_height="380dp"
+        android:layout_width="208dp"
+        android:layout_height="130dp"
         android:layout_marginBottom="89dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MappingTitle"
-        app:layout_constraintVertical_bias="0.048"
+        app:layout_constraintVertical_bias="0.082"
         app:srcCompat="@drawable/ic_launcher_background"
-        tools:srcCompat="?android:attr/scrollbarTrackVertical"
-        tools:ignore="VectorDrawableCompat" />
-
-<!--    <EditText-->
-<!--        android:id="@+id/UrlEntry"-->
-<!--        android:layout_width="328dp"-->
-<!--        android:layout_height="54dp"-->
-<!--        android:gravity="center"-->
-<!--        android:hint="Enter URL Here"-->
-<!--        android:textSize="24sp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.493"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/DeviceUpload"-->
-<!--        app:layout_constraintVertical_bias="0.063" />-->
+        tools:ignore="VectorDrawableCompat"
+        tools:srcCompat="?android:attr/scrollbarTrackVertical" />
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:id="@+id/UrlBox"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DeviceUpload"
-        app:layout_constraintVertical_bias="0"
         app:boxCornerRadiusBottomEnd="15dp"
         app:boxCornerRadiusBottomStart="15dp"
         app:boxCornerRadiusTopEnd="15dp"
-        app:boxCornerRadiusTopStart="15dp" >
+        app:boxCornerRadiusTopStart="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DeviceUpload">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/UrlEntry"
@@ -108,15 +104,11 @@
         android:id="@+id/ConfirmURL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/my_button"
         android:text="Confirm URL"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/UrlBox"
-        app:layout_constraintVertical_bias="0.623" />
+        app:layout_constraintTop_toBottomOf="@+id/button_confirm"
+        tools:layout_editor_absoluteX="24dp" />
 
     <Button
         android:id="@+id/button_confirm"
@@ -125,20 +117,19 @@
         android:layout_margin="20dp"
         android:background="@drawable/my_button"
         android:text="Start Mapping"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.841" />
+        app:layout_constraintTop_toBottomOf="@+id/FirebaseUpload"
+        tools:layout_editor_absoluteX="60dp" />
 
     <Button
         android:id="@+id/button_changeImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/my_button"
         android:text="Change Image"
-       app:layout_constraintTop_toBottomOf="@id/button_confirm"/>
+        app:layout_constraintTop_toBottomOf="@+id/UrlBox"
+        tools:layout_editor_absoluteX="60dp" />
 
     <Button
         android:id="@+id/FirebaseUpload"
@@ -148,11 +139,8 @@
         android:layout_weight="1"
         android:background="@drawable/my_button"
         android:text="Choose from Uploaded Maps"
-        app:layout_constraintBottom_toBottomOf="@id/UrlUpload"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/DeviceUpload"
-        app:layout_constraintVertical_bias="0.597" />
+        app:layout_constraintTop_toBottomOf="@+id/UrlUpload"
+        tools:layout_editor_absoluteX="20dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

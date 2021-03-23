@@ -105,9 +105,11 @@ public class Mapping {
      * @return dataset, a hashmap containing point x,y and a hashmap (BSSID : RSSI)
      */
     public static HashMap<Point,HashMap> get_data_for_testing(List<String> bssid){
+        //retrieve data from database
+
         HashMap<Point,HashMap> dataSet = new HashMap<>();
 
-        for(int i =0; i<num_of_data; i++){
+        /*for(int i =0; i<num_of_data; i++){
             HashMap<String,Integer> ap_info = new HashMap<>();
             for(String j: bssid){
 
@@ -126,8 +128,9 @@ public class Mapping {
                     dataSet.put(position_list.get(i),ap_info);
                 }
             }
-        }
+        }*/
         return dataSet;
+
     }
 
     /*****************************************************

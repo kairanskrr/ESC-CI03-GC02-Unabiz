@@ -58,9 +58,11 @@ public class Mapping {
     /**
      * Based on receiving data(list of bssid), get appropriate data set from database*/
     public static HashMap<Point,HashMap> get_data_for_testing(List<String> bssid){
+        //retrieve data from database
+
         HashMap<Point,HashMap> dataSet = new HashMap<>();
 
-        for(int i =0; i<num_of_data; i++){
+        /*for(int i =0; i<num_of_data; i++){
             HashMap<String,Integer> ap_info = new HashMap<>();
             for(String j: bssid){
                 if(position_ap.get(position_list.get(i)).containsKey(j)){
@@ -73,8 +75,9 @@ public class Mapping {
                     dataSet.put(position_list.get(i),ap_info);
                 }
             }
-        }
+        }*/
         return dataSet;
+
     }
 
     /*****************************************************

@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
@@ -60,6 +61,8 @@ public class MappingMode extends AppCompatActivity {
     static String IMAGE_URL = "IMAGE_URL";
     static String IMAGE_DEVICE = "IMAGE_DEVICE";
 
+    int StorageUploadCount =0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,7 @@ public class MappingMode extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
-        storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Upload");
+        storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
 
         DeviceUpload = findViewById(R.id.DeviceUpload);
@@ -203,10 +206,15 @@ public class MappingMode extends AppCompatActivity {
         ConfirmImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Upload");
-                if(mImageUri!= null){storage.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                storage.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        StorageUploadCount = listResult.getItems().size();
+                        Log.i("test", Integer.toString(StorageUploadCount));
+                    }
+                });
+                StorageReference storage1 = storage.child(mImageUri.getPath());
+                if(mImageUri!= null){storage1.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(getApplicationContext(), "The Map has been uploaded into firebase", Toast.LENGTH_SHORT).show();

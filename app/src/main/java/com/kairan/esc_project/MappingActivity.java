@@ -105,6 +105,8 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mapping.send_data_to_database(); // need to be implemented
+                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
+                startActivity(intent);
             }
         });
 

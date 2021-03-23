@@ -37,6 +37,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kairan.esc_project.KairanTriangulationAlgo.Point;
+import com.kairan.esc_project.KairanTriangulationAlgo.Testing;
+import com.kairan.esc_project.KairanTriangulationAlgo.WifiScan;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,12 +49,13 @@ import java.util.List;
 
 public class TestingMode extends AppCompatActivity {
     SubsamplingScaleImageView image_mappedMap;
+    TextView textView_predictedPosition;
     Button button_selectMap;
     Button button_getLocation;
     FirebaseUser user;
     DatabaseReference database;
     StorageReference storage;
-    Uri mImageUri;
+    List<ScanResult> scanList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +64,41 @@ public class TestingMode extends AppCompatActivity {
         image_mappedMap = findViewById(R.id.image_mappedFloorPlan);
         button_selectMap = findViewById(R.id.button_selectMap);
         button_getLocation = findViewById(R.id.button_getLocation);
+        textView_predictedPosition = findViewById(R.id.textView_predictedPosition);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Upload");
 
-
+        /**
+         Purpose: get prediction of user current position
+         Steps:
+         1. Get Wifi scan results
+         2. Retrieve data from database
+         3. Perform the algorithm written in Testing class to get predicted position
+         */
         button_getLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
+                wifiScan.getWifiNetworksList();
+                scanList = wifiScan.getScanList();
+                if(scanList != null){
+                    Testing testing = new Testing(scanList);
+                    Point result = testing.predict();
+                    if(result.getX()<0 || result.getY()<0){
+                        Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        textView_predictedPosition.setText(result.toString());
+                    }
+                }
             }
         });
 
+        /**
+         Select map which has been mapped from database
+         */
         button_selectMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

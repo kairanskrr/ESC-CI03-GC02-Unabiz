@@ -68,9 +68,15 @@ public class MappingActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
 
 
-        // retrieve from database
+        /**
+         Get image from database and set image
+         */
         imageToMap.setImage(ImageSource.resource(R.drawable.b2l2));
 
+
+        /**
+         Get (x,y) of user current position on the image by performing long press
+         */
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
                 @Override
@@ -91,6 +97,9 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         Save the point(x,y) and related wifi information(MAC address and signal strength) > send to database?
+         */
         button_savePosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +121,11 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         1. Should be enabled when we have enough data(haven't done this check yet oxo)
+         2. Go back to Select Menu if the mapping is complete
+         3. Send data together to database?? (or send one by one in button_savePosition's click listener)
+         */
         button_complete_mapping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -105,6 +105,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         android:background="@drawable/my_button"
         android:text="Confirm URL"
         app:layout_constraintTop_toBottomOf="@+id/button_confirm"

@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.kairan.esc_project.UIStuff.PinView;
 
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -73,6 +74,7 @@ public class MappingActivity extends AppCompatActivity {
     Mapping mapping = new Mapping();
     private List<ScanResult> scanList;
     Button button_savePosition, button_complete_mapping;
+    private PinView view;
 
 
 
@@ -118,7 +120,12 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
+
+
+        // working on it... turned into touch to obtain coordinate instead of long press
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
+
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // obtain x and y
@@ -126,7 +133,16 @@ public class MappingActivity extends AppCompatActivity {
                 final float y = (float)Math.floor(event.getY()*100)/100;
                 String locationInXY = new Point(x, y).toString();
                 textView_currentPosition.setText("Your location is "+ locationInXY);
-                Log.d("onTouch called", "invok");
+                Log.d("onTouch called", "onTouch");
+
+                // the screen turns white
+//                view = new PinView(getApplicationContext());
+//
+//                view.setPin(new PointF(x, y));
+//                setContentView(view);
+
+
+
 
 
                 return true;
@@ -260,7 +276,13 @@ public class MappingActivity extends AppCompatActivity {
 
 
 
+
+
+
+    }
+
+
+
     // make use of WifiManager to get the available Wifi APs nearby
 
 
-}

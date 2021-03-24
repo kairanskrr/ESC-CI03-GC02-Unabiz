@@ -22,7 +22,7 @@
         android:id="@+id/textView_predictedPosition"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:gravity="right"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -32,25 +32,25 @@
 
     <Button
         android:id="@+id/button_selectMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Available Map"
+        android:text="@string/select_avail_map"
+        android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_mappedFloorPlan"
-        app:layout_constraintVertical_bias="0.293" />
+        app:layout_constraintVertical_bias="0.293"
+        style="@style/confirmButton"/>
 
     <Button
         android:id="@+id/button_getLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="WHERE AM I"
+        android:layout_margin="20dp"
+        android:text="@string/where_am_i"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/image_mappedFloorPlan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_selectMap"
-        app:layout_constraintVertical_bias="0.316" />
+        app:layout_constraintVertical_bias="0.316"
+        style="@style/confirmButton"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

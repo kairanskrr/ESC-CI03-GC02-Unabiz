@@ -77,8 +77,6 @@ public class MappingActivity extends AppCompatActivity {
     private PinView view;
 
 
-
-
     DatabaseReference database;
     FirebaseUser user;
     StorageReference storage;

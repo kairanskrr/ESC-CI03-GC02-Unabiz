@@ -19,7 +19,7 @@
         android:id="@+id/textViw_currentPosition"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:gravity="right"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/scaleImage_waitingToMap"
         app:layout_constraintHorizontal_bias="0.0"
@@ -29,27 +29,27 @@
 
     <Button
         android:id="@+id/button_save_position"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Current Position"
+        android:text="@string/save_curr_pos"
+        android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scaleImage_waitingToMap"
-        app:layout_constraintVertical_bias="0.331" />
+        app:layout_constraintVertical_bias="0.331"
+        style="@style/confirmButton" />
 
     <Button
         android:id="@+id/button_complete_mapping"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Complete Mapping"
+        android:layout_margin="20dp"
+        android:text="@string/complete_mapping"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_save_position"
-        app:layout_constraintVertical_bias="0.294" />
+        app:layout_constraintVertical_bias="0.294"
+        style="@style/confirmButton"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

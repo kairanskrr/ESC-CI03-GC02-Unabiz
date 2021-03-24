@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:ems="10"
-            android:hint="Password"
+            android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:maxLines="1"
             android:text="123456"

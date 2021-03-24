@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +12,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -23,12 +29,17 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,6 +73,9 @@ public class MappingActivity extends AppCompatActivity {
     Mapping mapping = new Mapping();
     private List<ScanResult> scanList;
     Button button_savePosition, button_complete_mapping;
+
+
+
 
     DatabaseReference database;
     FirebaseUser user;
@@ -104,30 +118,41 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
-            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    float x = (float)Math.floor(e.getX()*100)/100;
-                    float y = (float)Math.floor(e.getY()*100)/100;
-
-                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
-                    Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
-                    super.onLongPress(e);
-                }
-            });
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                gestureDetector.onTouchEvent(event);
-                return false;
+                // obtain x and y
+                final float x  = (float)Math.floor(event.getX()*100)/100;
+                final float y = (float)Math.floor(event.getY()*100)/100;
+                String locationInXY = new Point(x, y).toString();
+                textView_currentPosition.setText("Your location is "+ locationInXY);
+                Log.d("onTouch called", "invok");
+
+
+                return true;
             }
         });
+
+//        imageToMap.setOnTouchListener(new View.OnTouchListener() {
+//            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
+//                @Override
+//                public void onLongPress(MotionEvent e) {
+//                    float x = (float)Math.floor(e.getX()*100)/100;
+//                    float y = (float)Math.floor(e.getY()*100)/100;
+//
+//                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
+//                    Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
+//                    super.onLongPress(e);
+//                }
+//            });
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+////                gestureDetector.onTouchEvent(event);
+////                return false;
+//
+//            }
+//        });
 
         button_savePosition.setOnClickListener(new View.OnClickListener() {
             @Override

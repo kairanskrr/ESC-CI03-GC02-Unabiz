@@ -175,14 +175,19 @@ public class MappingActivity extends AppCompatActivity {
                 if(text.isEmpty()){
                     Toast.makeText(MappingActivity.this,"Please indicate where you are first",Toast.LENGTH_LONG).show();
                 }else{
+
+                    // each time button clicked, 1 scan performed
                     WifiScan wifiScan = new WifiScan(getApplicationContext(), MappingActivity.this);
                     wifiScan.getWifiNetworksList();
                     scanList = wifiScan.getScanList();
                     if(scanList != null){
                         float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
                         float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));
+                        // add data, adding to position_ap of mapping object
                         mapping.add_data(new Point(x,y),scanList);
                         Toast.makeText(MappingActivity.this,"Save successfully",Toast.LENGTH_LONG).show();
+
+                        // clear the textView_currentPosition
                         textView_currentPosition.setText("");
                     }
                 }
@@ -227,6 +232,8 @@ public class MappingActivity extends AppCompatActivity {
 
     }
 
+
+
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;
         URL url;
@@ -260,6 +267,7 @@ public class MappingActivity extends AppCompatActivity {
             imageToMap.setImage(ImageSource.bitmap(bitmap));
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

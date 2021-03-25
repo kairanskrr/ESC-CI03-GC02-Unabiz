@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -80,11 +81,18 @@ public class TestingMode extends AppCompatActivity {
         button_getLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Log.d("BUTTON", "ButtonGetLocation!");
+
+                // perform 1 scan
                 WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
+                // store results of scan into wifiScan.scanList
                 wifiScan.getWifiNetworksList();
+                // store this list into scanList
                 scanList = wifiScan.getScanList();
                 if(scanList != null){
+                    // instantiate Test Object
                     Testing testing = new Testing(scanList);
+                    // using predict() knn to predict where user is
                     Point result = testing.predict();
                     if(result.getX()<0 || result.getY()<0){
                         Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
@@ -102,11 +110,12 @@ public class TestingMode extends AppCompatActivity {
         button_selectMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Log.d("BUTTON", "ButtonSelectMapcalled");
                 storage.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        image_mappedMap.setImage(ImageSource.bitmap(bitmap));
+                        image_mappedMap.setImage (ImageSource.bitmap(bitmap));
                     }
                 });
             }

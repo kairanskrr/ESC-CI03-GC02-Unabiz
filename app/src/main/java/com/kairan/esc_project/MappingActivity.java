@@ -76,8 +76,8 @@ public class MappingActivity extends AppCompatActivity {
     Button button_savePosition, button_complete_mapping;
     private PinView view;
 
-
-
+    private float x;
+    private float y;
 
     DatabaseReference database;
     FirebaseUser user;
@@ -94,6 +94,8 @@ public class MappingActivity extends AppCompatActivity {
         textView_currentPosition = findViewById(R.id.textViw_currentPosition);
         button_savePosition = findViewById(R.id.button_save_position);
         button_complete_mapping = findViewById(R.id.button_complete_mapping);
+        view = findViewById(R.id.pinView_mapping);
+        view.setVisibility(View.INVISIBLE);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
@@ -116,7 +118,10 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 //super.onLoadingComplete(imageUri, view, loadedImage);
-                imageToMap.setImage(ImageSource.bitmap(loadedImage));
+                try{imageToMap.setImage(ImageSource.bitmap(loadedImage));}
+                catch (Exception e){
+                    imageToMap.setImage(ImageSource.resource(R.drawable.b2l2));
+                }
             }
         });
 
@@ -129,25 +134,28 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // obtain x and y
-                final float x  = (float)Math.floor(event.getX()*100)/100;
-                final float y = (float)Math.floor(event.getY()*100)/100;
+                x = (float)Math.floor(event.getX()*100)/100;
+                y = (float)Math.floor(event.getY()*100)/100;
                 String locationInXY = new Point(x, y).toString();
                 textView_currentPosition.setText("Your location is "+ locationInXY);
                 Log.d("onTouch called", "onTouch");
 
                 // the screen turns white
-//                view = new PinView(getApplicationContext());
-//
-//                view.setPin(new PointF(x, y));
-//                setContentView(view);
+                /*view = new PinView(getApplicationContext());
 
+                view.setPin(new PointF(x, y));
+                setContentView(view);*/
 
-
-
-
+                view.setVisibility(View.VISIBLE);
+                view.setPin(new PointF(x,y));
+                view.setX(x);
+                view.setY(y);
+                //setContentView(view);
                 return true;
             }
         });
+
+
 
 //        imageToMap.setOnTouchListener(new View.OnTouchListener() {
 //            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
@@ -181,11 +189,12 @@ public class MappingActivity extends AppCompatActivity {
                     wifiScan.getWifiNetworksList();
                     scanList = wifiScan.getScanList();
                     if(scanList != null){
-                        float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
-                        float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));
+                        /*float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
+                        float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));*/
                         mapping.add_data(new Point(x,y),scanList);
                         Toast.makeText(MappingActivity.this,"Save successfully",Toast.LENGTH_LONG).show();
                         textView_currentPosition.setText("");
+                        view.setVisibility(View.INVISIBLE);
                     }
                 }
             }

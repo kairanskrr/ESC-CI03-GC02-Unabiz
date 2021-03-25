@@ -5,11 +5,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -22,15 +24,22 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
@@ -44,13 +53,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MappingMode extends AppCompatActivity {
     private Uri mImageUri;
-    private String URLlink;
+    private String URLlink = null;
 
     EditText URLEntry;
     SubsamplingScaleImageView PreviewImage;
@@ -63,6 +73,9 @@ public class MappingMode extends AppCompatActivity {
     static String IMAGE_DEVICE = "IMAGE_DEVICE";
 
     int StorageUploadCount =0;
+
+    Bitmap bitmap1 = null;
+    InputStream inputStream = null;
 
 
     @Override
@@ -140,7 +153,8 @@ public class MappingMode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MappingMode.this, StorageChoser.class);
-                startActivity(intent);}
+                startActivity(intent);
+            }
 
         });
 
@@ -197,28 +211,73 @@ public class MappingMode extends AppCompatActivity {
         ConfirmImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StorageReference storage1 = storage.child(mImageUri.getPath());
-                if(mImageUri!= null){storage1.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(getApplicationContext(), "The Map has been uploaded into firebase", Toast.LENGTH_SHORT).show();
-                    }
+                // if the image that wants to be sent is from local device
+                if (mImageUri != null){
+                    StorageReference storage1 = storage.child(mImageUri.getPath());
+                     storage1.putFile(mImageUri);
 
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(),"The Map has failed to be uploaded into firebase", Toast.LENGTH_SHORT).show();
-                    }
-                });}
-              
-                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                    storage1.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+
+                            // Continue with the task to get the download URL
+                            return storage1.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                URLlink = task.getResult().toString();
+                                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                                intent.putExtra("Imageselected", URLlink);
+                                startActivity(intent);
+                            } else {
+                            }
+                        }
+                    });}
+
+                // if the image that needs to be sent to the firebase is from URL
+                else {
+                    database.child("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            int numberofChild = (int)snapshot.getChildrenCount();
+                            database.child("DownloadURLs").child(Integer.toString(numberofChild+1)).setValue(URLlink);
+                            Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                            intent.putExtra("Imageselected", URLlink);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+
+//                intent.putExtra("Imageselected", URLlink);
+//                if (mImageUri != null){
+////                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+////                bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream);
+////                byte[] bytes = stream.toByteArray();
+////                intent.putExtra("LocalDevice", bytes);
+//                }
+//                else {
+
+
+
+
 //                intent.putExtra(IMAGE_URL,URLlink);
 //                PreviewImage.buildDrawingCache();
 //                Bitmap bitmap_device = PreviewImage.getDrawingCache();
 //                ByteArrayOutputStream bs = new ByteArrayOutputStream();
 //                bitmap_device.compress(Bitmap.CompressFormat.PNG,50,bs);
 //                intent.putExtra(IMAGE_DEVICE,bs.toByteArray());
-                startActivity(intent);
+
 
             }
         });
@@ -250,7 +309,7 @@ public class MappingMode extends AppCompatActivity {
                 connection.setDoInput(true);
                 connection.connect();
                 //InputStream inputStream = new java.net.URL(URLlink).openStream();
-                InputStream inputStream = connection.getInputStream();
+                inputStream = connection.getInputStream();
                 bitmap = BitmapFactory.decodeStream(inputStream);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -270,10 +329,15 @@ public class MappingMode extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
             mImageUri = data.getData();
+            Log.i("Testing", mImageUri.getPath());
             PreviewImage.setImage(ImageSource.uri(mImageUri));
+            try {
+                bitmap1 = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             //Picasso.with(this).load(mImageUri).into(PreviewImage);
-
-
         }
     }
 }

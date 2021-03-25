@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.media.Image;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -82,8 +83,8 @@ public class MappingActivity extends AppCompatActivity {
     DatabaseReference database;
     FirebaseUser user;
     StorageReference storage;
-
-    Uri mImageUri;
+    String DownloadURL = null;
+    Uri mImageUri = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
@@ -102,23 +103,28 @@ public class MappingActivity extends AppCompatActivity {
 
 //        // retrieve from database
 //        imageToMap.setImage(ImageSource.resource(R.drawable.b2l2));
-        String newString = null;
-        Bundle b = getIntent().getExtras();
-        if ( b!= null){
-            newString = (String) b.get("Imageselected");
-            mImageUri = Uri.parse(newString);
+
+        //Load the new image that is selected by the user
+        Intent intent = getIntent();
+        if (intent.getByteArrayExtra("LocalDevice") != null){byte[] bytes = intent.getByteArrayExtra("LocalDevice");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        imageToMap.setImage(ImageSource.bitmap(bitmap));}
+        else {
+            DownloadURL = intent.getStringExtra("Imageselected");
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(config);
+            imageLoader.loadImage(DownloadURL,new SimpleImageLoadingListener(){
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    //super.onLoadingComplete(imageUri, view, loadedImage);
+                    imageToMap.setImage(ImageSource.bitmap(loadedImage));
+                }
+            });
 
         }
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(config);
-        imageLoader.loadImage(newString,new SimpleImageLoadingListener(){
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                //super.onLoadingComplete(imageUri, view, loadedImage);
-                imageToMap.setImage(ImageSource.bitmap(loadedImage));
-            }
-        });
+
+
 
 
 
@@ -140,9 +146,6 @@ public class MappingActivity extends AppCompatActivity {
 //
 //                view.setPin(new PointF(x, y));
 //                setContentView(view);
-
-
-
 
 
                 return true;
@@ -262,19 +265,17 @@ public class MappingActivity extends AppCompatActivity {
             imageToMap.setImage(ImageSource.bitmap(bitmap));
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
-            mImageUri = data.getData();
-            imageToMap.setImage(ImageSource.uri(mImageUri));
-
-
-        }
-    }
-
-
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+//            mImageUri = data.getData();
+//            imageToMap.setImage(ImageSource.uri(mImageUri));
+//
+//
+//        }
+//    }
 
 
 

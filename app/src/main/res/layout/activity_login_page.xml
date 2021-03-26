@@ -9,12 +9,12 @@
 
     <TextView
         android:id="@+id/textViewLogin"
-        android:layout_marginTop="20dp"
+        style="@style/appHeaders"
+        android:layout_marginTop="60dp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/appHeaders" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageViewAppIcon"

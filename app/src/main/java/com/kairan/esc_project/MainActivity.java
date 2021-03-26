@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
 
-        textViewWifiNetworks = findViewById(R.id.txtWifiNetworks);
+        textViewWifiNetworks = findViewById(R.id.textViewWifiNetworks);
         listView_wifiList = findViewById(R.id.listView_wifi);
         wifiList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,wifiList);

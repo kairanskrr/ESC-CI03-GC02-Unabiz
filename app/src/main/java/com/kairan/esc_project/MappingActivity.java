@@ -77,8 +77,10 @@ public class MappingActivity extends AppCompatActivity {
     Button button_savePosition, button_complete_mapping;
     private PinView view;
 
+
     private float x;
     private float y;
+
 
     DatabaseReference database;
     FirebaseUser user;
@@ -124,7 +126,7 @@ public class MappingActivity extends AppCompatActivity {
 
 
         // working on it... turned into touch to obtain coordinate instead of long press
-        imageToMap.setOnTouchListener(new View.OnTouchListener() {
+        /*imageToMap.setOnTouchListener(new View.OnTouchListener() {
 
 
             @Override
@@ -137,10 +139,10 @@ public class MappingActivity extends AppCompatActivity {
                 Log.d("onTouch called", "onTouch");
 
                 // the screen turns white
-                /*view = new PinView(getApplicationContext());
+                *//*view = new PinView(getApplicationContext());
 
                 view.setPin(new PointF(x, y));
-                setContentView(view);*/
+                setContentView(view);*//*
 
                 view.setVisibility(View.VISIBLE);
                 view.setPin(new PointF(x,y));
@@ -149,30 +151,34 @@ public class MappingActivity extends AppCompatActivity {
                 //setContentView(view);
                 return true;
             }
+        });*/
+
+
+
+        imageToMap.setOnTouchListener(new View.OnTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    x = (float)Math.floor(e.getX()*100)/100;
+                    y = (float)Math.floor(e.getY()*100)/100;
+
+                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
+                    Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
+                    super.onLongPress(e);
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                view.setVisibility(View.VISIBLE);
+                view.setPin(new PointF(x,y));
+                view.setX(x);
+                view.setY(y);
+                return false;
+
+            }
         });
-
-
-
-//        imageToMap.setOnTouchListener(new View.OnTouchListener() {
-//            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
-//                @Override
-//                public void onLongPress(MotionEvent e) {
-//                    float x = (float)Math.floor(e.getX()*100)/100;
-//                    float y = (float)Math.floor(e.getY()*100)/100;
-//
-//                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
-//                    Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
-//                    super.onLongPress(e);
-//                }
-//            });
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-////                gestureDetector.onTouchEvent(event);
-////                return false;
-//
-//            }
-//        });
 
         button_savePosition.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,14 +187,24 @@ public class MappingActivity extends AppCompatActivity {
                 if(text.isEmpty()){
                     Toast.makeText(MappingActivity.this,"Please indicate where you are first",Toast.LENGTH_LONG).show();
                 }else{
+
+                    // each time button clicked, 1 scan performed
                     WifiScan wifiScan = new WifiScan(getApplicationContext(), MappingActivity.this);
                     wifiScan.getWifiNetworksList();
                     scanList = wifiScan.getScanList();
                     if(scanList != null){
+
+                        float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
+                        float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));
+                        // add data, adding to position_ap of mapping object
+
                         /*float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
                         float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));*/
+
                         mapping.add_data(new Point(x,y),scanList);
                         Toast.makeText(MappingActivity.this,"Save successfully",Toast.LENGTH_LONG).show();
+
+                        // clear the textView_currentPosition
                         textView_currentPosition.setText("");
                         view.setVisibility(View.INVISIBLE);
                     }
@@ -200,6 +216,8 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mapping.send_data_to_database(); // need to be implemented
+                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
+                startActivity(intent);
             }
         });
 
@@ -234,6 +252,8 @@ public class MappingActivity extends AppCompatActivity {
 
     }
 
+
+
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;
         URL url;
@@ -267,6 +287,22 @@ public class MappingActivity extends AppCompatActivity {
             imageToMap.setImage(ImageSource.bitmap(bitmap));
         }
     }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            mImageUri = data.getData();
+            imageToMap.setImage(ImageSource.uri(mImageUri));
+
+
+        }
+    }
+
+
+
 //
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -278,6 +314,7 @@ public class MappingActivity extends AppCompatActivity {
 //
 //        }
 //    }
+
 
 
 

@@ -15,4 +15,5 @@
     <string name="complete_mapping">Complete Mapping</string>
     <string name="select_avail_map">Select Available Map</string>
     <string name="where_am_i">WHERE AM I</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
 </resources>

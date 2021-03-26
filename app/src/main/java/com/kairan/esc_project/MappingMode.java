@@ -177,7 +177,8 @@ public class MappingMode extends AppCompatActivity {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             //super.onLoadingComplete(imageUri, view, loadedImage);
-                            PreviewImage.setImage(ImageSource.bitmap(loadedImage));
+                            PreviewImage.setImage(ImageSource.bitmap(loadedImage));  // subscaling
+                            //PreviewImage.setImageBitmap(loadedImage);
                         }
                     });
                     //PreviewImage.setImage(ImageSource.uri(URLlink));
@@ -322,7 +323,8 @@ public class MappingMode extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             //PreviewImage.setImageBitmap(bitmap);
-            PreviewImage.setImage(ImageSource.bitmap(bitmap));
+            PreviewImage.setImage(ImageSource.bitmap(bitmap));  //subscaling
+            //PreviewImage.setImageBitmap(bitmap);
         }
     }
 
@@ -332,7 +334,8 @@ public class MappingMode extends AppCompatActivity {
         if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
             mImageUri = data.getData();
             Log.i("Testing", mImageUri.getPath());
-            PreviewImage.setImage(ImageSource.uri(mImageUri));
+            PreviewImage.setImage(ImageSource.uri(mImageUri));   //subscaling
+            //PreviewImage.setImageURI(mImageUri);
             try {
                 bitmap1 = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
             } catch (IOException e) {

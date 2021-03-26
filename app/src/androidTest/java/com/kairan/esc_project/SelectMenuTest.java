@@ -12,27 +12,22 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.*;
 
-public class MappingModeTest {
+public class SelectMenuTest {
 
     @Rule
-    public ActivityTestRule<MappingMode> MappingModeTestRule = new ActivityTestRule<MappingMode>(MappingMode.class);
+    public ActivityTestRule<SelectMenu> SelectMenuTestRule = new ActivityTestRule<SelectMenu>(SelectMenu.class);
+
 
     @Before
     public void setUp() throws Exception {
     }
 
     @Test
-    public void testUserInputScenario_checkPhoto() throws InterruptedException{
-        Thread.sleep(1000);
-        Espresso.onView(withId(R.id.UrlUpload)).perform(click());
-//        Espresso.pressBack();
-//        Espresso.onView(withId(R.id.button_confirm)).perform(click());
-//        Thread.sleep(2000);
+    public void testUserInputScenario_TestSelection() throws InterruptedException {
+        Espresso.onView(withId(R.id.MappingModeButton)).perform(click());
     }
 
     @After
     public void tearDown() throws Exception {
     }
-
-
 }

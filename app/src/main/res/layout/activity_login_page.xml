@@ -74,7 +74,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_marginTop="5dp"
-        android:hint="@string/hint_password"
         app:boxCornerRadiusBottomEnd="15dp"
         app:boxCornerRadiusBottomStart="15dp"
         app:boxCornerRadiusTopEnd="15dp"

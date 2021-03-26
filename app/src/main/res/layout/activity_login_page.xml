@@ -29,15 +29,16 @@
 
     <TextView
         android:id="@+id/textViewAppName"
+        style="@style/appNameStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:fontFamily="@font/montserrat_bold"
         android:lineSpacingExtra="8sp"
         android:text="@string/app_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewAppIcon"
-        style="@style/appNameStyle" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewAppIcon" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/EmailBox"

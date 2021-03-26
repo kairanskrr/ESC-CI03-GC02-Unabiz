@@ -12,11 +12,13 @@
         style="@style/confirmButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="632dp"
-        android:text="CLICK"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/my_button"
+        android:text="@string/obtain_wifi_data"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewWifiNetworks" />
 
     <TextView
         android:id="@+id/textViewWifiNetworks"
@@ -37,12 +39,15 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewTestWifi"
+        style="@style/appHeaders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="176dp"
-        tools:layout_editor_absoluteY="71dp" />
+        android:layout_marginTop="60dp"
+        android:text="@string/test_wifi_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

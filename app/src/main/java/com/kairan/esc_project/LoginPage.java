@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,7 +22,8 @@ public class LoginPage extends AppCompatActivity {
     FirebaseAuth mAuth; //Firebase Authentication
     EditText EditTextEmail, EditTextPassword;
     Button LoginButton, SignUpButton;
-    String email,password;
+    String email,password,invalidC;
+    TextView TextViewInvalidC;
 
 //    public void onStart(){
 //        super.onStart();
@@ -43,7 +45,9 @@ public class LoginPage extends AppCompatActivity {
         EditTextPassword = findViewById(R.id.editTextPassword);
         LoginButton = findViewById(R.id.buttonLogin);
         SignUpButton = findViewById(R.id.buttonSignUp);
+        TextViewInvalidC = findViewById(R.id.tvInvalidC);
         mAuth = FirebaseAuth.getInstance();
+        invalidC = "Invalid Credentials";
 
         LoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +74,7 @@ public class LoginPage extends AppCompatActivity {
                         }
                         else{
                             Toast.makeText(LoginPage.this,"Authentication Failed",Toast.LENGTH_LONG).show();    // display an error message
-
+                            TextViewInvalidC.setText(invalidC);
                         }
                     }
                 });

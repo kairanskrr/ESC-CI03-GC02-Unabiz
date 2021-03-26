@@ -51,5 +51,14 @@
         app:layout_constraintVertical_bias="0.294"
         style="@style/confirmButton"/>
 
+    <com.kairan.esc_project.UIStuff.PinView
+        android:id="@+id/pinView_mapping"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.097"
+        app:layout_constraintTop_toTopOf="@+id/scaleImage_waitingToMap"
+        app:layout_constraintVertical_bias="0.712" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

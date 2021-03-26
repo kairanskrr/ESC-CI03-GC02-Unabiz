@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -70,9 +71,11 @@ public class MappingMode extends AppCompatActivity {
     FirebaseUser user;
     DatabaseReference database;
     StorageReference storage;
+    TextView TextViewInvalidPhoto;
 
     static String IMAGE_URL = "IMAGE_URL";
     static String IMAGE_DEVICE = "IMAGE_DEVICE";
+    String invalidPhotoText;
 
     int StorageUploadCount =0;
 
@@ -98,6 +101,8 @@ public class MappingMode extends AppCompatActivity {
         URLEntry = findViewById(R.id.UrlEntry);
         ConfirmImage = findViewById(R.id.button_confirm);
         ChangeImage = findViewById(R.id.button_changeImage);
+        TextViewInvalidPhoto = findViewById(R.id.tvInvalidPhoto);
+        invalidPhotoText = "Please Select a Photo";
 
         URLEntry.setVisibility(View.GONE);
         ConfirmURL.setVisibility(View.GONE);
@@ -239,10 +244,8 @@ public class MappingMode extends AppCompatActivity {
                             } else {
                             }
                         }
-                    });}
-
-                // if the image that needs to be sent to the firebase is from URL
-                else {
+                    });
+                } else if (URLlink != null){
                     database.child("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -258,6 +261,12 @@ public class MappingMode extends AppCompatActivity {
 
                         }
                     });
+                }
+
+                // if the image that needs to be sent to the firebase is from URL
+                else {
+                    Toast.makeText(MappingMode.this,"Authentication Failed",Toast.LENGTH_LONG).show();    // display an error message
+                    TextViewInvalidPhoto.setText(invalidPhotoText);
                 }
 
 

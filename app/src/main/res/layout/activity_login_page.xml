@@ -74,7 +74,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_marginTop="5dp"
-        android:hint="@string/hint_password"
         app:boxCornerRadiusBottomEnd="15dp"
         app:boxCornerRadiusBottomStart="15dp"
         app:boxCornerRadiusTopEnd="15dp"
@@ -90,7 +89,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:ems="10"
-            android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:maxLines="1"
             android:text="123456"
@@ -118,5 +116,17 @@
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
+
+    <TextView
+        android:id="@+id/tvInvalidC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text=""
+        android:fontFamily="monospace"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonSignUp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

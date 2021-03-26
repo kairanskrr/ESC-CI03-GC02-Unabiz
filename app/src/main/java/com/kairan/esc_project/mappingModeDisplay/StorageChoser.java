@@ -23,6 +23,7 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.kairan.esc_project.MappingActivity;
 import com.kairan.esc_project.R;
+import com.kairan.esc_project.TestingMode;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,7 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
     StorageReference storage;
     ProgressBar progressBar;
     ArrayList<String> outsideimagelist = new ArrayList<>();
+    String CallingActivity= null;
 
 
 //Set up the recyclerview for the images that are taken from firebase, and the Onclick functions
@@ -56,6 +58,9 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         progressBar.setVisibility(View.VISIBLE);
+
+        Intent intent = getIntent();
+        CallingActivity = intent.getStringExtra("CallingActivity");
 
         storage.child("document").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
@@ -86,9 +91,15 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
     @Override
     public void onNoteClick(int position) {
         String mNote = outsideimagelist.get(position);
-        Intent intent = new Intent(getApplicationContext(), MappingActivity.class);
+        if (CallingActivity.equals("TestingMode")){
+        Intent intent = new Intent(getApplicationContext(), TestingMode.class);
         intent.putExtra("Imageselected", mNote);
-        startActivity(intent);
+        startActivity(intent);}
+        else{
+            Intent intent = new Intent(getApplicationContext(), TestingMode.class);
+            intent.putExtra("Imageselected", mNote);
+            startActivity(intent);}
+        }
     }
 
-}
+

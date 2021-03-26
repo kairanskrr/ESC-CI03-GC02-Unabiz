@@ -43,6 +43,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
+import com.kairan.esc_project.UIStuff.CustomView;
 import com.kairan.esc_project.mappingModeDisplay.StorageChoser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -64,6 +65,7 @@ public class MappingMode extends AppCompatActivity {
 
     EditText URLEntry;
     SubsamplingScaleImageView PreviewImage;
+    //CustomView PreviewImage;
     Button DeviceUpload, UrlUpload, ConfirmURL,ConfirmImage,ChangeImage, FirebaseUpload;
     FirebaseUser user;
     DatabaseReference database;
@@ -91,7 +93,7 @@ public class MappingMode extends AppCompatActivity {
         DeviceUpload = findViewById(R.id.DeviceUpload);
         UrlUpload = findViewById(R.id.UrlUpload);
         FirebaseUpload = findViewById(R.id.FirebaseUpload);
-        PreviewImage = (SubsamplingScaleImageView)findViewById(R.id.PreviewImage);
+        PreviewImage = findViewById(R.id.PreviewImage);
         ConfirmURL = findViewById(R.id.ConfirmURL);
         URLEntry = findViewById(R.id.UrlEntry);
         ConfirmImage = findViewById(R.id.button_confirm);

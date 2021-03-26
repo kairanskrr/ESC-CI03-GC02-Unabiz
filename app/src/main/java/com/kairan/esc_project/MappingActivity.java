@@ -124,7 +124,7 @@ public class MappingActivity extends AppCompatActivity {
 
 
         // working on it... turned into touch to obtain coordinate instead of long press
-        imageToMap.setOnTouchListener(new View.OnTouchListener() {
+        /*imageToMap.setOnTouchListener(new View.OnTouchListener() {
 
 
             @Override
@@ -137,10 +137,10 @@ public class MappingActivity extends AppCompatActivity {
                 Log.d("onTouch called", "onTouch");
 
                 // the screen turns white
-                /*view = new PinView(getApplicationContext());
+                *//*view = new PinView(getApplicationContext());
 
                 view.setPin(new PointF(x, y));
-                setContentView(view);*/
+                setContentView(view);*//*
 
                 view.setVisibility(View.VISIBLE);
                 view.setPin(new PointF(x,y));
@@ -149,30 +149,34 @@ public class MappingActivity extends AppCompatActivity {
                 //setContentView(view);
                 return true;
             }
+        });*/
+
+
+
+        imageToMap.setOnTouchListener(new View.OnTouchListener() {
+            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    x = (float)Math.floor(e.getX()*100)/100;
+                    y = (float)Math.floor(e.getY()*100)/100;
+
+                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
+                    Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
+                    super.onLongPress(e);
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                view.setVisibility(View.VISIBLE);
+                view.setPin(new PointF(x,y));
+                view.setX(x);
+                view.setY(y);
+                return false;
+
+            }
         });
-
-
-
-//        imageToMap.setOnTouchListener(new View.OnTouchListener() {
-//            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
-//                @Override
-//                public void onLongPress(MotionEvent e) {
-//                    float x = (float)Math.floor(e.getX()*100)/100;
-//                    float y = (float)Math.floor(e.getY()*100)/100;
-//
-//                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
-//                    Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
-//                    super.onLongPress(e);
-//                }
-//            });
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-////                gestureDetector.onTouchEvent(event);
-////                return false;
-//
-//            }
-//        });
 
         button_savePosition.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +204,8 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mapping.send_data_to_database(); // need to be implemented
+                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
+                startActivity(intent);
             }
         });
 

@@ -41,6 +41,10 @@ import com.google.firebase.storage.StorageReference;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 import com.kairan.esc_project.KairanTriangulationAlgo.Testing;
 import com.kairan.esc_project.KairanTriangulationAlgo.WifiScan;
+import com.kairan.esc_project.mappingModeDisplay.StorageChoser;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +61,7 @@ public class TestingMode extends AppCompatActivity {
     DatabaseReference database;
     StorageReference storage;
     List<ScanResult> scanList;
+    String DownloadURL = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,21 @@ public class TestingMode extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
+
+        Intent intent = getIntent();
+        if (intent.getStringExtra("Imageselected")!= null){
+            DownloadURL = intent.getStringExtra("Imageselected");
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(TestingMode.this).build();
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(config);
+        imageLoader.loadImage(DownloadURL,new SimpleImageLoadingListener(){
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                //super.onLoadingComplete(imageUri, view, loadedImage);
+                image_mappedMap.setImage(ImageSource.bitmap(loadedImage));
+            }
+        });}
 
         /**
          Purpose: get prediction of user current position
@@ -111,17 +131,54 @@ public class TestingMode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                Log.d("BUTTON", "ButtonSelectMapcalled");
-                storage.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        image_mappedMap.setImage (ImageSource.bitmap(bitmap));
-                    }
-                });
+//                storage.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                    @Override
+//                    public void onSuccess(byte[] bytes) {
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+//                        image_mappedMap.setImage (ImageSource.bitmap(bitmap));
+//                    }
+//                });
+                Intent intent = new Intent(TestingMode.this, StorageChoser.class);
+                intent.putExtra("CallingActivity", "TestingMode");
+                startActivity(intent);
             }
         });
 
     }
+    private class LoadImage extends AsyncTask<String, Void, Bitmap> {
+        SubsamplingScaleImageView imageView;
+        URL url;
+        public LoadImage(SubsamplingScaleImageView PreviewImage){
+            this.imageView = PreviewImage;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            String URLlink = strings[0];
+            Bitmap bitmap = null;
+            try {
+                if(!URLlink.isEmpty()){
+                    url = new URL(URLlink);
+                }
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                //InputStream inputStream = new java.net.URL(URLlink).openStream();
+                InputStream inputStream = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            //PreviewImage.setImageBitmap(bitmap);
+            image_mappedMap.setImage(ImageSource.bitmap(bitmap));
+        }
+    }
+
 
 
 }

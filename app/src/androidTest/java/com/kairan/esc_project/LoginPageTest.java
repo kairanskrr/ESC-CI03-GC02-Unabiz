@@ -33,7 +33,7 @@ public class LoginPageTest {
     }
 
     @Test
-    public void testUserInputScenario() throws InterruptedException {
+    public void testUserInputScenario_LoginFalse() throws InterruptedException {
         // input invalid text into email and password box
         Espresso.onView(withId(R.id.editTextEmail)).perform(clearText());
         Espresso.onView(withId(R.id.editTextEmail)).perform(typeText(username));
@@ -49,7 +49,7 @@ public class LoginPageTest {
     }
 
     @Test
-    public void testUserInputScenario2() throws InterruptedException {
+    public void testUserInputScenario_LoginTrue() throws InterruptedException {
         // input invalid text into email and password box
         Espresso.onView(withId(R.id.editTextEmail)).perform(clearText());
         Espresso.onView(withId(R.id.editTextEmail)).perform(typeText(cUsername));

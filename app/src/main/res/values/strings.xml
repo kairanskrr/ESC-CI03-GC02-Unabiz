@@ -17,4 +17,6 @@
     <string name="where_am_i">WHERE AM I</string>
     <string name="test_wifi_title">Test WiFi</string>
     <string name="obtain_wifi_data">Obtain WiFi Data</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
+>>>>>>> master
 </resources>

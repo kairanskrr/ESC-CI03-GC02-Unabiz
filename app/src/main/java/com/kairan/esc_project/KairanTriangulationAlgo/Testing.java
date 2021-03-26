@@ -56,7 +56,7 @@ public class Testing {
         /**
          Need to retrieve data from database first!! (either done here or in the testingMode activity)
          */
-        HashMap<Point,HashMap> dataSet = Mapping.get_data_for_testing(bssid);
+        HashMap<Point,HashMap> dataSet = Mapping.get_data_for_testing(bssid); // Need to retrieve data from database first!! (either done here or in the testingMode activity)
         ArrayList<Point> positionSet = new ArrayList<Point>(dataSet.keySet());
         int num_of_positions = dataSet.size();
         int num_of_bssids = bssid.size();

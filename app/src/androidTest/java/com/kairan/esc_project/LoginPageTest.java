@@ -60,7 +60,7 @@ public class LoginPageTest {
         // perform button click
         Espresso.onView(withId(R.id.buttonLogin)).perform(click());
         Thread.sleep(2000);
-        // see if the select menu page is brought up
+        // see if the select menu page is brought up???????????????
         Espresso.onView(withText("Mode Selection"));
     }
 

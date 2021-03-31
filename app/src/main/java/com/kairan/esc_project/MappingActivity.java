@@ -153,7 +153,7 @@ public class MappingActivity extends AppCompatActivity {
             }
         });*/
 
-
+        imageToMap.setMinimumDpi(20);
 
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
@@ -216,8 +216,9 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mapping.send_data_to_database(); // need to be implemented
-                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
-                startActivity(intent);
+                Log.i("TESTING", "This has been clicked");
+//                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
+//                startActivity(intent);
             }
         });
 

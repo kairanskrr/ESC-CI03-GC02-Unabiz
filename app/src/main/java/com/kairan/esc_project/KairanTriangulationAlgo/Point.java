@@ -25,7 +25,7 @@ public class Point {
     @NonNull
     @Override
     public String toString() {
-        return "Point X= " + (int)x + " Point Y= " + (int)y;
+        return (int)x + "," + (int)y;
     }
 
 }

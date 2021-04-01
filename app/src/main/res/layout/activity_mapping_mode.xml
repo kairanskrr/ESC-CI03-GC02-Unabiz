@@ -59,9 +59,9 @@
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/PreviewImage"
-        android:layout_width="208dp"
-        android:layout_height="130dp"
-        android:layout_marginBottom="89dp"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginBottom="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

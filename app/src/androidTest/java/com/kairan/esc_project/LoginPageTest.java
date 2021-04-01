@@ -61,8 +61,9 @@ public class LoginPageTest {
         Espresso.onView(withId(R.id.buttonLogin)).perform(click());
         Thread.sleep(2000);
         // see if the select menu page is brought up???????????????
-        Espresso.onView(withText("Mode Selection"));
-        Espresso.onView(withId(R.id.MappingModeButton)).perform(click());
+        //Espresso.onView(withText("Mode Selection"));
+        //Espresso.onView(withId(R.id.MappingModeButton)).perform(click());
+        Espresso.onView(withId(R.id.MenuTitle)).check(matches(withText("Mode Selection")));
     }
 
     @After

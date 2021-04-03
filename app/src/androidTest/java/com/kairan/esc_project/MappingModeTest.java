@@ -9,7 +9,10 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.*;
 
 public class MappingModeTest {
@@ -22,12 +25,12 @@ public class MappingModeTest {
     }
 
     @Test
-    public void testUserInputScenario_checkPhoto() throws InterruptedException{
-        Thread.sleep(1000);
+    public void testUserInputScenario_urlUpload() throws InterruptedException{
         Espresso.onView(withId(R.id.UrlUpload)).perform(click());
-//        Espresso.pressBack();
-//        Espresso.onView(withId(R.id.button_confirm)).perform(click());
-//        Thread.sleep(2000);
+        Espresso.onView(withId(R.id.UrlEntry)).perform(typeText("https://i.insider.com/5cdec279021b4c0a911a1d3a?width=600&format=jpeg&auto=webp"));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(1000);
+        Espresso.onView(withId(R.id.ConfirmURL)).perform(click());
     }
 
     @After

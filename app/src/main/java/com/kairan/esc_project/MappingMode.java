@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -64,6 +65,7 @@ public class MappingMode extends AppCompatActivity {
     private Uri mImageUri;
     private String URLlink = null;
 
+    TextInputLayout URLBox;
     EditText URLEntry;
     SubsamplingScaleImageView PreviewImage;
     //CustomView PreviewImage;
@@ -98,13 +100,14 @@ public class MappingMode extends AppCompatActivity {
         FirebaseUpload = findViewById(R.id.FirebaseUpload);
         PreviewImage = findViewById(R.id.PreviewImage);
         ConfirmURL = findViewById(R.id.ConfirmURL);
+        URLBox = findViewById(R.id.UrlBox);
         URLEntry = findViewById(R.id.UrlEntry);
         ConfirmImage = findViewById(R.id.button_confirm);
         ChangeImage = findViewById(R.id.button_changeImage);
         TextViewInvalidPhoto = findViewById(R.id.tvInvalidPhoto);
         invalidPhotoText = "Please Select a Photo";
 
-        URLEntry.setVisibility(View.GONE);
+        URLBox.setVisibility(View.GONE);
         ConfirmURL.setVisibility(View.GONE);
         ConfirmImage.setVisibility(View.GONE);
         ChangeImage.setVisibility(View.GONE);
@@ -151,7 +154,7 @@ public class MappingMode extends AppCompatActivity {
                 DeviceUpload.setVisibility(View.GONE);
                 FirebaseUpload.setVisibility(View.GONE);
                 UrlUpload.setVisibility(View.GONE);
-                URLEntry.setVisibility(View.VISIBLE);
+                URLBox.setVisibility(View.VISIBLE);
                 ConfirmURL.setVisibility(View.VISIBLE);
             }
         });
@@ -189,7 +192,7 @@ public class MappingMode extends AppCompatActivity {
                     //PreviewImage.setImage(ImageSource.uri(URLlink));
                     DeviceUpload.setVisibility(View.GONE);
                     UrlUpload.setVisibility(View.GONE);
-                    URLEntry.setVisibility(View.GONE);
+                    URLBox.setVisibility(View.GONE);
                     ConfirmURL.setVisibility(View.GONE);
                     ConfirmImage.setVisibility(View.VISIBLE);
                     ChangeImage.setVisibility(View.VISIBLE);
@@ -206,7 +209,7 @@ public class MappingMode extends AppCompatActivity {
                 DeviceUpload.setVisibility(View.VISIBLE);
                 UrlUpload.setVisibility(View.VISIBLE);
                 FirebaseUpload.setVisibility(View.VISIBLE);
-                URLEntry.setVisibility(View.GONE);
+                URLBox.setVisibility(View.GONE);
                 ConfirmURL.setVisibility(View.GONE);
                 ConfirmImage.setVisibility(View.GONE);
                 ChangeImage.setVisibility(View.GONE);

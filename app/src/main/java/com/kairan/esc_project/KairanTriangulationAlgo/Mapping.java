@@ -57,12 +57,12 @@ public class Mapping {
         mac_rssi = new HashMap<>();
 
         // for 1 scan result itself, add the BSSID (MAC) and corresponding RSSI to mac_rssi hashmap
-        for(ScanResult ap:scanResult){
-            if(!ap_list.contains(ap.BSSID)){
-                ap_list.add(ap.BSSID);
+        for (int i = 0; i < scanResult.size(); i++){
+            if(!ap_list.contains(scanResult.get(i).BSSID)){
+                ap_list.add(scanResult.get(i).BSSID);
             }
-            if(20<Math.abs(ap.level)&&Math.abs(ap.level)<100){
-                mac_rssi.put(ap.BSSID,ap.level);
+            if(20<Math.abs(scanResult.get(i).level)&&Math.abs(scanResult.get(i).level)<100){
+                mac_rssi.put(scanResult.get(i).BSSID,scanResult.get(i).level);
             }
 
         }
@@ -81,7 +81,7 @@ public class Mapping {
 
     public void send_data_to_database(){
         // maybe send position_ap HashMap oxo
-        database.addValueEventListener(new ValueEventListener() {
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long number = snapshot.getChildrenCount()+1;
@@ -90,11 +90,9 @@ public class Mapping {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println("There is an error with the system");
-            }
-        });
 
-    }
+            }
+        });}
 
     /**
      * Based on receiving data(list of bssid), get appropriate data set from database*/

@@ -20,7 +20,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.kairan.esc_project.R;
 
 // trying to do the zoom and griding, not for now maybe later in the weekend oxo
-public class CustomView extends SubsamplingScaleImageView {
+public class CustomView extends androidx.appcompat.widget.AppCompatImageView {
     private ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
     private Bitmap uploadImage;
@@ -36,6 +36,10 @@ public class CustomView extends SubsamplingScaleImageView {
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
     }
 
+    private void init(Context context){
+        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+
+    }
 
 
     @Override
@@ -57,6 +61,8 @@ public class CustomView extends SubsamplingScaleImageView {
         canvas.restore();
     }
 
+
+
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
@@ -65,7 +71,7 @@ public class CustomView extends SubsamplingScaleImageView {
             // Don't let the object get too small or too large.
             mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
             matrix.setScale(mScaleFactor,mScaleFactor);
-
+            setImageMatrix(matrix);
 
             if(mScaleFactor > 1){
                 System.out.println("zoom out");
@@ -74,7 +80,7 @@ public class CustomView extends SubsamplingScaleImageView {
                 System.out.println("zoom in");
             }
 
-            invalidate();
+            postInvalidate();
             return true;
         }
     }

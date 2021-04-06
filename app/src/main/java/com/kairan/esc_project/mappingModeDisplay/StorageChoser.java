@@ -91,7 +91,7 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
     @Override
     public void onNoteClick(int position) {
         Log.i("TESTT","onNoteClick");
-        Log.i("TESTT",CallingActivity);
+//        Log.i("TESTT",CallingActivity);
         boolean m = (CallingActivity=="TestingMode");
         Log.i("TESTT",String.valueOf(m));
         String mNote = outsideimagelist.get(position);

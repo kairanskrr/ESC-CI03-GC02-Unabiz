@@ -39,11 +39,10 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.kairan.esc_project.UIStuff.CircleView;
 import com.kairan.esc_project.UIStuff.PinView;
 
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -76,6 +75,8 @@ public class MappingActivity extends AppCompatActivity {
     private List<ScanResult> scanList;
     Button button_savePosition, button_complete_mapping;
     private PinView view;
+    private CircleView circleView;
+
 
 
     private float x;

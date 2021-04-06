@@ -16,6 +16,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.media.Image;
 import android.net.Uri;
@@ -77,10 +79,18 @@ public class MappingActivity extends AppCompatActivity {
     private PinView view;
     private CircleView circleView;
 
+    // for the circle
+    private Canvas mCanvas;
+    private Paint mPaint = new Paint();
+    private Bitmap mBitmap;
+    private final float radius = 100f;
+    private final int alpha = 100;
 
 
     private float x;
     private float y;
+    private float x_bm;
+    private float y_bm;
 
 
     DatabaseReference database;
@@ -120,7 +130,8 @@ public class MappingActivity extends AppCompatActivity {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     //super.onLoadingComplete(imageUri, view, loadedImage);
-                    imageToMap.setImage(ImageSource.bitmap(loadedImage));
+                    mBitmap = loadedImage.copy(Bitmap.Config.ARGB_8888, true);
+                    imageToMap.setImage(ImageSource.bitmap(mBitmap));
                 }
             });
 
@@ -163,6 +174,9 @@ public class MappingActivity extends AppCompatActivity {
                     x = (float)Math.floor(e.getX()*100)/100;
                     y = (float)Math.floor(e.getY()*100)/100;
 
+                    PointF pointF = imageToMap.sourceToViewCoord(x,y);
+                    x_bm = pointF.x;
+                    y_bm = pointF.y;
                     textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
                     Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
                     super.onLongPress(e);
@@ -172,12 +186,11 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
-                view.setVisibility(View.VISIBLE);
                 view.setPin(new PointF(x,y));
                 view.setX(x);
                 view.setY(y);
+                view.setVisibility(View.VISIBLE);
                 return false;
-
             }
         });
 
@@ -208,6 +221,15 @@ public class MappingActivity extends AppCompatActivity {
                         // clear the textView_currentPosition
                         textView_currentPosition.setText("");
                         view.setVisibility(View.INVISIBLE);
+
+                        // draw circle
+                        mCanvas = new Canvas(mBitmap);
+                        mPaint.setColor(Color.GRAY);
+                        mPaint.setAlpha(alpha);
+                        float centerX = x;
+                        float centerY = y;
+                        mCanvas.drawCircle(centerX, centerY, radius, mPaint);
+                        v.invalidate();
                     }
                 }
             }

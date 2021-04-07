@@ -13,6 +13,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -27,8 +28,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kairan.esc_project.KairanTriangulationAlgo.Mapping;
+import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private StringBuilder stringBuilder = new StringBuilder();
     private TextView textViewWifiNetworks;
-    private Button buttonClick;
+    private Button buttonClick, FirebaseData;
     private List<ScanResult> scanList;
     private ListView listView_wifiList;
     private ArrayList<String> wifiList;
@@ -55,13 +59,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+        database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
 
         textViewWifiNetworks = findViewById(R.id.textViewWifiNetworks);
         listView_wifiList = findViewById(R.id.listView_wifi);
         wifiList = new ArrayList<>();
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,wifiList);
         buttonClick = findViewById(R.id.button_click);
+        FirebaseData = findViewById(R.id.FirebaseData);
 
         buttonClick.setOnClickListener(new View.OnClickListener() {
 
@@ -84,12 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 listView_wifiList.setAdapter(arrayAdapter);
 
             }
-        });
+        });}
 
-
-
-
-    }
 
     // make use of WifiManager to get the available Wifi APs nearby
 

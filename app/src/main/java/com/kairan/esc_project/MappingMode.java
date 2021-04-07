@@ -91,7 +91,7 @@ public class MappingMode extends AppCompatActivity {
         setContentView(R.layout.activity_mapping_mode);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+        database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
 
@@ -163,6 +163,7 @@ public class MappingMode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MappingMode.this, StorageChoser.class);
+                intent.putExtra("CallingActivity", "MappingMode");
                 startActivity(intent);
             }
 
@@ -250,11 +251,10 @@ public class MappingMode extends AppCompatActivity {
                         }
                     });
                 } else if (URLlink != null){
-                    database.child("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            int numberofChild = (int)snapshot.getChildrenCount();
-                            database.child("DownloadURLs").child(Integer.toString(numberofChild+1)).setValue(URLlink);
+                            FirebaseDatabase.getInstance().getReference("DownloadURLs").setValue(URLlink);
                             Intent intent = new Intent(MappingMode.this,MappingActivity.class);
                             intent.putExtra("Imageselected", URLlink);
                             startActivity(intent);

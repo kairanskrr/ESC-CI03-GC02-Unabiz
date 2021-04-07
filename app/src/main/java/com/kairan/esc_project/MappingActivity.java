@@ -95,7 +95,7 @@ public class MappingActivity extends AppCompatActivity {
         view.setVisibility(View.INVISIBLE);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+        database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
 
@@ -117,35 +117,6 @@ public class MappingActivity extends AppCompatActivity {
                 }
             });
 
-
-
-        // working on it... turned into touch to obtain coordinate instead of long press
-        /*imageToMap.setOnTouchListener(new View.OnTouchListener() {
-
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // obtain x and y
-                x = (float)Math.floor(event.getX()*100)/100;
-                y = (float)Math.floor(event.getY()*100)/100;
-                String locationInXY = new Point(x, y).toString();
-                textView_currentPosition.setText("Your location is "+ locationInXY);
-                Log.d("onTouch called", "onTouch");
-
-                // the screen turns white
-                *//*view = new PinView(getApplicationContext());
-
-                view.setPin(new PointF(x, y));
-                setContentView(view);*//*
-
-                view.setVisibility(View.VISIBLE);
-                view.setPin(new PointF(x,y));
-                view.setX(x);
-                view.setY(y);
-                //setContentView(view);
-                return true;
-            }
-        });*/
 
         imageToMap.setMinimumDpi(20);
 
@@ -228,7 +199,7 @@ public class MappingActivity extends AppCompatActivity {
         button_complete_mapping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mapping.send_data_to_database(); // need to be implemented
+                mapping.send_data_to_database(DownloadURL); // need to be implemented
                 Log.i("TESTING", "This has been clicked");
 //                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
 //                startActivity(intent);

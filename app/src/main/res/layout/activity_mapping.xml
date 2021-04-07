@@ -8,48 +8,49 @@
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/scaleImage_waitingToMap"
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_width="411dp"
+        android:layout_height="441dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintVertical_bias="0.157" />
 
     <TextView
-        android:id="@+id/textViw_currentPosition"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:id="@+id/textView_currentPosition"
+        android:layout_width="189dp"
+        android:layout_height="42dp"
         android:gravity="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/scaleImage_waitingToMap"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.925"
         app:layout_constraintStart_toStartOf="@+id/scaleImage_waitingToMap"
         app:layout_constraintTop_toBottomOf="@+id/scaleImage_waitingToMap"
-        app:layout_constraintVertical_bias="0.051" />
+        app:layout_constraintVertical_bias="0.03" />
 
     <Button
         android:id="@+id/button_save_position"
-        android:text="@string/save_curr_pos"
+        style="@style/confirmButton"
         android:layout_margin="20dp"
+        android:text="@string/save_curr_pos"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scaleImage_waitingToMap"
-        app:layout_constraintVertical_bias="0.331"
-        style="@style/confirmButton" />
+        app:layout_constraintVertical_bias="0.311" />
 
     <Button
         android:id="@+id/button_complete_mapping"
+        style="@style/confirmButton"
         android:layout_margin="20dp"
         android:text="@string/complete_mapping"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_save_position"
-        app:layout_constraintVertical_bias="0.294"
-        style="@style/confirmButton"/>
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.kairan.esc_project.UIStuff.PinView
         android:id="@+id/pinView_mapping"
@@ -59,6 +60,18 @@
         app:layout_constraintHorizontal_bias="0.097"
         app:layout_constraintTop_toTopOf="@+id/scaleImage_waitingToMap"
         app:layout_constraintVertical_bias="0.712" />
+
+    <TextView
+        android:id="@+id/textViewLongPress"
+        style="@style/appHeaders"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Long Press to Add Location"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

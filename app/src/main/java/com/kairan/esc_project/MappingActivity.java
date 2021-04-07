@@ -87,6 +87,7 @@ public class MappingActivity extends AppCompatActivity {
     private final float radius = 100f;
     private final int alpha = 100;
     PointF currPos;
+    private Bitmap pin;
 
 
     private float x;
@@ -236,6 +237,9 @@ public class MappingActivity extends AppCompatActivity {
                         mPaint.setAlpha(alpha);
                         // offset x and y so that it appears at centre of arrow
                         mCanvas.drawCircle(currPos.x, currPos.y, radius, mPaint);
+
+                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+                        mCanvas.drawBitmap(pin,currPos.x-(pin.getWidth()/2),currPos.y -(pin.getHeight()),null);
                         v.invalidate();
                     }
                 }

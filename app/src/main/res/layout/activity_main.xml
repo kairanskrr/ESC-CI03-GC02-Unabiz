@@ -12,7 +12,7 @@
         style="@style/confirmButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="632dp"
+        android:layout_marginTop="604dp"
         android:background="@drawable/my_button"
         android:text="@string/obtain_wifi_data"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,6 +46,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:text="@string/test_wifi_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/FirebaseData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="664dp"
+        android:text="Get Data from Firebase"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

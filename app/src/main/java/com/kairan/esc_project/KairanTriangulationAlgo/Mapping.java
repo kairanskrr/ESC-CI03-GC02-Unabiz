@@ -16,11 +16,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kairan.esc_project.KairanTriangulationAlgo.NeuralNetwork;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
+import com.kairan.esc_project.MappingActivity;
+import com.kairan.esc_project.UIStuff.PinView;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Mapping {
 
@@ -29,13 +33,15 @@ public class Mapping {
     static Map<String, HashMap> position_apclone = new HashMap<>();
     static List<String> ap_list;
     static List<Point> position_list;
-    static int num_of_data;
+    static int num_of_data, scannumber;
+
 
     static NeuralNetwork nn;
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
-
+    static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
+    static DatabaseReference MapUrls = FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid());
+    static HashMap<Point, HashMap<String,Integer>> Map1;
 
     public Mapping(){
         position_ap = new HashMap<>();
@@ -79,13 +85,20 @@ public class Mapping {
 
     }
 
-    public void send_data_to_database(){
+    public void send_data_to_database(String DownloadURL){
         // maybe send position_ap HashMap oxo
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long number = snapshot.getChildrenCount()+1;
-                database.child("Scan " + number ).setValue(position_apclone);
+                database.child(Long.toString(number)).setValue(position_apclone);
+                FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid()).child(Long.toString(number)).setValue(DownloadURL);
+                for(Point p : Map1.keySet()){
+                    Log.i("Test",p.toString());
+                    for (String e : Map1.get(p).keySet()){
+                        Log.i("Test", e);
+                        Log.i("Test",Map1.get(p).get(e).toString());
+                    }}
             }
 
             @Override
@@ -99,14 +112,48 @@ public class Mapping {
 
     /**
      *
-     * @param bssid
      * @return dataset, a hashmap containing point x,y and a hashmap (BSSID : RSSI)
      */
-    public static HashMap<Point,HashMap> get_data_for_testing(List<String> bssid){
+    public static HashMap<Point,HashMap<String, Integer>> get_data_for_testing(String URLlink){
         //retrieve data from database
+        HashMap<Point,HashMap<String, Integer>> dataSet = new HashMap<>();
+        MapUrls.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                        if (snapshot1.getValue().toString().equals(URLlink) ){
+                            database.child(Objects.requireNonNull(snapshot1.getKey())).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        Map<String, Map> map = (Map<String, Map>) snapshot.getValue();
+                                        for (String key: map.keySet()){
+                                            HashMap<String, Integer> rssivalues = new HashMap<>();
+                                            String[] separated = key.split(",");
+                                            Point p = new Point(Double.parseDouble(separated[0]),Double.parseDouble(separated[1]));
+//                                            Log.i("Test",p.toString());
+//                                            Log.i("Test", separated[0]);
+//                                            Log.i("Test", separated[1]);
+                                            for(Object key1: map.get(key).keySet()){
+                                                rssivalues.put(key1.toString(), Integer.valueOf(map.get(key).get(key1).toString()));
+                                            }
+                                            dataSet.put(p,rssivalues);
+                                        }
+                                        Map1 = dataSet;
 
-        HashMap<Point,HashMap> dataSet = new HashMap<>();
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
+                                }
+                            });
+
+                        }
+                    }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
         /*for(int i =0; i<num_of_data; i++){
             HashMap<String,Integer> ap_info = new HashMap<>();
             for(String j: bssid){
@@ -128,7 +175,6 @@ public class Mapping {
             }
         }*/
         return dataSet;
-
     }
 
     /*****************************************************
@@ -145,55 +191,55 @@ public class Mapping {
 
     /**
      * Used in Neural Network model, train model using the data set that is obtained in get_data*/
-    public static NeuralNetwork train_data(List<String> bssid){
-
-        HashMap<Point,HashMap> dataSet = get_data_for_testing(bssid);
-        ArrayList<Point> positionSet = new ArrayList<Point>(dataSet.keySet());
-        int num_of_positions = dataSet.size();
-        int num_of_bssids = bssid.size();
-        nn = new NeuralNetwork(num_of_bssids, num_of_positions,2);
-        double[][] x = new double[num_of_positions][num_of_bssids];
-
-        for(int i=0;i<num_of_positions;i++){
-            for(int j = 0; j< num_of_bssids; j++){
-                // position.set(i) => Specific position which index is i in the positionSet
-                // bssid.get(j) => Specific bssid which index is j in the list of bssid
-                // dataSet.get(position.set(j)) => HashMap of (bssid,rssi) at that position
-                // dataSet.get(position.set(j)).get(bssid.get(i)) => rssi value at position i, bssid j
-                /************************************************************************************** (width: num of bssids)
-                 * bssid (String)   * X1:X1:X1:X1:X1 * X2:X2:X2:X2:X2 * X3:X3:X3:X3:X3 * ......       *
-                 * position (Point) *                                                                 *
-                 * ************************************************************************************
-                 *  (0,0)           * -XX            * -XX            * -XX            * ......       *
-                 *  (0,5)           * -XX            * -XX            * -XX            * ......       *
-                 *  (0,10)          * -XX            * -XX            * -XX            * ......       *
-                 *  (5,0)           * -XX            * -XX            * -XX            * ......       *
-                 *  (10,0)          * -XX            * -XX            * -XX            * ......       *
-                 *  (5,5)           * -XX            * -XX            * -XX            * ......       *
-                 *  ......          * ......         * ......         * ......         * ......       *
-                 **************************************************************************************
-                 (length : num of positions) */
-                x[i][j]= (double)dataSet.get(positionSet.get(i)).get(bssid.get(j));
-            }
-        }
-
-        double[][] y = new double[2][num_of_positions];
-        for(int i = 0; i< num_of_positions; i++){
-            /*************
-             * x   * y   *
-             * 0   * 0   *
-             * 0   * 5   *
-             * 0   * 10  *
-             * 5   * 0   *
-             * ... * ... *
-             *************
-             (length: num of positions)
-             * dimension: (num of positions)*2 */
-            y[0][i]= positionSet.get(i).getX();
-            y[1][i]=positionSet.get(i).getY();
-        }
-
-        nn.fit(y,x,50000);   // train nn model
-        return nn;
-    }
+//    public static NeuralNetwork train_data(List<String> bssid){
+//
+//        HashMap<Point,HashMap> dataSet = get_data_for_testing();
+//        ArrayList<Point> positionSet = new ArrayList<Point>(dataSet.keySet());
+//        int num_of_positions = dataSet.size();
+//        int num_of_bssids = bssid.size();
+//        nn = new NeuralNetwork(num_of_bssids, num_of_positions,2);
+//        double[][] x = new double[num_of_positions][num_of_bssids];
+//
+//        for(int i=0;i<num_of_positions;i++){
+//            for(int j = 0; j< num_of_bssids; j++){
+//                // position.set(i) => Specific position which index is i in the positionSet
+//                // bssid.get(j) => Specific bssid which index is j in the list of bssid
+//                // dataSet.get(position.set(j)) => HashMap of (bssid,rssi) at that position
+//                // dataSet.get(position.set(j)).get(bssid.get(i)) => rssi value at position i, bssid j
+//                /************************************************************************************** (width: num of bssids)
+//                 * bssid (String)   * X1:X1:X1:X1:X1 * X2:X2:X2:X2:X2 * X3:X3:X3:X3:X3 * ......       *
+//                 * position (Point) *                                                                 *
+//                 * ************************************************************************************
+//                 *  (0,0)           * -XX            * -XX            * -XX            * ......       *
+//                 *  (0,5)           * -XX            * -XX            * -XX            * ......       *
+//                 *  (0,10)          * -XX            * -XX            * -XX            * ......       *
+//                 *  (5,0)           * -XX            * -XX            * -XX            * ......       *
+//                 *  (10,0)          * -XX            * -XX            * -XX            * ......       *
+//                 *  (5,5)           * -XX            * -XX            * -XX            * ......       *
+//                 *  ......          * ......         * ......         * ......         * ......       *
+//                 **************************************************************************************
+//                 (length : num of positions) */
+//                x[i][j]= (double)dataSet.get(positionSet.get(i)).get(bssid.get(j));
+//            }
+//        }
+//
+//        double[][] y = new double[2][num_of_positions];
+//        for(int i = 0; i< num_of_positions; i++){
+//            /*************
+//             * x   * y   *
+//             * 0   * 0   *
+//             * 0   * 5   *
+//             * 0   * 10  *
+//             * 5   * 0   *
+//             * ... * ... *
+//             *************
+//             (length: num of positions)
+//             * dimension: (num of positions)*2 */
+//            y[0][i]= positionSet.get(i).getX();
+//            y[1][i]=positionSet.get(i).getY();
+//        }
+//
+//        nn.fit(y,x,50000);   // train nn model
+//        return nn;
+//    }
 }

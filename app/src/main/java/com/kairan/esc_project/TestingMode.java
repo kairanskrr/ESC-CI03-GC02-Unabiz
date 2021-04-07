@@ -73,7 +73,7 @@ public class TestingMode extends AppCompatActivity {
         textView_predictedPosition = findViewById(R.id.textView_predictedPosition);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-        database = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+        database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
         Intent intent = getIntent();
@@ -98,31 +98,32 @@ public class TestingMode extends AppCompatActivity {
          2. Retrieve data from database
          3. Perform the algorithm written in Testing class to get predicted position
          */
-        button_getLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Log.d("BUTTON", "ButtonGetLocation!");
+//        button_getLocation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                Log.d("BUTTON", "ButtonGetLocation!");
+//
+//                // perform 1 scan
+//                WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
+//                // store results of scan into wifiScan.scanList
+//                wifiScan.getWifiNetworksList();
+//                // store this list into scanList
+//                scanList = wifiScan.getScanList();
+//                if(scanList != null){
+//                    // instantiate Test Object
+//                    Testing testing = new Testing(scanList);
+//                    // using predict() knn to predict where user is
+//                    Point result = testing.predict();
+//                    if(result.getX()<0 || result.getY()<0){
+//                        Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
+//                    }
 
-                // perform 1 scan
-                WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
-                // store results of scan into wifiScan.scanList
-                wifiScan.getWifiNetworksList();
-                // store this list into scanList
-                scanList = wifiScan.getScanList();
-                if(scanList != null){
-                    // instantiate Test Object
-                    Testing testing = new Testing(scanList);
-                    // using predict() knn to predict where user is
-                    Point result = testing.predict();
-                    if(result.getX()<0 || result.getY()<0){
-                        Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        textView_predictedPosition.setText(result.toString());
-                    }
-                }
-            }
-        });
+//                    else{
+//                        textView_predictedPosition.setText(result.toString());
+//                    }
+//                }
+//            }
+//        });
 
         /**
          Select map which has been mapped from database

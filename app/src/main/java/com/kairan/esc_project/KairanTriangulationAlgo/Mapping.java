@@ -94,42 +94,6 @@ public class Mapping {
             }
         });}
 
-    /**
-     * Based on receiving data(list of bssid), get appropriate data set from database*/
-
-    /**
-     *
-     * @param bssid
-     * @return dataset, a hashmap containing point x,y and a hashmap (BSSID : RSSI)
-     */
-    public static HashMap<Point,HashMap> get_data_for_testing(List<String> bssid){
-        //retrieve data from database
-
-        HashMap<Point,HashMap> dataSet = new HashMap<>();
-
-        /*for(int i =0; i<num_of_data; i++){
-            HashMap<String,Integer> ap_info = new HashMap<>();
-            for(String j: bssid){
-
-                // if position_ap contains this particular BSSID, j
-                // if the inner hashmap BSSID: RSSI contains key bssid
-                if(position_ap.get(position_list.get(i)).containsKey(j)){
-                    // put this bssid: RSSI into ap_info
-                    ap_info.put(j,(int)position_ap.get(position_list.get(i)).get(j));
-                }
-                else{
-                    break;
-                }
-                if(ap_info.size()==bssid.size()){
-                    // dataSet is a Hashmap containing
-                    // position : ap_info (bssid : RSSI)
-                    dataSet.put(position_list.get(i),ap_info);
-                }
-            }
-        }*/
-        return dataSet;
-
-    }
 
     /*****************************************************
      * Position (Point) * bssid (String) * rssi (Integer)*
@@ -147,7 +111,7 @@ public class Mapping {
      * Used in Neural Network model, train model using the data set that is obtained in get_data*/
     public static NeuralNetwork train_data(List<String> bssid){
 
-        HashMap<Point,HashMap> dataSet = get_data_for_testing(bssid);
+        HashMap<Point,HashMap> dataSet = new HashMap<>(); // supposed to get data set from database
         ArrayList<Point> positionSet = new ArrayList<Point>(dataSet.keySet());
         int num_of_positions = dataSet.size();
         int num_of_bssids = bssid.size();

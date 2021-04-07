@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.kairan.esc_project.R;
 
-
 public class PinView extends SubsamplingScaleImageView {
 
     private final Paint paint = new Paint();

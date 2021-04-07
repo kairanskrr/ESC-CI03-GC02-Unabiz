@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -81,10 +82,12 @@ public class MappingActivity extends AppCompatActivity {
 
     // for the circle
     private Canvas mCanvas;
-    private Paint mPaint = new Paint();
+    private final Paint mPaint = new Paint();
     private Bitmap mBitmap;
     private final float radius = 100f;
     private final int alpha = 100;
+    PointF currPos;
+    private Bitmap pin;
 
 
     private float x;
@@ -140,6 +143,7 @@ public class MappingActivity extends AppCompatActivity {
 
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
+                @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public void onLongPress(MotionEvent e) {
                     x = (float)Math.floor(e.getX()*100)/100;
@@ -148,7 +152,10 @@ public class MappingActivity extends AppCompatActivity {
                     PointF pointF = imageToMap.sourceToViewCoord(x,y);
                     x_bm = pointF.x;
                     y_bm = pointF.y;
-                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
+//                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
+//                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
+                    currPos = imageToMap.viewToSourceCoord(x,y);
+                    textView_currentPosition.setText("X: " + currPos.x + " Y: " + currPos.y);
                     Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
                     super.onLongPress(e);
                 }
@@ -179,8 +186,8 @@ public class MappingActivity extends AppCompatActivity {
                     scanList = wifiScan.getScanList();
                     if(scanList != null){
 
-                        float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
-                        float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));
+//                        float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
+//                        float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));
                         // add data, adding to position_ap of mapping object
 
                         /*float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
@@ -195,11 +202,15 @@ public class MappingActivity extends AppCompatActivity {
 
                         // draw circle
                         mCanvas = new Canvas(mBitmap);
-                        mPaint.setColor(Color.GRAY);
+                        mPaint.setColor(Color.BLACK);
+                        mPaint.setStrokeWidth(10);
+                        mPaint.setStyle(Paint.Style.STROKE);
                         mPaint.setAlpha(alpha);
-                        float centerX = x;
-                        float centerY = y;
-                        mCanvas.drawCircle(centerX, centerY, radius, mPaint);
+                        // offset x and y so that it appears at centre of arrow
+                        mCanvas.drawCircle(currPos.x, currPos.y, radius, mPaint);
+
+                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+                        mCanvas.drawBitmap(pin,currPos.x-(pin.getWidth()/2),currPos.y -(pin.getHeight()),null);
                         v.invalidate();
                     }
                 }

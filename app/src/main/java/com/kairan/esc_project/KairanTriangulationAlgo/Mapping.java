@@ -19,7 +19,6 @@ import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 import com.kairan.esc_project.MappingActivity;
 import com.kairan.esc_project.UIStuff.PinView;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ public class Mapping {
     static Map<String, HashMap> position_apclone = new HashMap<>();
     static List<String> ap_list;
     static List<Point> position_list;
-    static int num_of_data, scannumber;
+    static int num_of_data;
 
 
     static NeuralNetwork nn;

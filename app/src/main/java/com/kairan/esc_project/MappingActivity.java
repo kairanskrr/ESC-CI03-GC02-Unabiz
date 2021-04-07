@@ -235,7 +235,7 @@ public class MappingActivity extends AppCompatActivity {
                         mPaint.setStyle(Paint.Style.STROKE);
                         mPaint.setAlpha(alpha);
                         // offset x and y so that it appears at centre of arrow
-                        mCanvas.drawCircle(currPos.x+radius*2/3, currPos.y+radius, radius, mPaint);
+                        mCanvas.drawCircle(currPos.x, currPos.y, radius, mPaint);
                         v.invalidate();
                     }
                 }

@@ -99,6 +99,7 @@ public class MappingActivity extends AppCompatActivity {
         textView_currentPosition = findViewById(R.id.textViw_currentPosition);
         button_savePosition = findViewById(R.id.button_save_position);
         button_complete_mapping = findViewById(R.id.button_complete_mapping);
+
         view = findViewById(R.id.pinView_mapping);
         view.setVisibility(View.INVISIBLE);
 
@@ -198,6 +199,9 @@ public class MappingActivity extends AppCompatActivity {
                         float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
                         float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));
                         // add data, adding to position_ap of mapping object
+                        view.setPin(new PointF(x,y));
+                        view.setX(x);
+                        view.setY(y);
 
                         /*float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
                         float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));*/
@@ -208,6 +212,9 @@ public class MappingActivity extends AppCompatActivity {
                         // clear the textView_currentPosition
                         textView_currentPosition.setText("");
                         view.setVisibility(View.INVISIBLE);
+
+
+
                     }
                 }
             }

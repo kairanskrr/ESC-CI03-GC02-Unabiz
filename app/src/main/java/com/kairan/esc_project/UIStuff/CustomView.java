@@ -56,11 +56,8 @@ public class CustomView extends androidx.appcompat.widget.AppCompatImageView {
         canvas.save();
         canvas.scale(mScaleFactor, mScaleFactor);
 
-
-
         canvas.restore();
     }
-
 
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {

@@ -62,6 +62,7 @@ public class TestingMode extends AppCompatActivity {
     StorageReference storage;
     List<ScanResult> scanList;
     String DownloadURL = null;
+    Testing testing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,19 +78,23 @@ public class TestingMode extends AppCompatActivity {
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
         Intent intent = getIntent();
-        if (intent.getStringExtra("Imageselected")!= null){
+        if (intent.getStringExtra("Imageselected") != null) {
             DownloadURL = intent.getStringExtra("Imageselected");
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(TestingMode.this).build();
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.init(config);
-        imageLoader.loadImage(DownloadURL,new SimpleImageLoadingListener(){
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                //super.onLoadingComplete(imageUri, view, loadedImage);
-                image_mappedMap.setImage(ImageSource.bitmap(loadedImage));
-            }
-        });}
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(TestingMode.this).build();
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(config);
+            imageLoader.loadImage(DownloadURL, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    //super.onLoadingComplete(imageUri, view, loadedImage);
+                    image_mappedMap.setImage(ImageSource.bitmap(loadedImage));
+                }
+            });
+
+            // instantiate Test Object
+            testing = new Testing(DownloadURL);
+        }
 
         /**
          Purpose: get prediction of user current position
@@ -98,32 +103,34 @@ public class TestingMode extends AppCompatActivity {
          2. Retrieve data from database
          3. Perform the algorithm written in Testing class to get predicted position
          */
-//        button_getLocation.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                Log.d("BUTTON", "ButtonGetLocation!");
-//
-//                // perform 1 scan
-//                WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
-//                // store results of scan into wifiScan.scanList
-//                wifiScan.getWifiNetworksList();
-//                // store this list into scanList
-//                scanList = wifiScan.getScanList();
-//                if(scanList != null){
-//                    // instantiate Test Object
-//                    Testing testing = new Testing(scanList);
-//                    // using predict() knn to predict where user is
-//                    Point result = testing.predict();
-//                    if(result.getX()<0 || result.getY()<0){
-//                        Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
-//                    }
+        /*button_getLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("BUTTON", "ButtonGetLocation!");
 
-//                    else{
-//                        textView_predictedPosition.setText(result.toString());
-//                    }
-//                }
-//            }
-//        });
+                // perform 1 scan
+                WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
+                // store results of scan into wifiScan.scanList
+                wifiScan.getWifiNetworksList();
+                // store this list into scanList
+                scanList = wifiScan.getScanList();
+                if(scanList != null){
+                    testing.setScanResults(scanList);
+                    // using predict() knn to predict where user is
+                    Point result = testing.predict();
+                    if(result.getX()<0 || result.getY()<0){
+                        Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
+                    }
+
+                    else{
+                        textView_predictedPosition.setText(result.toString());
+                    }
+                }
+                else{
+                    Toast.makeText(TestingMode.this, "Unable to get WiFi scan result",Toast.LENGTH_LONG).show();
+                }
+            }
+        });*/
 
         /**
          Select map which has been mapped from database

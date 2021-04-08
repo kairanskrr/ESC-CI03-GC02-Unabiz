@@ -19,15 +19,16 @@
 
     <TextView
         android:id="@+id/textView_currentPosition"
-        android:layout_width="189dp"
-        android:layout_height="42dp"
+        android:layout_width="201dp"
+        android:layout_height="35dp"
         android:gravity="end"
+        android:textColor="#4CAF50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/scaleImage_waitingToMap"
-        app:layout_constraintHorizontal_bias="0.925"
+        app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="@+id/scaleImage_waitingToMap"
         app:layout_constraintTop_toBottomOf="@+id/scaleImage_waitingToMap"
-        app:layout_constraintVertical_bias="0.03" />
+        app:layout_constraintVertical_bias="0.099" />
 
     <Button
         android:id="@+id/button_save_position"
@@ -66,10 +67,11 @@
         style="@style/appHeaders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="456dp"
         android:text="Long Press to Add Location"
-        android:textSize="18sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

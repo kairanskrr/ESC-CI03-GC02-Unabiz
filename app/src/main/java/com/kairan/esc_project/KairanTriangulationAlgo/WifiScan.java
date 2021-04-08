@@ -52,6 +52,7 @@ public class WifiScan {
 
         boolean startScan = wifiManager.startScan();
         if(!startScan){
+            //for(int i = 0; i)
             Toast.makeText(activityContext,"Please Enable Access of Location",Toast.LENGTH_LONG).show();
             Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             activityContext.startActivity(myIntent);

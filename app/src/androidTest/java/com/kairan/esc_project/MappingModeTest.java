@@ -33,6 +33,14 @@ public class MappingModeTest {
         Espresso.onView(withId(R.id.ConfirmURL)).perform(click());
     }
 
+    @Test
+    public void testUserInputScenario_urlUpload_False() throws InterruptedException{
+        Espresso.onView(withId(R.id.UrlUpload)).perform(click());
+        Thread.sleep(1000);
+        Espresso.onView(withId(R.id.ConfirmURL)).perform(click());
+        Espresso.onView(withId(R.id.MappingTitle)).check(matches(withText("Upload Floorplan")));
+    }
+
     @After
     public void tearDown() throws Exception {
     }

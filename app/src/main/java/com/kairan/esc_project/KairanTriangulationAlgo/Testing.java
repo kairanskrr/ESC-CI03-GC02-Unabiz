@@ -1,6 +1,7 @@
 package com.kairan.esc_project.KairanTriangulationAlgo;
 
 import android.net.wifi.ScanResult;
+import android.widget.Toast;
 
 import com.kairan.esc_project.KairanTriangulationAlgo.Mapping;
 import com.kairan.esc_project.KairanTriangulationAlgo.NeuralNetwork;
@@ -42,6 +43,10 @@ public class Testing {
                 bssid.add(ap.BSSID);
             }
         }
+    }
+
+    public boolean isEmpty(){
+        return position_ap.isEmpty();
     }
 
 

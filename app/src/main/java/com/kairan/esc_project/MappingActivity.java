@@ -65,7 +65,7 @@ public class MappingActivity extends AppCompatActivity {
     private Bitmap mBitmap;
     private final float radius = 100f;
     private final int alpha = 100;
-    PointF currPos;
+    private PointF currPos;
     private Bitmap pin;
 
 
@@ -132,7 +132,6 @@ public class MappingActivity extends AppCompatActivity {
                     x_bm = pointF.x;
                     y_bm = pointF.y;
 //                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
-//                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
                     currPos = imageToMap.viewToSourceCoord(x,y);
                     textView_currentPosition.setText("X: " + currPos.x + " Y: " + currPos.y);
                     Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
@@ -143,7 +142,7 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
-                view.setPin(new PointF(x,y));
+//                view.setPin(new PointF(x,y));
                 view.setX(x);
                 view.setY(y);
                 view.setVisibility(View.VISIBLE);

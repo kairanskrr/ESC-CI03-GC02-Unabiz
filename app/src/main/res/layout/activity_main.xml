@@ -12,7 +12,7 @@
         style="@style/confirmButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="604dp"
+        android:layout_marginTop="556dp"
         android:background="@drawable/my_button"
         android:text="@string/obtain_wifi_data"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,8 +21,8 @@
 
     <TextView
         android:id="@+id/textViewWifiNetworks"
-        android:layout_width="411dp"
-        android:layout_height="440dp"
+        android:layout_width="413dp"
+        android:layout_height="322dp"
         android:gravity="center"
         android:text="No Data Available"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,9 +33,10 @@
     <ListView
         android:id="@+id/listView_wifi"
         android:layout_width="411dp"
-        android:layout_height="437dp"
+        android:layout_height="348dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +45,7 @@
         style="@style/appHeaders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="28dp"
         android:text="@string/test_wifi_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,9 +55,10 @@
         android:id="@+id/FirebaseData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="664dp"
+        android:layout_marginTop="616dp"
         android:text="Get Data from Firebase"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -12,23 +12,23 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 1. Receive wifi data about current location
- * 2. Get appropriate data set from database (wifi data and position)
- * 3. Predict position of current location (two methods: nn model, K nearest)
+ * 1. Retrieve data from database about the selected map once testing starts and ave in local?
+ * 2. Get wifi scan result from testing activity
+ * 3. Predict position of current location (K nearest)
  * */
 public class Testing {
 
     //double[] x;
     private HashMap<String,Integer> bssid_rssi;
     private List<String> bssid;
-    private HashMap<Point,HashMap> position_ap;
+    private HashMap<Point,HashMap<String,Integer>> position_ap;
 
 
     /**
      Initialize testing class with the scan result of the unknown position
      */
-    public Testing(){
-        this.position_ap = retrieve_data_from_database();
+    public Testing(String URLlink){
+        this.position_ap = Mapping.get_data_for_testing(URLlink);
     }
 
     public void setScanResults(List<ScanResult> scanResults){
@@ -44,18 +44,6 @@ public class Testing {
         }
     }
 
-    /**
-     * Retrieve data set from database*/
-
-    /**
-     *
-     * @param ?
-     * @return dataset, a hashmap containing point x,y and a hashmap (BSSID : RSSI)
-     */
-    public HashMap<Point,HashMap> retrieve_data_from_database(){
-        // TODO: retrieve data from data base about certain map
-        return null;
-    }
 
 
     /**

@@ -89,7 +89,18 @@ public class MainActivity extends AppCompatActivity {
                 listView_wifiList.setAdapter(arrayAdapter);
 
             }
-        });}
+        });
+
+        FirebaseData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Mapping.get_data_for_testing("https://firebasestorage.googleapis.com/v0/b/unabizproject.appspot.com/o/q4ySFmLhL9RbqccQ8BMid6oZWht1%2Fdocument%2Fimage%3A192?alt=media&token=bb0b908a-b6b0-4f88-a3d6-066856cf1206");
+            }
+        });
+
+    }
+
+
 
 
     // make use of WifiManager to get the available Wifi APs nearby

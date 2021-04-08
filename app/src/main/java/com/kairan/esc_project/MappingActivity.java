@@ -200,8 +200,13 @@ public class MappingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mapping.send_data_to_database(DownloadURL); // need to be implemented
                 Log.i("TESTING", "This has been clicked");
-//                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
-//                startActivity(intent);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+               Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
+                startActivity(intent);
             }
         });
 

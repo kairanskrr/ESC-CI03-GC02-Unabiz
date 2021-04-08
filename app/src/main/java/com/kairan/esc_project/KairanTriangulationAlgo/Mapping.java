@@ -27,8 +27,8 @@ import java.util.Objects;
 
 public class Mapping {
 
-    private static HashMap<String,Integer> mac_rssi;
-    private static HashMap<Point,HashMap> position_ap;
+    private HashMap<String,Integer> mac_rssi;
+    private HashMap<Point,HashMap> position_ap;
     static Map<String, HashMap> position_apclone = new HashMap<>();
     static List<String> ap_list;
     static List<Point> position_list;
@@ -85,7 +85,6 @@ public class Mapping {
     }
 
     public void send_data_to_database(String DownloadURL){
-        // maybe send position_ap HashMap oxo
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

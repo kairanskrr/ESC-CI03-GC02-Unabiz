@@ -53,7 +53,7 @@ public class SignUpPage extends AppCompatActivity {
                                 startActivity(new Intent(SignUpPage.this, MainActivity.class));
                             }
                             else{
-                                Toast.makeText(SignUpPage.this, "Not Successful"+ task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpPage.this, "Not Successful\n"+ task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

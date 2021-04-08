@@ -163,6 +163,7 @@ public class MappingMode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MappingMode.this, StorageChoser.class);
+                intent.putExtra("CallingActivity", "MappingMode");
                 startActivity(intent);
             }
 

@@ -202,6 +202,7 @@ public class MappingActivity extends AppCompatActivity {
                 Log.i("TESTING", "This has been clicked");
                 try {
                     Thread.sleep(2000);
+                    Toast.makeText(MappingActivity.this,"Uploading data to database...",Toast.LENGTH_LONG).show();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -11,6 +11,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 1. Retrieve data from database about the selected map once testing starts and ave in local?
@@ -20,9 +22,9 @@ import java.util.List;
 public class Testing {
 
     //double[] x;
-    private HashMap<String,Integer> bssid_rssi;
-    private List<String> bssid;
-    private HashMap<Point,HashMap<String,Integer>> position_ap;
+    private static HashMap<String,Integer> bssid_rssi;
+    private static List<String> bssid;
+    private static HashMap<Point,HashMap<String,Integer>> position_ap;
 
 
     /**
@@ -142,7 +144,7 @@ public class Testing {
             }
         }*/
 
-        // do not use clean_data method
+        /*// do not use clean_data method
         ArrayList<Point> position_list = new ArrayList<Point>(position_ap.keySet());
         int num_of_positions = position_ap.size();
         int num_of_bssids = bssid.size();
@@ -186,6 +188,145 @@ public class Testing {
         double y = nearest1_position.getY()*nearest1/(nearest1+nearest2)+
                 nearest2_position.getY()*nearest2/(nearest1+nearest2);
 
+        return new Point(x,y);*/
+
+        // use thread
+        ArrayList<Point> position_list = new ArrayList<Point>(position_ap.keySet());
+        int num_of_positions = position_ap.size();
+
+        int num_of_threads = 3;
+        int length_of_sublist = num_of_positions/num_of_threads;
+        CalculationThread[] threads = new CalculationThread[num_of_threads];
+        Lock lock = new ReentrantLock();
+        for(int i = 0; i< num_of_threads-1;i++){
+            threads[i] = new CalculationThread(lock,position_list.subList(i*length_of_sublist,(i+1)*length_of_sublist));
+        }
+        threads[num_of_threads-1] = new CalculationThread(lock,position_list.subList((num_of_threads-1)*length_of_sublist,num_of_positions));
+
+        for(int i = 0; i < num_of_threads; i++){
+            threads[i].start();
+        }
+
+        try {
+            for (int i = 0; i < num_of_threads; i++) {
+                threads[i].join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("THREAD ERROR");
+        }
+
+        float nearest1 = threads[0].getNearest1();
+        float nearest2 = threads[0].getNearest2();
+
+        Point nearest1_position = threads[0].getNearest1_position();
+        Point nearest2_position = threads[0].getNearest2_position();
+
+        double x = nearest1_position.getX()*nearest1/(nearest1+nearest2)+
+                nearest2_position.getX()*nearest2/(nearest1+nearest2);
+        double y = nearest1_position.getY()*nearest1/(nearest1+nearest2)+
+                nearest2_position.getY()*nearest2/(nearest1+nearest2);
+
         return new Point(x,y);
+
     }
+
+    public static HashMap<String, Integer> getBssid_rssi() {
+        return bssid_rssi;
+    }
+
+    public static List<String> getBssid() {
+        return bssid;
+    }
+
+    public static HashMap<Point, HashMap<String, Integer>> getPosition_ap() {
+        return position_ap;
+    }
+}
+
+class CalculationThread extends Thread{
+    private HashMap<String,Integer> bssid_rssi;
+    private List<Point> position_list;
+    private List<String> bssid;
+    private HashMap<Point,HashMap<String,Integer>> position_ap;
+
+    private volatile float nearest1 = Float.MAX_VALUE;
+    private volatile float nearest2 = Float.MAX_VALUE;
+
+    private volatile Point nearest1_position = new Point(0,0);
+    private volatile Point nearest2_position = new Point(0,0);
+
+    private Lock lock;
+
+    CalculationThread(Lock lock, List<Point> position_list){
+        this.lock = lock;
+        this.position_list = position_list;
+        this.bssid_rssi = Testing.getBssid_rssi();
+        this.position_ap = Testing.getPosition_ap();
+        this.bssid = Testing.getBssid();
+    }
+    public void run(){
+        int sum = 0;
+        for(Point point: position_list){
+            for(String j:bssid){
+                if(position_ap.get(point).containsKey(j)){
+                    sum += Math.pow((int)position_ap.get(point).get(j)- bssid_rssi.get(j),2);
+                }
+                else{
+                    sum += Math.pow(bssid_rssi.get(j),2);
+                }
+            }
+            float dev = (float) Math.sqrt(sum);
+            lock.lock();
+            if(dev<nearest1){
+                if(nearest1<nearest2){
+                    nearest2 = dev;
+                    nearest2_position = point;
+                }
+                else{
+                    nearest1 = dev;
+                    nearest1_position = point;
+                }
+
+            } else if(dev<nearest2){
+                nearest2 = dev;
+                nearest2_position = point;
+            }
+            lock.unlock();
+            sum = 0;
+        }
+    }
+
+    public Point getNearest1_position() {
+        Point temp;
+        lock.lock();
+        temp = nearest1_position;
+        lock.unlock();
+        return temp;
+    }
+
+    public Point getNearest2_position() {
+        Point temp;
+        lock.lock();
+        temp = nearest2_position;
+        lock.unlock();
+        return temp;
+    }
+
+    public float getNearest1() {
+        float temp;
+        lock.lock();
+        temp = nearest1;
+        lock.unlock();
+        return temp;
+    }
+
+    public float getNearest2() {
+        float temp;
+        lock.lock();
+        temp = nearest2;
+        lock.unlock();
+        return temp;
+    }
+
 }

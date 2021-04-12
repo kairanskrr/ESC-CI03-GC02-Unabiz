@@ -250,4 +250,9 @@ public class Mapping {
 //        nn.fit(y,x,50000);   // train nn model
 //        return nn;
 //    }
+
+
+    public HashMap<Point, HashMap> getPosition_ap() {
+        return position_ap;
+    }
 }

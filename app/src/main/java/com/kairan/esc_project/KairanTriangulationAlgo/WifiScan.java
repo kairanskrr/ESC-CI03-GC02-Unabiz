@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -51,8 +52,14 @@ public class WifiScan {
         }, filter);
 
         boolean startScan = wifiManager.startScan();
+        Log.i("Test","startScan: "+startScan);
+        try {
+            Toast.makeText(activityContext,"Scanning WiFi...",Toast.LENGTH_LONG).show();
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if(!startScan){
-            //for(int i = 0; i)
             Toast.makeText(activityContext,"Please Enable Access of Location",Toast.LENGTH_LONG).show();
             Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             activityContext.startActivity(myIntent);

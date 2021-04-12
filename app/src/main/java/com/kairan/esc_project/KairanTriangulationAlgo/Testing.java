@@ -31,7 +31,7 @@ public class Testing {
      Initialize testing class with the scan result of the unknown position
      */
     public Testing(String URLlink){
-        this.position_ap = Mapping.get_data_for_testing(URLlink);
+        //this.position_ap = Mapping.get_data_for_testing(URLlink);
     }
 
     public void setScanResults(List<ScanResult> scanResults){

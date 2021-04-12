@@ -97,9 +97,10 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
 //        Log.i("TESTT",CallingActivity);
         String mNote = outsideimagelist.get(position);
         if (CallingActivity.equals("TestingMode")){
-        Intent intent = new Intent(getApplicationContext(), TestingMode.class);
-        intent.putExtra("Imageselected", mNote);
-        startActivity(intent);}
+            Intent intent = new Intent(getApplicationContext(), TestingMode.class);
+            intent.putExtra("Imageselected", mNote);
+            startActivity(intent);
+        }
         else{
             Intent intent = new Intent(getApplicationContext(), MappingActivity.class);
             intent.putExtra("Imageselected", mNote);

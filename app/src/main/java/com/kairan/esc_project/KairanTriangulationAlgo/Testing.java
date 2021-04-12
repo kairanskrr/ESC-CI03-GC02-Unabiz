@@ -144,10 +144,8 @@ public class Testing {
             }
         }*/
 
-        /*// do not use clean_data method
+        // do not use clean_data method
         ArrayList<Point> position_list = new ArrayList<Point>(position_ap.keySet());
-        int num_of_positions = position_ap.size();
-        int num_of_bssids = bssid.size();
 
         float nearest1 = Float.MAX_VALUE;
         float nearest2 = Float.MAX_VALUE;
@@ -183,51 +181,59 @@ public class Testing {
             sum = 0;
         }
 
-        double x = nearest1_position.getX()*nearest1/(nearest1+nearest2)+
-                nearest2_position.getX()*nearest2/(nearest1+nearest2);
-        double y = nearest1_position.getY()*nearest1/(nearest1+nearest2)+
-                nearest2_position.getY()*nearest2/(nearest1+nearest2);
+        double x,y;
 
-        return new Point(x,y);*/
-
-        // use thread
-        ArrayList<Point> position_list = new ArrayList<Point>(position_ap.keySet());
-        int num_of_positions = position_ap.size();
-
-        int num_of_threads = 3;
-        int length_of_sublist = num_of_positions/num_of_threads;
-        CalculationThread[] threads = new CalculationThread[num_of_threads];
-        Lock lock = new ReentrantLock();
-        for(int i = 0; i< num_of_threads-1;i++){
-            threads[i] = new CalculationThread(lock,position_list.subList(i*length_of_sublist,(i+1)*length_of_sublist));
+        if(nearest1==0&&nearest2==0){
+            x = (nearest1_position.getX()+nearest2_position.getX())*0.5;
+            y = (nearest1_position.getY()+nearest2_position.getY())*0.5;
         }
-        threads[num_of_threads-1] = new CalculationThread(lock,position_list.subList((num_of_threads-1)*length_of_sublist,num_of_positions));
-
-        for(int i = 0; i < num_of_threads; i++){
-            threads[i].start();
+        else{
+            x = nearest1_position.getX()*nearest2/(nearest1+nearest2)+
+                    nearest2_position.getX()*nearest1/(nearest1+nearest2);
+            y = nearest1_position.getY()*nearest2/(nearest1+nearest2)+
+                    nearest2_position.getY()*nearest1/(nearest1+nearest2);
         }
-
-        try {
-            for (int i = 0; i < num_of_threads; i++) {
-                threads[i].join();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("THREAD ERROR");
-        }
-
-        float nearest1 = threads[0].getNearest1();
-        float nearest2 = threads[0].getNearest2();
-
-        Point nearest1_position = threads[0].getNearest1_position();
-        Point nearest2_position = threads[0].getNearest2_position();
-
-        double x = nearest1_position.getX()*nearest1/(nearest1+nearest2)+
-                nearest2_position.getX()*nearest2/(nearest1+nearest2);
-        double y = nearest1_position.getY()*nearest1/(nearest1+nearest2)+
-                nearest2_position.getY()*nearest2/(nearest1+nearest2);
 
         return new Point(x,y);
+
+//        // use thread
+//        ArrayList<Point> position_list = new ArrayList<Point>(position_ap.keySet());
+//        int num_of_positions = position_ap.size();
+//
+//        int num_of_threads = 3;
+//        int length_of_sublist = num_of_positions/num_of_threads;
+//        CalculationThread[] threads = new CalculationThread[num_of_threads];
+//        Lock lock = new ReentrantLock();
+//        for(int i = 0; i< num_of_threads-1;i++){
+//            threads[i] = new CalculationThread(lock,position_list.subList(i*length_of_sublist,(i+1)*length_of_sublist));
+//        }
+//        threads[num_of_threads-1] = new CalculationThread(lock,position_list.subList((num_of_threads-1)*length_of_sublist,num_of_positions));
+//
+//        for(int i = 0; i < num_of_threads; i++){
+//            threads[i].start();
+//        }
+//
+//        try {
+//            for (int i = 0; i < num_of_threads; i++) {
+//                threads[i].join();
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//            System.out.println("THREAD ERROR");
+//        }
+//
+//        float nearest1 = threads[0].getNearest1();
+//        float nearest2 = threads[0].getNearest2();
+//
+//        Point nearest1_position = threads[0].getNearest1_position();
+//        Point nearest2_position = threads[0].getNearest2_position();
+//
+//        double x = nearest1_position.getX()*nearest1/(nearest1+nearest2)+
+//                nearest2_position.getX()*nearest2/(nearest1+nearest2);
+//        double y = nearest1_position.getY()*nearest1/(nearest1+nearest2)+
+//                nearest2_position.getY()*nearest2/(nearest1+nearest2);
+//
+//        return new Point(x,y);
 
     }
 

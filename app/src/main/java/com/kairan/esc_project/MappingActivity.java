@@ -46,6 +46,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -200,6 +202,12 @@ public class MappingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mapping.send_data_to_database(DownloadURL); // need to be implemented
                 Log.i("TESTING", "This has been clicked");
+                HashMap<Point, HashMap> test = mapping.getPosition_ap();
+                List<Point> test_point = new ArrayList<>(test.keySet());
+                for(Point x:test_point){
+                    Log.i("AAAAAA",x.toString());
+                    Log.i("AAAAAA",test.get(x).toString());
+                }
                 try {
                     Thread.sleep(2000);
                     Toast.makeText(MappingActivity.this,"Uploading data to database...",Toast.LENGTH_LONG).show();

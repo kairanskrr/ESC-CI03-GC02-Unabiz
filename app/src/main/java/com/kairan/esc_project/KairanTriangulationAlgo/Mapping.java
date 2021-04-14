@@ -28,7 +28,9 @@ import java.util.Objects;
 public class Mapping {
 
     private HashMap<String,Integer> mac_rssi;
-    private HashMap<Point,HashMap> position_ap;
+    // i want to see what is position_ap
+//    private HashMap<Point,HashMap> position_ap;
+    public HashMap<Point,HashMap> position_ap;
     static Map<String, HashMap> position_apclone = new HashMap<>();
     static List<String> ap_list;
     static List<Point> position_list;
@@ -81,6 +83,9 @@ public class Mapping {
         System.out.println("\n");
 
         num_of_data++;
+
+
+
 
     }
 

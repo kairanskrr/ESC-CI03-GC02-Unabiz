@@ -125,14 +125,21 @@ public class MappingActivity extends AppCompatActivity {
                 @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public void onLongPress(MotionEvent e) {
+
+                    // x and y is currPos PointF, related to the image
                     x = (float)Math.floor(e.getX()*100)/100;
                     y = (float)Math.floor(e.getY()*100)/100;
 
                     PointF pointF = imageToMap.sourceToViewCoord(x,y);
+
+                    // x_bm and y_bm is imageToMap points on the bitmap
+                    // you longpress on bitmap, but draw on the image
                     x_bm = pointF.x;
                     y_bm = pointF.y;
 //                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
                     currPos = imageToMap.viewToSourceCoord(x,y);
+
+                    // current position printed out, this position is wrt to the image!
                     textView_currentPosition.setText("X: " + currPos.x + " Y: " + currPos.y);
                     Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
                     super.onLongPress(e);
@@ -143,6 +150,8 @@ public class MappingActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
 //                view.setPin(new PointF(x,y));
+
+                // moving position pin
                 view.setX(x);
                 view.setY(y);
                 view.setVisibility(View.VISIBLE);
@@ -158,10 +167,14 @@ public class MappingActivity extends AppCompatActivity {
                     Toast.makeText(MappingActivity.this,"Please indicate where you are first",Toast.LENGTH_LONG).show();
                 }else{
 
+
+                    Log.d("PRESS", "BUTTON SAVE PRESSED");
+
                     // each time button clicked, 1 scan performed
                     WifiScan wifiScan = new WifiScan(getApplicationContext(), MappingActivity.this);
                     wifiScan.getWifiNetworksList();
                     scanList = wifiScan.getScanList();
+
                     if(scanList != null){
 
 //                        float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
@@ -171,8 +184,27 @@ public class MappingActivity extends AppCompatActivity {
                         /*float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
                         float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));*/
 
-                        mapping.add_data(new Point(x,y),scanList);
+
+                        // mapping.add_data first filters scanList then append to position_ap.
+                        // debug because the point on screen is not the same as the one stored in position_ap
+                        mapping.add_data(new Point(currPos.x, currPos.y), scanList);
+//                        mapping.add_data(new Point(x,y),scanList);
+
+                        // print out point
+//                        Log.d("PRESS", "The Point is + " + String.valueOf(new Point(x,y)));
+                        Log.d("PRESS", "The Point is + " + String.valueOf(new Point(currPos.x, currPos.y)));
+
+                        Log.d("PRESS", "position_ap is" + mapping.position_ap);
+
+
+                        Log.d("PRESS", "ADDED DATA COMPLETE!!");
                         Toast.makeText(MappingActivity.this,"Save successfully",Toast.LENGTH_LONG).show();
+
+                        // debug log to make list shop
+                        Log.d("PRESS", "PRESSED SAVE");
+
+                        // debug to show scanList
+                        Log.d("PRESS", scanList.toString());
 
                         // clear the textView_currentPosition
                         textView_currentPosition.setText("");
@@ -184,6 +216,7 @@ public class MappingActivity extends AppCompatActivity {
                         mPaint.setStrokeWidth(10);
                         mPaint.setStyle(Paint.Style.STROKE);
                         mPaint.setAlpha(alpha);
+
                         // offset x and y so that it appears at centre of arrow
                         mCanvas.drawCircle(currPos.x, currPos.y, radius, mPaint);
 
@@ -198,8 +231,12 @@ public class MappingActivity extends AppCompatActivity {
         button_complete_mapping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // send image to database?
                 mapping.send_data_to_database(DownloadURL); // need to be implemented
+
                 Log.i("TESTING", "This has been clicked");
+
                 try {
                     Thread.sleep(2000);
                     Toast.makeText(MappingActivity.this,"Uploading data to database...",Toast.LENGTH_LONG).show();

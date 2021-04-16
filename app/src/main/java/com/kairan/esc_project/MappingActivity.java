@@ -238,7 +238,7 @@ public class MappingActivity extends AppCompatActivity {
                         // draw a circle at the center of the big one to indicate where you pressed
                         mCanvas.drawCircle(currPos.x, currPos.y, 10, mPaint);
 
-                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.green_pin);
                         mCanvas.drawBitmap(pin,currPos.x-(pin.getWidth()/2),currPos.y -(pin.getHeight()),null);
                         v.invalidate();
                     }

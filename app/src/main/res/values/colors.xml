@@ -11,5 +11,6 @@
     <color name="lightGray">#C4C4C4</color>
     <color name="transparent">#80000000</color>
     <color name="red">#FF0000</color>
+    <color name="coordinate_color">#4CAF50</color>
 
 </resources>

@@ -20,6 +20,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +62,10 @@ public class MappingActivity extends AppCompatActivity {
     private PinView view;
     private CircleView circleView;
 
+    // DEBUG: REMOVE LATER, SCROLL VIEW TO DISPLAY WIFI_AP
+    private ScrollView scrollViewPositionAp;
+    private TextView textViewPositionAP;
+
     // for the circle
     private Canvas mCanvas;
     private final Paint mPaint = new Paint();
@@ -95,6 +100,10 @@ public class MappingActivity extends AppCompatActivity {
         button_complete_mapping = findViewById(R.id.button_complete_mapping);
         view = findViewById(R.id.pinView_mapping);
         view.setVisibility(View.INVISIBLE);
+
+        // DEBUG: REMOVE LATER, SCROLL VIEW TO DISPLAY WIFI_AP
+        scrollViewPositionAp = findViewById(R.id.scrollViewPosition_ap);
+        textViewPositionAP = findViewById(R.id.textViewposition_ap);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
@@ -198,6 +207,10 @@ public class MappingActivity extends AppCompatActivity {
 
                         Log.d("PRESS", "position_ap is" + mapping.position_ap);
 
+                        // DEBUG: REMOVE LATER, SCROLL VIEW TO DISPLAY WIFI_AP
+                        textViewPositionAP.setText(String.valueOf(mapping.position_ap));
+
+
 
                         Log.d("PRESS", "ADDED DATA COMPLETE!!");
                         Toast.makeText(MappingActivity.this,"Save successfully",Toast.LENGTH_LONG).show();
@@ -214,13 +227,16 @@ public class MappingActivity extends AppCompatActivity {
 
                         // draw circle
                         mCanvas = new Canvas(mBitmap);
-                        mPaint.setColor(Color.BLACK);
+                        mPaint.setColor(getResources().getColor(R.color.coordinate_color));
                         mPaint.setStrokeWidth(10);
                         mPaint.setStyle(Paint.Style.STROKE);
                         mPaint.setAlpha(alpha);
 
                         // offset x and y so that it appears at centre of arrow
                         mCanvas.drawCircle(currPos.x, currPos.y, radius, mPaint);
+
+                        // draw a circle at the center of the big one to indicate where you pressed
+                        mCanvas.drawCircle(currPos.x, currPos.y, 10, mPaint);
 
                         pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
                         mCanvas.drawBitmap(pin,currPos.x-(pin.getWidth()/2),currPos.y -(pin.getHeight()),null);

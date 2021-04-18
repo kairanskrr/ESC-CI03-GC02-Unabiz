@@ -16,6 +16,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -45,6 +46,7 @@ import com.google.firebase.storage.StorageReference;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 import com.kairan.esc_project.KairanTriangulationAlgo.Testing;
 import com.kairan.esc_project.KairanTriangulationAlgo.WifiScan;
+import com.kairan.esc_project.UIStuff.CircleView;
 import com.kairan.esc_project.UIStuff.PinView;
 import com.kairan.esc_project.mappingModeDisplay.StorageChoser;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -68,15 +70,15 @@ public class TestingMode extends AppCompatActivity {
     List<ScanResult> scanList;
     String DownloadURL = null;
     Testing testing;
-    PinView mPinView;
+    CircleView mPinView;
 
     Canvas mCanvas;
     private final Paint mPaint = new Paint();
     private Bitmap mBitmap;
     private final float radius = 100f;
     private final int alpha = 100;
-    private PointF currPos;
     private Bitmap pin;
+    private Bitmap loadImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,7 @@ public class TestingMode extends AppCompatActivity {
         button_getLocation = findViewById(R.id.button_getLocation);
         textView_predictedPosition = findViewById(R.id.textView_predictedPosition);
         mPinView = findViewById(R.id.pinView_testing);
-        mPinView.setVisibility(View.GONE);
+        mPinView.setVisibility(View.INVISIBLE);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
@@ -104,13 +106,18 @@ public class TestingMode extends AppCompatActivity {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     //super.onLoadingComplete(imageUri, view, loadedImage);
-                    image_mappedMap.setImage(ImageSource.bitmap(loadedImage));
+                    loadImage = loadedImage;
+                    mBitmap = loadedImage.copy(Bitmap.Config.ARGB_8888, true);
+                    image_mappedMap.setImage(ImageSource.bitmap(mBitmap));
                 }
             });
 
             // instantiate Test Object
-            testing = new Testing(DownloadURL);
+            //testing = new Testing(DownloadURL);  //
+            testing = new Testing(MappingActivity.getMappingData());
         }
+
+
 
         /**
          Purpose: get prediction of user current position
@@ -119,50 +126,61 @@ public class TestingMode extends AppCompatActivity {
          2. Retrieve data from database
          3. Perform the algorithm written in Testing class to get predicted position
          */
-//        button_getLocation.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.d("BUTTON", "ButtonGetLocation!");
-//
-//                // perform 1 scan
-//                WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
-//                // store results of scan into wifiScan.scanList
-//                wifiScan.getWifiNetworksList();
-//                // store this list into scanList
-//                scanList = wifiScan.getScanList();
-//                if(scanList != null){
-//                    testing.setScanResults(scanList);
-//                    // using predict() knn to predict where user is
-//                    Point result = testing.predict();
-//                    if(result.getX()<0 || result.getY()<0){
-//                        Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
-//                    }
-//                    else{
-//                        textView_predictedPosition.setText(result.toString());
-//
-//                        mPinView.setX((float)result.getX());
-//                        mPinView.setY((float)result.getY());
-//                        mPinView.setVisibility(View.VISIBLE);
-//
-//                        /*// draw circle
-//                        mCanvas = new Canvas(mBitmap);
-//                        mPaint.setColor(Color.BLACK);
-//                        mPaint.setStrokeWidth(10);
-//                        mPaint.setStyle(Paint.Style.STROKE);
-//                        mPaint.setAlpha(alpha);
-//                        // offset x and y so that it appears at centre of arrow
-//                        mCanvas.drawCircle((float)result.getX(), (float)result.getY(), radius, mPaint);
-//
-//                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
-//                        mCanvas.drawBitmap(pin,(float)result.getX()-(pin.getWidth()/2),(float)result.getY() -(pin.getHeight()),null);
-//                        v.invalidate();*/
-//                    }
-//                }
-//                else{
-//                    Toast.makeText(TestingMode.this, "Unable to get WiFi scan result",Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
+        button_getLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("BUTTON", "ButtonGetLocation!");
+
+                // perform 1 scan
+                WifiScan wifiScan = new WifiScan(getApplicationContext(),TestingMode.this);
+                // store results of scan into wifiScan.scanList
+                wifiScan.getWifiNetworksList();
+                // store this list into scanList
+                scanList = wifiScan.getScanList();
+                if(scanList != null){
+                    testing.setScanResults(scanList);
+                    // using predict() knn to predict where user is
+                    Point result = testing.predict();
+                    if(result.getX()<0 || result.getY()<0){
+                        Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        textView_predictedPosition.setText(result.toString());
+
+                        PointF currPos = image_mappedMap.sourceToViewCoord((float)result.getX(),(float)result.getY());
+
+
+                        /*mPinView.setX((float)result.getX());
+                        mPinView.setY((float)result.getY());
+                        mPinView.setVisibility(View.VISIBLE);*/
+
+                        // draw circle
+
+                        mCanvas = new Canvas(mBitmap);
+                        mCanvas.drawColor(0,PorterDuff.Mode.CLEAR);
+                        mCanvas.drawBitmap(loadImage.copy(Bitmap.Config.ARGB_8888,true),0,0,null);
+                        mPaint.setColor(Color.BLACK);
+                        mPaint.setStrokeWidth(10);
+                        mPaint.setStyle(Paint.Style.STROKE);
+                        mPaint.setAlpha(alpha);
+                        // offset x and y so that it appears at centre of arrow
+                        Log.i("TTTTT","x: "+result.getX());
+                        Log.i("TTTTT","y: "+result.getY());
+                        mCanvas.drawCircle((float)result.getX(), (float)result.getY(), radius, mPaint);
+
+                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+                        Log.i("TTTTT","draw bitmap");
+                        mCanvas.drawBitmap(pin,(float)result.getX()-(pin.getWidth()/2),(float)result.getY() -(pin.getHeight()),null);
+                        //v.draw(mCanvas);
+                        Log.i("TTTTT","invalidate");
+                        v.invalidate();
+                    }
+                }
+                else{
+                    Toast.makeText(TestingMode.this, "Unable to get WiFi scan result",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         /**
          Select map which has been mapped from database

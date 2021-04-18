@@ -5,7 +5,11 @@ import android.graphics.*;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ViewTreeObserver;
+
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.kairan.esc_project.R;
 
 public class CircleView extends SubsamplingScaleImageView {
 
@@ -14,6 +18,8 @@ public class CircleView extends SubsamplingScaleImageView {
     private final PointF sCenter = new PointF();
     private final PointF vCenter = new PointF();
     private final Paint paint = new Paint();
+
+    private Bitmap pin;
 
     public CircleView(Context context) {
         this(context, null);
@@ -27,6 +33,20 @@ public class CircleView extends SubsamplingScaleImageView {
     private void initialise() {
         float density = getResources().getDisplayMetrics().densityDpi;
         strokeWidth = (int)(density/60f);
+        pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+        Log.i("CHECKIMAGE","decoding bitmap");
+        Log.i("CHECKIMAGE","Pin: "+pin);
+        /*float w = (density/420f) * pin.getWidth();
+        float h = (density/420f) * pin.getHeight();
+        pin = Bitmap.createScaledBitmap(pin, (int)w, (int)h, true);*/
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                pin =getResizedBitmap(pin,50,50);
+            }
+        });
+
     }
 
     @Override
@@ -51,6 +71,17 @@ public class CircleView extends SubsamplingScaleImageView {
         paint.setStrokeWidth(strokeWidth);
         paint.setColor(Color.argb(255, 51, 181, 229));
         canvas.drawCircle(100, 100, 100, paint);
+        canvas.drawBitmap(pin,60,50,null);
+    }
+
+    private Bitmap getResizedBitmap(Bitmap bitmap, int reqWidth, int reqHeight){
+        Matrix matrix = new Matrix();
+
+        RectF src = new RectF(0,0,bitmap.getWidth(),bitmap.getHeight());
+        RectF dst = new RectF(0,0,reqWidth,reqHeight);
+
+        matrix.setRectToRect(src,dst, Matrix.ScaleToFit.CENTER);
+        return Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
     }
 
 }

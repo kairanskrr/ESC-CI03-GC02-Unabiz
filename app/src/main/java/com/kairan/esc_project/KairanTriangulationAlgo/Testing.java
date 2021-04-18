@@ -34,9 +34,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Testing {
 
     //double[] x;
-    private static HashMap<String,Integer> bssid_rssi;
-    private static List<String> bssid;
-    private static HashMap<Point,HashMap<String,Integer>> position_ap;
+    private HashMap<String, Integer> bssid_rssi;
+    private List<String> bssid;
+    private HashMap<Point, HashMap<String, Integer>> position_ap;
 
 
     static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -46,7 +46,7 @@ public class Testing {
 
 
     /**
-     Initialize testing class with the scan result of the unknown position
+     * Initialize testing class with the scan result of the unknown position
      */
     public static void get_data_for_testing(String URLlink){
         //retrieve data from database
@@ -97,56 +97,59 @@ public class Testing {
 
     public Testing(String URLlink){
         //this.position_ap = Mapping.get_data_for_testing(URLlink);
+    public Testing(String URLlink) {
+        this.position_ap = get_data_for_testing(URLlink);
     }
 
-    public void setScanResults(List<ScanResult> scanResults){
+    public Testing(HashMap<Point, HashMap<String, Integer>> mappingData) {
+        this.position_ap = mappingData;
+    }
+
+    public void setScanResults(List<ScanResult> scanResults) {
         //x = new double[Mapping.ap_list.size()];
         bssid_rssi = new HashMap<>();
         bssid = new ArrayList<>();
         // from the scanResults obtained, generate hashmap and List
-        for(ScanResult ap: scanResults){
-            if(20<Math.abs(ap.level)&&Math.abs(ap.level)<100){
+        for (ScanResult ap : scanResults) {
+            if (20 < Math.abs(ap.level) && Math.abs(ap.level) < 100) {
                 bssid_rssi.put(ap.BSSID, ap.level);
                 bssid.add(ap.BSSID);
             }
         }
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return position_ap.isEmpty();
     }
-
 
 
     /**
      * Based on receiving data, clean data set (i.e., only get those positions which have data of all the wifi aps that the unknown position can access), not sure if this is applicable*/
 
     /**
-     *
      * @param
      * @return dataset, a hashmap containing point x,y and a hashmap (BSSID : RSSI)
      */
-    public HashMap<Point,HashMap> clean_data(){
+    public HashMap<Point, HashMap> clean_data() {
 
         List<Point> position_list = new ArrayList<>(position_ap.keySet());
-        HashMap<Point,HashMap> dataSet = new HashMap<>();
+        HashMap<Point, HashMap> dataSet = new HashMap<>();
 
-        for(int i =0; i<position_ap.size(); i++){
-            HashMap<String,Integer> ap_info = new HashMap<>();
-            for(String j: bssid){
+        for (int i = 0; i < position_ap.size(); i++) {
+            HashMap<String, Integer> ap_info = new HashMap<>();
+            for (String j : bssid) {
                 // if position_ap contains this particular BSSID, j
                 // if the inner hashmap BSSID: RSSI contains key bssid
-                if(position_ap.get(position_list.get(i)).containsKey(j)){
+                if (position_ap.get(position_list.get(i)).containsKey(j)) {
                     // put this bssid: RSSI into ap_info
-                    ap_info.put(j,(int)position_ap.get(position_list.get(i)).get(j));
-                }
-                else{
+                    ap_info.put(j, (int) position_ap.get(position_list.get(i)).get(j));
+                } else {
                     break;
                 }
-                if(ap_info.size()==bssid.size()){
+                if (ap_info.size() == bssid.size()) {
                     // dataSet is a Hashmap containing
                     // position : ap_info (bssid : RSSI)
-                    dataSet.put(position_list.get(i),ap_info);
+                    dataSet.put(position_list.get(i), ap_info);
                 }
             }
         }
@@ -166,8 +169,9 @@ public class Testing {
      * K nearest method:
      * 1. Calculate dev = sqrt((rss1-rss1')^2+(rss2-rss2')^2+......) for every position in the data set
      * 2. Compare dev, find the smallest and the second smallest and their positions
-     * 3. Make prediction of current positions based on the positions found with smallest and second smallest dev*/
-    public Point predict(){
+     * 3. Make prediction of current positions based on the positions found with smallest and second smallest dev
+     */
+    public Point predict() {
 
         /*// Assume using clean_data method, then no need to deal with the situation when some position does not have data for certain wifi aps
         HashMap<Point,HashMap> dataSet = clean_data();
@@ -215,51 +219,48 @@ public class Testing {
         float nearest1 = Float.MAX_VALUE;
         float nearest2 = Float.MAX_VALUE;
 
-        Point nearest1_position = new Point(0,0);
-        Point nearest2_position = new Point(0,0);
+        Point nearest1_position = new Point(0, 0);
+        Point nearest2_position = new Point(0, 0);
 
         int sum = 0;
-        for(Point point: position_list){
-            for(String j:bssid){
-                if(position_ap.get(point).containsKey(j)){
-                    sum += Math.pow((int)position_ap.get(point).get(j)- bssid_rssi.get(j),2);
-                }
-                else{
-                    sum += Math.pow(bssid_rssi.get(j),2);
+        for (Point point : position_list) {
+            for (String j : bssid) {
+                if (position_ap.get(point).containsKey(j)) {
+                    sum += Math.pow((int) position_ap.get(point).get(j) - bssid_rssi.get(j), 2);
+                } else {
+                    sum += Math.pow(bssid_rssi.get(j), 2);
                 }
             }
             float dev = (float) Math.sqrt(sum);
-            if(dev<nearest1){
-                if(nearest1<nearest2){
+            if (dev < nearest1) {
+                if (nearest1 < nearest2) {
                     nearest2 = dev;
                     nearest2_position = point;
-                }
-                else{
+                } else {
                     nearest1 = dev;
                     nearest1_position = point;
                 }
 
-            } else if(dev<nearest2){
+            } else if (dev < nearest2) {
                 nearest2 = dev;
                 nearest2_position = point;
             }
             sum = 0;
         }
 
-        double x,y;
+        double x, y;
 
-        if(nearest1==0&&nearest2==0){
-            x = (nearest1_position.getX()+nearest2_position.getX())*0.5;
-            y = (nearest1_position.getY()+nearest2_position.getY())*0.5;
-        }
-        else{
-            x = nearest1_position.getX()*nearest2/(nearest1+nearest2)+
-                    nearest2_position.getX()*nearest1/(nearest1+nearest2);
-            y = nearest1_position.getY()*nearest2/(nearest1+nearest2)+
-                    nearest2_position.getY()*nearest1/(nearest1+nearest2);
+        if (nearest1 == 0 && nearest2 == 0) {
+            x = (nearest1_position.getX() + nearest2_position.getX()) * 0.5;
+            y = (nearest1_position.getY() + nearest2_position.getY()) * 0.5;
+        } else {
+            x = nearest1_position.getX() * nearest2 / (nearest1 + nearest2) +
+                    nearest2_position.getX() * nearest1 / (nearest1 + nearest2);
+            y = nearest1_position.getY() * nearest2 / (nearest1 + nearest2) +
+                    nearest2_position.getY() * nearest1 / (nearest1 + nearest2);
         }
 
-        return new Point(x,y);
+        return new Point(x, y);
 
 //        // use thread
 //        ArrayList<Point> position_list = new ArrayList<Point>(position_ap.keySet());
@@ -302,102 +303,102 @@ public class Testing {
 
     }
 
-    public static HashMap<String, Integer> getBssid_rssi() {
+    public HashMap<String, Integer> getBssid_rssi() {
         return bssid_rssi;
     }
 
-    public static List<String> getBssid() {
+    public List<String> getBssid() {
         return bssid;
     }
 
-    public static HashMap<Point, HashMap<String, Integer>> getPosition_ap() {
+    public HashMap<Point, HashMap<String, Integer>> getPosition_ap() {
         return position_ap;
     }
-}
 
-class CalculationThread extends Thread{
-    private HashMap<String,Integer> bssid_rssi;
-    private List<Point> position_list;
-    private List<String> bssid;
-    private HashMap<Point,HashMap<String,Integer>> position_ap;
 
-    private volatile float nearest1 = Float.MAX_VALUE;
-    private volatile float nearest2 = Float.MAX_VALUE;
+    class CalculationThread extends Thread {
+        private HashMap<String, Integer> bssid_rssi;
+        private List<Point> position_list;
+        private List<String> bssid;
+        private HashMap<Point, HashMap<String, Integer>> position_ap;
 
-    private volatile Point nearest1_position = new Point(0,0);
-    private volatile Point nearest2_position = new Point(0,0);
+        private volatile float nearest1 = Float.MAX_VALUE;
+        private volatile float nearest2 = Float.MAX_VALUE;
 
-    private Lock lock;
+        private volatile Point nearest1_position = new Point(0, 0);
+        private volatile Point nearest2_position = new Point(0, 0);
 
-    CalculationThread(Lock lock, List<Point> position_list){
-        this.lock = lock;
-        this.position_list = position_list;
-        this.bssid_rssi = Testing.getBssid_rssi();
-        this.position_ap = Testing.getPosition_ap();
-        this.bssid = Testing.getBssid();
-    }
-    public void run(){
-        int sum = 0;
-        for(Point point: position_list){
-            for(String j:bssid){
-                if(position_ap.get(point).containsKey(j)){
-                    sum += Math.pow((int)position_ap.get(point).get(j)- bssid_rssi.get(j),2);
+        private Lock lock;
+
+        CalculationThread(Lock lock, List<Point> position_list, HashMap<String, Integer> bssid_rssi, HashMap<Point, HashMap<String, Integer>> position_ap, List<String> bssid) {
+            this.lock = lock;
+            this.position_list = position_list;
+            this.bssid_rssi = bssid_rssi;
+            this.position_ap = position_ap;
+            this.bssid = bssid;
+        }
+
+        public void run() {
+            int sum = 0;
+            for (Point point : position_list) {
+                for (String j : bssid) {
+                    if (position_ap.get(point).containsKey(j)) {
+                        sum += Math.pow((int) position_ap.get(point).get(j) - bssid_rssi.get(j), 2);
+                    } else {
+                        sum += Math.pow(bssid_rssi.get(j), 2);
+                    }
                 }
-                else{
-                    sum += Math.pow(bssid_rssi.get(j),2);
-                }
-            }
-            float dev = (float) Math.sqrt(sum);
-            lock.lock();
-            if(dev<nearest1){
-                if(nearest1<nearest2){
+                float dev = (float) Math.sqrt(sum);
+                lock.lock();
+                if (dev < nearest1) {
+                    if (nearest1 < nearest2) {
+                        nearest2 = dev;
+                        nearest2_position = point;
+                    } else {
+                        nearest1 = dev;
+                        nearest1_position = point;
+                    }
+
+                } else if (dev < nearest2) {
                     nearest2 = dev;
                     nearest2_position = point;
                 }
-                else{
-                    nearest1 = dev;
-                    nearest1_position = point;
-                }
-
-            } else if(dev<nearest2){
-                nearest2 = dev;
-                nearest2_position = point;
+                lock.unlock();
+                sum = 0;
             }
-            lock.unlock();
-            sum = 0;
         }
-    }
 
-    public Point getNearest1_position() {
-        Point temp;
-        lock.lock();
-        temp = nearest1_position;
-        lock.unlock();
-        return temp;
-    }
+        public Point getNearest1_position() {
+            Point temp;
+            lock.lock();
+            temp = nearest1_position;
+            lock.unlock();
+            return temp;
+        }
 
-    public Point getNearest2_position() {
-        Point temp;
-        lock.lock();
-        temp = nearest2_position;
-        lock.unlock();
-        return temp;
-    }
+        public Point getNearest2_position() {
+            Point temp;
+            lock.lock();
+            temp = nearest2_position;
+            lock.unlock();
+            return temp;
+        }
 
-    public float getNearest1() {
-        float temp;
-        lock.lock();
-        temp = nearest1;
-        lock.unlock();
-        return temp;
-    }
+        public float getNearest1() {
+            float temp;
+            lock.lock();
+            temp = nearest1;
+            lock.unlock();
+            return temp;
+        }
 
-    public float getNearest2() {
-        float temp;
-        lock.lock();
-        temp = nearest2;
-        lock.unlock();
-        return temp;
-    }
+        public float getNearest2() {
+            float temp;
+            lock.lock();
+            temp = nearest2;
+            lock.unlock();
+            return temp;
+        }
 
+    }
 }

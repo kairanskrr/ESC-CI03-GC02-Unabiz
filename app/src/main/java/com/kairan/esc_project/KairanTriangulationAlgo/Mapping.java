@@ -32,7 +32,7 @@ public class Mapping {
     private HashMap<String,Integer> mac_rssi;
     // i want to see what is position_ap
 //    private HashMap<Point,HashMap> position_ap;
-    public HashMap<Point,HashMap> position_ap;
+    public HashMap<Point,HashMap<String, Integer>> position_ap;
     static Map<String, HashMap> position_apclone = new HashMap<>();
     static List<String> ap_list;
     static List<Point> position_list;
@@ -205,7 +205,7 @@ public class Mapping {
 //    }
 
 
-    public HashMap<Point, HashMap> getPosition_ap() {
+    public HashMap<Point, HashMap<String, Integer>> getPosition_ap() {
         return position_ap;
     }
 }

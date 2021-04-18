@@ -82,6 +82,10 @@ public class MappingActivity extends AppCompatActivity {
     private float x;
     private float y;
 
+    // save data
+    private static HashMap<Point,HashMap<String, Integer>> mappingData = new HashMap<>();
+
+
     DatabaseReference database;
     FirebaseUser user;
     StorageReference storage;
@@ -227,7 +231,8 @@ public class MappingActivity extends AppCompatActivity {
                     Log.i("AAAAAA",x.toString());
                     Log.i("AAAAAA",test.get(x).toString());
                 }
-               Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
+                mappingData = mapping.getPosition_ap();
+                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
                 startActivity(intent);
             }
         });
@@ -236,6 +241,10 @@ public class MappingActivity extends AppCompatActivity {
     /**
      * Download the image using URL from the internet to display
      */
+    public static HashMap<Point, HashMap<String, Integer>> getMappingData() {
+        return mappingData;
+    }
+
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;
         URL url;

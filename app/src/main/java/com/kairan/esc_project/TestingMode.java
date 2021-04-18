@@ -64,6 +64,7 @@ public class TestingMode extends AppCompatActivity {
     TextView textView_predictedPosition;
     Button button_selectMap;
     Button button_getLocation;
+    Button button_back;
     FirebaseUser user;
     DatabaseReference database;
     StorageReference storage;
@@ -87,6 +88,7 @@ public class TestingMode extends AppCompatActivity {
         image_mappedMap = findViewById(R.id.image_mappedFloorPlan);
         button_selectMap = findViewById(R.id.button_selectMap);
         button_getLocation = findViewById(R.id.button_getLocation);
+        button_back = findViewById(R.id.button_back);
         textView_predictedPosition = findViewById(R.id.textView_predictedPosition);
         mPinView = findViewById(R.id.pinView_testing);
         mPinView.setVisibility(View.INVISIBLE);
@@ -198,6 +200,14 @@ public class TestingMode extends AppCompatActivity {
 //                });
                 Intent intent = new Intent(TestingMode.this, StorageChoser.class);
                 intent.putExtra("CallingActivity", "TestingMode");
+                startActivity(intent);
+            }
+        });
+
+        button_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TestingMode.this,SelectMenu.class);
                 startActivity(intent);
             }
         });

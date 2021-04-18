@@ -13,10 +13,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.259"
+        app:layout_constraintVertical_bias="0.131"
         app:srcCompat="@drawable/ic_launcher_background"
-        tools:srcCompat="?android:attr/scrollbarTrackVertical"
-        tools:ignore="VectorDrawableCompat" />
+        tools:ignore="VectorDrawableCompat"
+        tools:srcCompat="?android:attr/scrollbarTrackVertical" />
 
     <TextView
         android:id="@+id/textView_predictedPosition"
@@ -30,28 +30,64 @@
         app:layout_constraintTop_toBottomOf="@+id/image_mappedFloorPlan"
         app:layout_constraintVertical_bias="0.028" />
 
-    <Button
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView_predictedPosition"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_selectMap"
+            style="@style/confirmButton"
+            android:layout_margin="20dp"
+            android:text="@string/select_avail_map" />
+
+        <Button
+            android:id="@+id/button_getLocation"
+            style="@style/confirmButton"
+            android:layout_margin="20dp"
+            android:text="@string/where_am_i" />
+
+        <Button
+            android:id="@+id/button_back"
+            style="@style/confirmButton"
+            android:layout_margin="20dp"
+            android:text="@string/testing_back" />
+    </LinearLayout>
+
+    <!---<Button
         android:id="@+id/button_selectMap"
-        android:text="@string/select_avail_map"
+        style="@style/confirmButton"
         android:layout_margin="20dp"
+        android:text="@string/select_avail_map"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_mappedFloorPlan"
-        app:layout_constraintVertical_bias="0.293"
-        style="@style/confirmButton"/>
+        app:layout_constraintVertical_bias="0.137" />
 
     <Button
         android:id="@+id/button_getLocation"
+        style="@style/confirmButton"
         android:layout_margin="20dp"
         android:text="@string/where_am_i"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/image_mappedFloorPlan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_selectMap"
-        app:layout_constraintVertical_bias="0.316"
-        style="@style/confirmButton"/>
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/button_back"
+        style="@style/confirmButton"
+        android:layout_margin="20dp"
+        android:text="BACK"
+        app:layout_constraintBottom_toBottomOf="@+id/pinView_testing"
+        app:layout_constraintStart_toStartOf="parent" />-->
+
+
 
     <com.kairan.esc_project.UIStuff.CircleView
         android:id="@+id/pinView_testing"

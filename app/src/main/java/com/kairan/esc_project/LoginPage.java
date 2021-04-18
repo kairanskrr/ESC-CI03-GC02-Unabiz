@@ -18,22 +18,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+
+/**
+ * This is the first activity when we open the app, the login page of the app
+ *
+ * */
 public class LoginPage extends AppCompatActivity {
     FirebaseAuth mAuth; //Firebase Authentication
     EditText EditTextEmail, EditTextPassword;
     Button LoginButton, SignUpButton;
     String email,password,invalidC;
     TextView TextViewInvalidC;
-
-//    public void onStart(){
-//        super.onStart();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null){
-//            Toast.makeText(getApplicationContext(),"Logged In",Toast.LENGTH_LONG).show();
-//            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-//        }     //Check if user is Signed In, move to mainactivity if user already signed in
-//    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +44,10 @@ public class LoginPage extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         invalidC = "Invalid Credentials";
 
+        /**
+         * The Login Button, and the follow up actions when clicked, to check for correct fields and to inform the user if the field is incorrect
+         *
+         * */
         LoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -87,7 +87,7 @@ public class TestingMode extends AppCompatActivity {
         button_getLocation = findViewById(R.id.button_getLocation);
         textView_predictedPosition = findViewById(R.id.textView_predictedPosition);
         mPinView = findViewById(R.id.pinView_testing);
-        mPinView.setVisibility(View.GONE);
+        mPinView.setVisibility(View.INVISIBLE);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
@@ -107,7 +107,6 @@ public class TestingMode extends AppCompatActivity {
                     image_mappedMap.setImage(ImageSource.bitmap(loadedImage));
                 }
             });
-
             // instantiate Test Object
             testing = new Testing(DownloadURL);
         }
@@ -163,7 +162,6 @@ public class TestingMode extends AppCompatActivity {
 //                }
 //            }
 //        });
-
         /**
          Select map which has been mapped from database
          */

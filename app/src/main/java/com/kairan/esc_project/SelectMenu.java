@@ -7,6 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * The Main Activity page to select which mode of usage the user wants
+ */
+
 public class SelectMenu extends AppCompatActivity {
     Button MappingButton, TestingButton, WifiScanningButton;
 

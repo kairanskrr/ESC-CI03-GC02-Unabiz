@@ -1,7 +1,9 @@
 package com.kairan.esc_project.KairanTriangulationAlgo;
 
+import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -89,19 +91,14 @@ public class Mapping {
 
     }
 
-    public void send_data_to_database(String DownloadURL){
+    public void send_data_to_database(String DownloadURL, Context context){
         database.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long number = snapshot.getChildrenCount()+1;
                 database.child(Long.toString(number)).setValue(position_apclone);
                 FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid()).child(Long.toString(number)).setValue(DownloadURL);
-                /*for(Point p : Map1.keySet()){
-                    Log.i("Test",p.toString());
-                    for (String e : Map1.get(p).keySet()){
-                        Log.i("Test", e);
-                        Log.i("Test",Map1.get(p).get(e).toString());
-                    }}*/
+                Toast.makeText(context, "Mapping has been completed",Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -118,55 +115,7 @@ public class Mapping {
      * @return dataset, a hashmap containing point x,y and a hashmap (BSSID : RSSI)
      */
 
-    public static HashMap<Point,HashMap<String, Integer>> get_data_for_testing(String URLlink){
-        //retrieve data from database
-        HashMap<Point,HashMap<String, Integer>> dataSet = new HashMap<>();
-        MapUrls.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                        if (snapshot1.getValue().toString().equals(URLlink) ){
-                            database.child(Objects.requireNonNull(snapshot1.getKey())).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    Map<String, Map> map = (Map<String, Map>) snapshot.getValue();
-                                        for (String key: map.keySet()){
-                                            HashMap<String, Integer> rssivalues = new HashMap<>();
-                                            String[] separated = key.split(",");
-                                            Point p = new Point(Double.parseDouble(separated[0]),Double.parseDouble(separated[1]));
-//                                            Log.i("Test",p.toString());
-//                                            Log.i("Test", separated[0]);
-//                                            Log.i("Test", separated[1]);
-                                            for(Object key1: map.get(key).keySet()){
-                                                rssivalues.put(key1.toString(), Integer.valueOf(map.get(key).get(key1).toString()));
-                                            }
-                                            dataSet.put(p,rssivalues);
-                                        }
-                                        Map1 = dataSet;
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
-                    }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        class FirebaseThread extends Thread{
-            private String URL;
-
-            FirebaseThread(String URL){
-                this.URL = URL;
-            }
-
-
-        }
         /*for(int i =0; i<num_of_data; i++){
             HashMap<String,Integer> ap_info = new HashMap<>();
             for(String j: bssid){
@@ -187,8 +136,7 @@ public class Mapping {
                 }
             }
         }*/
-        return dataSet;
-    }
+
 
     /*****************************************************
      * Position (Point) * bssid (String) * rssi (Integer)*

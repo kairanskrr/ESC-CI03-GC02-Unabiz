@@ -1,8 +1,18 @@
 package com.kairan.esc_project.KairanTriangulationAlgo;
 
 import android.net.wifi.ScanResult;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kairan.esc_project.KairanTriangulationAlgo.Mapping;
 import com.kairan.esc_project.KairanTriangulationAlgo.NeuralNetwork;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
@@ -11,6 +21,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -27,9 +39,62 @@ public class Testing {
     private static HashMap<Point,HashMap<String,Integer>> position_ap;
 
 
+    static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
+    static DatabaseReference MapUrls = FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid());
+    static HashMap<Point, HashMap<String,Integer>> Map1;
+
+
     /**
      Initialize testing class with the scan result of the unknown position
      */
+    public static void get_data_for_testing(String URLlink){
+        //retrieve data from database
+        HashMap<Point,HashMap<String, Integer>> dataSet = new HashMap<>();
+        MapUrls.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                    if (snapshot1.getValue().toString().equals(URLlink) ){
+                        database.child(Objects.requireNonNull(snapshot1.getKey())).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Map<String, Map> map = (Map<String, Map>) snapshot.getValue();
+                                for (String key: map.keySet()){
+                                    HashMap<String, Integer> rssivalues = new HashMap<>();
+                                    String[] separated = key.split(",");
+                                    Point p = new Point(Double.parseDouble(separated[0]),Double.parseDouble(separated[1]));
+//                                            Log.i("Test",p.toString());
+//                                            Log.i("Test", separated[0]);
+//                                            Log.i("Test", separated[1]);
+                                    for(Object key1: map.get(key).keySet()){
+                                        rssivalues.put(key1.toString(), Integer.valueOf(map.get(key).get(key1).toString()));
+                                    }
+                                    dataSet.put(p,rssivalues);
+                                }
+                                Map1 = dataSet;
+                                for(Point p : Map1.keySet()){
+                                    Log.i("Test",p.toString());
+                                    for (String e : Map1.get(p).keySet()){
+                                        Log.i("Test", e);
+                                        Log.i("Test",Map1.get(p).get(e).toString());
+                                    }}
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });}
+
     public Testing(String URLlink){
         //this.position_ap = Mapping.get_data_for_testing(URLlink);
     }

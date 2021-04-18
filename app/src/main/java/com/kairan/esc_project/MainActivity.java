@@ -30,17 +30,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kairan.esc_project.KairanTriangulationAlgo.Mapping;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
+import com.kairan.esc_project.KairanTriangulationAlgo.Testing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This activity is just for testing purposes
+ */
+
 public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     DatabaseReference database;
-    // create reference to firebase, create wifi header
-
-
 
     private StringBuilder stringBuilder = new StringBuilder();
     private TextView textViewWifiNetworks;
@@ -63,48 +65,30 @@ public class MainActivity extends AppCompatActivity {
 
         textViewWifiNetworks = findViewById(R.id.textViewWifiNetworks);
         listView_wifiList = findViewById(R.id.listView_wifi);
-        wifiList = new ArrayList<>();
-        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,wifiList);
         buttonClick = findViewById(R.id.button_click);
         FirebaseData = findViewById(R.id.FirebaseData);
+
+        wifiList = new ArrayList<>();
+        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,wifiList);
 
         buttonClick.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                database.setValue(null); // Deleting some of the test cases
-                database.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                            currentchildnumber = (int) snapshot.getChildrenCount()+1; }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
                 getWifiNetworksList();
                 textViewWifiNetworks.setVisibility(View.GONE);
                 listView_wifiList.setAdapter(arrayAdapter);
-
             }
         });
 
         FirebaseData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Mapping.get_data_for_testing("https://firebasestorage.googleapis.com/v0/b/unabizproject.appspot.com/o/q4ySFmLhL9RbqccQ8BMid6oZWht1%2Fdocument%2Fimage%3A192?alt=media&token=bb0b908a-b6b0-4f88-a3d6-066856cf1206");
-            }
-        });
+                Testing.get_data_for_testing("https://firebasestorage.googleapis.com/v0/b/unabizproject.appspot.com/o/q4ySFmLhL9RbqccQ8BMid6oZWht1%2Fdocument%2Fimage%3A23238?alt=media&token=a51450a2-cddd-4537-8265-aad616fceba7");
+        }});
 
     }
-
-
-
-
     // make use of WifiManager to get the available Wifi APs nearby
-
     /**
      * for wifi scan result:
      * BSSID: address of the access point (MAC address)
@@ -138,13 +122,9 @@ public class MainActivity extends AppCompatActivity {
                 arrayAdapter.notifyDataSetChanged();
                 //textViewWifiNetworks.setText(stringBuilder);
                 //System.out.println(stringBuilder);
-
-
-
             }
 
         }, filter);
-
 
         boolean startScan = wifiManager.startScan();
         if(!startScan){
@@ -152,8 +132,5 @@ public class MainActivity extends AppCompatActivity {
             Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(myIntent);
         }
-
     }
-
-
 }

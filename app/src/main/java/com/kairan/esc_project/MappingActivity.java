@@ -52,6 +52,10 @@ import java.util.HashMap;
 import java.util.List;
 
 
+/**
+ * Second activity of the mapping mode, where the user does the real mapping
+ */
+
 public class MappingActivity extends AppCompatActivity {
 
     SubsamplingScaleImageView imageToMap;
@@ -60,13 +64,12 @@ public class MappingActivity extends AppCompatActivity {
     private List<ScanResult> scanList;
     Button button_savePosition, button_complete_mapping;
     private PinView view;
-    private CircleView circleView;
 
     // DEBUG: REMOVE LATER, SCROLL VIEW TO DISPLAY WIFI_AP
     private ScrollView scrollViewPositionAp;
     private TextView textViewPositionAP;
 
-    // for the circle
+    // for the circleview on the map
     private Canvas mCanvas;
     private final Paint mPaint = new Paint();
     private Bitmap mBitmap;
@@ -78,9 +81,6 @@ public class MappingActivity extends AppCompatActivity {
 
     private float x;
     private float y;
-    private float x_bm;
-    private float y_bm;
-
 
     DatabaseReference database;
     FirebaseUser user;
@@ -110,10 +110,12 @@ public class MappingActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
 
-//        // retrieve from database
-//        imageToMap.setImage(ImageSource.resource(R.drawable.b2l2));
+        // retrieve from database
+        // Load the new image that is selected by the user
 
-        //Load the new image that is selected by the user
+        /**
+         * Getting the image that the user first wanted in the MappingMode and displaying it
+         */
         Intent intent = getIntent();
             DownloadURL = intent.getStringExtra("Imageselected");
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
@@ -122,13 +124,12 @@ public class MappingActivity extends AppCompatActivity {
             imageLoader.loadImage(DownloadURL,new SimpleImageLoadingListener(){
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    //super.onLoadingComplete(imageUri, view, loadedImage);
                     mBitmap = loadedImage.copy(Bitmap.Config.ARGB_8888, true);
                     imageToMap.setImage(ImageSource.bitmap(mBitmap));
                 }
             });
 
-
+        // setting the zoom
         imageToMap.setMinimumDpi(20);
 
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
@@ -136,20 +137,10 @@ public class MappingActivity extends AppCompatActivity {
                 @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public void onLongPress(MotionEvent e) {
-
-                    // x and y is currPos PointF, related to the image
                     x = (float)Math.floor(e.getX()*100)/100;
                     y = (float)Math.floor(e.getY()*100)/100;
-
-                    PointF pointF = imageToMap.sourceToViewCoord(x,y);
-
-                    // x_bm and y_bm is imageToMap points on the bitmap
-                    // you longpress on bitmap, but draw on the image
-                    x_bm = pointF.x;
-                    y_bm = pointF.y;
-//                    textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
+                    // textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
                     currPos = imageToMap.viewToSourceCoord(x,y);
-
                     // current position printed out, this position is wrt to the image!
                     textView_currentPosition.setText("X: " + currPos.x + " Y: " + currPos.y);
                     Log.i("MAPPOSITION",imageToMap.viewToSourceCoord(x,y).toString());
@@ -160,8 +151,6 @@ public class MappingActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
-//                view.setPin(new PointF(x,y));
-
                 // moving position pin
                 view.setX(x);
                 view.setY(y);
@@ -177,8 +166,6 @@ public class MappingActivity extends AppCompatActivity {
                 if(text.isEmpty()){
                     Toast.makeText(MappingActivity.this,"Please indicate where you are first",Toast.LENGTH_LONG).show();
                 }else{
-
-
                     Log.d("PRESS", "BUTTON SAVE PRESSED");
 
                     // each time button clicked, 1 scan performed
@@ -187,37 +174,20 @@ public class MappingActivity extends AppCompatActivity {
                     scanList = wifiScan.getScanList();
 
                     if(scanList != null){
-
-//                        float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
-//                        float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));
-                        // add data, adding to position_ap of mapping object
-
-                        /*float x = Float.parseFloat(text.substring(7,text.indexOf(",")));
-                        float y = Float.parseFloat(text.substring(text.indexOf(",")+2,text.length()-1));*/
-
-
                         // mapping.add_data first filters scanList then append to position_ap.
                         // debug because the point on screen is not the same as the one stored in position_ap
                         mapping.add_data(new Point(currPos.x, currPos.y), scanList);
-//                        mapping.add_data(new Point(x,y),scanList);
 
                         // print out point
-//                        Log.d("PRESS", "The Point is + " + String.valueOf(new Point(x,y)));
                         Log.d("PRESS", "The Point is + " + String.valueOf(new Point(currPos.x, currPos.y)));
-
                         Log.d("PRESS", "position_ap is" + mapping.position_ap);
-
                         // DEBUG: REMOVE LATER, SCROLL VIEW TO DISPLAY WIFI_AP
                         textViewPositionAP.setText(String.valueOf(mapping.position_ap));
 
-
-
                         Log.d("PRESS", "ADDED DATA COMPLETE!!");
                         Toast.makeText(MappingActivity.this,"Save successfully",Toast.LENGTH_LONG).show();
-
                         // debug log to make list shop
                         Log.d("PRESS", "PRESSED SAVE");
-
                         // debug to show scanList
                         Log.d("PRESS", scanList.toString());
 
@@ -249,63 +219,23 @@ public class MappingActivity extends AppCompatActivity {
         button_complete_mapping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // send image to database?
-                mapping.send_data_to_database(DownloadURL); // need to be implemented
-
-                Log.i("TESTING", "This has been clicked");
-
+                // send image to database
+                mapping.send_data_to_database(DownloadURL,getApplicationContext());
                 HashMap<Point, HashMap> test = mapping.getPosition_ap();
                 List<Point> test_point = new ArrayList<>(test.keySet());
                 for(Point x:test_point){
                     Log.i("AAAAAA",x.toString());
                     Log.i("AAAAAA",test.get(x).toString());
                 }
-
-                try {
-                    Thread.sleep(2000);
-                    Toast.makeText(MappingActivity.this,"Uploading data to database...",Toast.LENGTH_LONG).show();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
                 startActivity(intent);
             }
         });
-
-        /*Intent intent = getIntent();
-
-        Log.i("IMAGE",String.valueOf(intent.getExtras().get(MappingMode.IMAGE_URL)));
-        Log.i("IMAGE",String.valueOf(intent.getExtras().get(MappingMode.IMAGE_DEVICE)));
-
-        String image_url = intent.getExtras().getString(MappingMode.IMAGE_URL);
-        Bitmap image_device = BitmapFactory.decodeByteArray(
-                getIntent().getByteArrayExtra(MappingMode.IMAGE_DEVICE),0,getIntent().getByteArrayExtra(MappingMode.IMAGE_DEVICE).length);
-
-        //Bitmap image_device = (Bitmap)intent.getExtras().get(MappingMode.IMAGE_DEVICE);
-
-        if(image_url!=null){
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
-            ImageLoader imageLoader = ImageLoader.getInstance();
-            imageLoader.init(config);
-            imageLoader.loadImage(image_url,new SimpleImageLoadingListener(){
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    //super.onLoadingComplete(imageUri, view, loadedImage);
-                    imageToMap.setImage(ImageSource.bitmap(loadedImage));
-                }
-            });
-        }else{
-            imageToMap.setImage(ImageSource.bitmap(image_device));
-        }*/
-
-
-        
-
     }
 
-
-
+    /**
+     * Download the image using URL from the internet to display
+     */
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;
         URL url;
@@ -340,41 +270,12 @@ public class MappingActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
             mImageUri = data.getData();
             imageToMap.setImage(ImageSource.uri(mImageUri));
-
-
         }
     }
-
-
-
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
-//            mImageUri = data.getData();
-//            imageToMap.setImage(ImageSource.uri(mImageUri));
-//
-//
-//        }
-//    }
-
-
-
-
-
     }
-
-
-
-    // make use of WifiManager to get the available Wifi APs nearby
-
-

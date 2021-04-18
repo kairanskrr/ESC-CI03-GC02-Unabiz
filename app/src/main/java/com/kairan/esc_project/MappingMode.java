@@ -61,6 +61,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The first activity inside the mapping mode where we ask the user for how they want to map,
+ *  either by using an exisitng map from firebase,
+ *  or by uploading their own map using URL or local device
+ */
+
 public class MappingMode extends AppCompatActivity {
     private Uri mImageUri;
     private String URLlink = null;
@@ -68,19 +74,13 @@ public class MappingMode extends AppCompatActivity {
     TextInputLayout URLBox;
     EditText URLEntry;
     SubsamplingScaleImageView PreviewImage;
-    //CustomView PreviewImage;
     Button DeviceUpload, UrlUpload, ConfirmURL,ConfirmImage,ChangeImage, FirebaseUpload;
     FirebaseUser user;
     DatabaseReference database;
     StorageReference storage;
     TextView TextViewInvalidPhoto;
 
-    static String IMAGE_URL = "IMAGE_URL";
-    static String IMAGE_DEVICE = "IMAGE_DEVICE";
     String invalidPhotoText;
-
-    int StorageUploadCount =0;
-
     Bitmap bitmap1 = null;
     InputStream inputStream = null;
 
@@ -112,26 +112,6 @@ public class MappingMode extends AppCompatActivity {
         ConfirmImage.setVisibility(View.GONE);
         ChangeImage.setVisibility(View.GONE);
 
-        /*PreviewImage.setOnTouchListener(new View.OnTouchListener() {
-            GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
-                @Override
-                public void onLongPress(MotionEvent e) {
-                    float x = e.getX();
-                    float y = e.getY();
-                    // Send the data to the database
-                    database.child("Scan").child("Scan Location").child("X").setValue(x);
-                    database.child("Scan").child("Scan Location").child("Y").setValue(y);
-                    Log.i("MAPPOSITION",PreviewImage.viewToSourceCoord(x,y).toString());
-                    super.onLongPress(e);
-                }
-            });
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                gestureDetector.onTouchEvent(event);
-                return false;
-            }
-        });*/
 
        /**
         Either Upload a Map from device/URL or choose a Map from the existing firebase storage
@@ -168,7 +148,9 @@ public class MappingMode extends AppCompatActivity {
             }
 
         });
-
+        /**
+         * The confirmation button for URL uploading, displays the image uploaded through URL
+         */
         ConfirmURL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,20 +159,15 @@ public class MappingMode extends AppCompatActivity {
                     Toast.makeText(MappingMode.this, "Please Enter An URL", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    //LoadImage loadImage = new LoadImage(PreviewImage);
-                    //loadImage.execute(URLlink);
                     ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingMode.this).build();
                     ImageLoader imageLoader = ImageLoader.getInstance();
                     imageLoader.init(config);
                     imageLoader.loadImage(URLlink,new SimpleImageLoadingListener(){
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            //super.onLoadingComplete(imageUri, view, loadedImage);
                             PreviewImage.setImage(ImageSource.bitmap(loadedImage));  // subscaling
-                            //PreviewImage.setImageBitmap(loadedImage);
                         }
                     });
-                    //PreviewImage.setImage(ImageSource.uri(URLlink));
                     DeviceUpload.setVisibility(View.GONE);
                     UrlUpload.setVisibility(View.GONE);
                     URLBox.setVisibility(View.GONE);
@@ -202,7 +179,7 @@ public class MappingMode extends AppCompatActivity {
         });
 
         /**
-         Change current image after uploading
+         *Change current image after uploading
          */
         ChangeImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,7 +195,7 @@ public class MappingMode extends AppCompatActivity {
         });
 
         /**
-         Confirm the selected image: upload the image to firebase and go to mapping activity
+         Confirm the selected image: upload the image to firebase and go to mapping activity, depending on the how the user uploaded the image
          */
         ConfirmImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -267,37 +244,17 @@ public class MappingMode extends AppCompatActivity {
                     });
                 }
 
-                // if the image that needs to be sent to the firebase is from URL
                 else {
                     Toast.makeText(MappingMode.this,"Authentication Failed",Toast.LENGTH_LONG).show();    // display an error message
                     TextViewInvalidPhoto.setText(invalidPhotoText);
                 }
-
-
-//                intent.putExtra("Imageselected", URLlink);
-//                if (mImageUri != null){
-////                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-////                bitmap1.compress(Bitmap.CompressFormat.PNG, 100, stream);
-////                byte[] bytes = stream.toByteArray();
-////                intent.putExtra("LocalDevice", bytes);
-//                }
-//                else {
-
-
-
-
-//                intent.putExtra(IMAGE_URL,URLlink);
-//                PreviewImage.buildDrawingCache();
-//                Bitmap bitmap_device = PreviewImage.getDrawingCache();
-//                ByteArrayOutputStream bs = new ByteArrayOutputStream();
-//                bitmap_device.compress(Bitmap.CompressFormat.PNG,50,bs);
-//                intent.putExtra(IMAGE_DEVICE,bs.toByteArray());
-
-
             }
         });
     }
 
+    /**
+     * Choose image from the local device gallery
+     */
     private void openFileChoser() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -305,6 +262,9 @@ public class MappingMode extends AppCompatActivity {
         startActivityForResult(intent, 1);
     }
 
+    /**
+     * Download from the internet using the URL, image
+     */
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;
         URL url;
@@ -323,7 +283,6 @@ public class MappingMode extends AppCompatActivity {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setDoInput(true);
                 connection.connect();
-                //InputStream inputStream = new java.net.URL(URLlink).openStream();
                 inputStream = connection.getInputStream();
                 bitmap = BitmapFactory.decodeStream(inputStream);
             } catch (IOException e) {
@@ -334,12 +293,9 @@ public class MappingMode extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            //PreviewImage.setImageBitmap(bitmap);
             PreviewImage.setImage(ImageSource.bitmap(bitmap));  //subscaling
-            //PreviewImage.setImageBitmap(bitmap);
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -347,14 +303,11 @@ public class MappingMode extends AppCompatActivity {
             mImageUri = data.getData();
             Log.i("Testing", mImageUri.getPath());
             PreviewImage.setImage(ImageSource.uri(mImageUri));   //subscaling
-            //PreviewImage.setImageURI(mImageUri);
             try {
                 bitmap1 = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            //Picasso.with(this).load(mImageUri).into(PreviewImage);
         }
     }
 }

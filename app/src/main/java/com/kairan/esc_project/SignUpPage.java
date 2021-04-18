@@ -16,6 +16,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * This is the sign up page
+ *
+ * */
+
 public class SignUpPage extends AppCompatActivity {
     EditText newName, newEmail, newPassword, newPassword2;
     Button RegisterButton;
@@ -34,6 +39,11 @@ public class SignUpPage extends AppCompatActivity {
 
         // is the name used here?
 
+        /**
+         * The register button, when clicked, check if all the fields are filled up and correct, then create user in firebase
+         * */
+
+
         RegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +60,7 @@ public class SignUpPage extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()){
                                 Toast.makeText(SignUpPage.this, "User Created",Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(SignUpPage.this, MainActivity.class));
+                                startActivity(new Intent(SignUpPage.this, SelectMenu.class));
                             }
                             else{
                                 Toast.makeText(SignUpPage.this, "Not Successful\n"+ task.getException().getMessage(),Toast.LENGTH_SHORT).show();

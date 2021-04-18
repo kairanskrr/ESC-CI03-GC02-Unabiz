@@ -18,5 +18,6 @@
     <string name="test_wifi_title">Test WiFi</string>
     <string name="obtain_wifi_data">Obtain WiFi Data</string>
     <string name="invalid_credentials">Invalid Credentials</string>
->>>>>>> master
+    <string name="testing_back">BACK</string>
+    >>>>>>> master
 </resources>

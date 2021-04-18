@@ -97,8 +97,6 @@ public class Testing {
 
     public Testing(String URLlink){
         //this.position_ap = Mapping.get_data_for_testing(URLlink);
-    public Testing(String URLlink) {
-        this.position_ap = get_data_for_testing(URLlink);
     }
 
     public Testing(HashMap<Point, HashMap<String, Integer>> mappingData) {

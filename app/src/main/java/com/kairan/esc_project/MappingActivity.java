@@ -225,7 +225,7 @@ public class MappingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // send image to database
                 mapping.send_data_to_database(DownloadURL,getApplicationContext());
-                HashMap<Point, HashMap> test = mapping.getPosition_ap();
+                HashMap<Point, HashMap<String,Integer>> test = mapping.getPosition_ap();
                 List<Point> test_point = new ArrayList<>(test.keySet());
                 for(Point x:test_point){
                     Log.i("AAAAAA",x.toString());

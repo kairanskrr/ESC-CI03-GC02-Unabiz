@@ -145,15 +145,7 @@ public class TestingMode extends AppCompatActivity {
                     else{
                         textView_predictedPosition.setText(result.toString());
 
-                        PointF currPos = image_mappedMap.sourceToViewCoord((float)result.getX(),(float)result.getY());
-
-
-                        /*mPinView.setX((float)result.getX());
-                        mPinView.setY((float)result.getY());
-                        mPinView.setVisibility(View.VISIBLE);*/
-
                         // draw circle
-
                         mCanvas = new Canvas(mBitmap);
                         mCanvas.drawColor(0,PorterDuff.Mode.CLEAR);
                         mCanvas.drawBitmap(loadImage.copy(Bitmap.Config.ARGB_8888,true),0,0,null);
@@ -165,7 +157,6 @@ public class TestingMode extends AppCompatActivity {
                         Log.i("TTTTT","x: "+result.getX());
                         Log.i("TTTTT","y: "+result.getY());
                         mCanvas.drawCircle((float)result.getX(), (float)result.getY(), radius, mPaint);
-
                         pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
                         Log.i("TTTTT","draw bitmap");
                         mCanvas.drawBitmap(pin,(float)result.getX()-(pin.getWidth()/2),(float)result.getY() -(pin.getHeight()),null);
@@ -186,14 +177,6 @@ public class TestingMode extends AppCompatActivity {
         button_selectMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Log.d("BUTTON", "ButtonSelectMapcalled");
-//                storage.getBytes(1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//                    @Override
-//                    public void onSuccess(byte[] bytes) {
-//                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-//                        image_mappedMap.setImage (ImageSource.bitmap(bitmap));
-//                    }
-//                });
                 Intent intent = new Intent(TestingMode.this, StorageChoser.class);
                 intent.putExtra("CallingActivity", "TestingMode");
                 startActivity(intent);
@@ -238,7 +221,6 @@ public class TestingMode extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            //PreviewImage.setImageBitmap(bitmap);
             image_mappedMap.setImage(ImageSource.bitmap(bitmap));
         }
     }

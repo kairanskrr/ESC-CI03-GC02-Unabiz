@@ -81,6 +81,9 @@ public class MappingActivity extends AppCompatActivity {
     private float x_bm;
     private float y_bm;
 
+    // save data
+    private static HashMap<Point,HashMap<String, Integer>> mappingData = new HashMap<>();
+
 
     DatabaseReference database;
     FirebaseUser user;
@@ -255,7 +258,7 @@ public class MappingActivity extends AppCompatActivity {
 
                 Log.i("TESTING", "This has been clicked");
 
-                HashMap<Point, HashMap> test = mapping.getPosition_ap();
+                HashMap<Point, HashMap<String, Integer>> test = mapping.getPosition_ap();
                 List<Point> test_point = new ArrayList<>(test.keySet());
                 for(Point x:test_point){
                     Log.i("AAAAAA",x.toString());
@@ -268,6 +271,7 @@ public class MappingActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                mappingData = mapping.getPosition_ap();
                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
                 startActivity(intent);
             }
@@ -304,7 +308,9 @@ public class MappingActivity extends AppCompatActivity {
 
     }
 
-
+    public static HashMap<Point, HashMap<String, Integer>> getMappingData() {
+        return mappingData;
+    }
 
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;

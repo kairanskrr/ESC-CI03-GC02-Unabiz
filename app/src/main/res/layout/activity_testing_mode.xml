@@ -8,8 +8,8 @@
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/image_mappedFloorPlan"
-        android:layout_width="411dp"
-        android:layout_height="354dp"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -53,10 +53,10 @@
         app:layout_constraintVertical_bias="0.316"
         style="@style/confirmButton"/>
 
-    <com.kairan.esc_project.UIStuff.PinView
+    <com.kairan.esc_project.UIStuff.CircleView
         android:id="@+id/pinView_testing"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 

@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Testing.get_data_for_testing("https://firebasestorage.googleapis.com/v0/b/unabizproject.appspot.com/o/q4ySFmLhL9RbqccQ8BMid6oZWht1%2Fdocument%2Fimage%3A23238?alt=media&token=a51450a2-cddd-4537-8265-aad616fceba7");
+                Testing.get_data_for_testing("https://firebasestorage.googleapis.com/v0/b/unabizproject.appspot.com/o/q4ySFmLhL9RbqccQ8BMid6oZWht1%2Fexternal%2Fimages%2Fmedia%2F30?alt=media&token=2f1f5024-3eb2-4209-8621-dcc7698119dc");
         }});
 
     }

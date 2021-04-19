@@ -137,12 +137,22 @@ public class TestingMode extends AppCompatActivity {
                 scanList = wifiScan.getScanList();
                 if(scanList != null){
                     testing.setScanResults(scanList);
-                    // using predict() knn to predict where user is
+                    // using predict() knn to predict where user is:
+                    // use local data
                     Point result = testing.predict();
-                    if(result.getX()<0 || result.getY()<0){
+
+                    // use firebase retrieving data (not working: dataSet is still empty)
+//                    Log.i("TTTTT","Download URL: "+DownloadURL);
+//                    Point result = Testing.get_data_for_testing(DownloadURL);
+                    if(result == null){
+                        Log.i("TTTTT","data set is empty");
+                        Toast.makeText(TestingMode.this,"Please complete mapping first before testing",Toast.LENGTH_LONG).show();
+                    }
+                    else if(result.getX()<0 || result.getY()<0){
                         Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
                     }
                     else{
+                        Toast.makeText(TestingMode.this,"Prediction has been made!",Toast.LENGTH_SHORT).show();
                         textView_predictedPosition.setText(result.toString());
 
                         // draw circle

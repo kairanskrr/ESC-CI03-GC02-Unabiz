@@ -59,6 +59,7 @@ public class WifiScan {
 
             if(!startScan){
                 // commented out this so that it doesn't annoy zx
+                Toast.makeText(activityContext,"Have not started scanning",Toast.LENGTH_LONG).show();
 //                Toast.makeText(activityContext,"Please Enable Access of Location",Toast.LENGTH_LONG).show();
 //                Thread.sleep(1000);
 //                Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);

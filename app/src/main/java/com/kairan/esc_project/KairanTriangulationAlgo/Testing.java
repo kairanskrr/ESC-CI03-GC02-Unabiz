@@ -36,7 +36,10 @@ public class Testing {
     //double[] x;
     private static HashMap<String, Integer> bssid_rssi;
     private static List<String> bssid;
-    private HashMap<Point, HashMap<String, Integer>> position_ap;
+    private static HashMap<Point, HashMap<String, Integer>> position_ap;
+    static NeuralNetwork nn;
+    static List<String> ap_list;
+    static ArrayList<Point> positionSet;
 
 
     static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -51,6 +54,13 @@ public class Testing {
 
     public Testing(HashMap<Point, HashMap<String, Integer>> mappingData) {
         this.position_ap = mappingData;
+    }
+
+    public Testing(HashMap<Point, HashMap<String, Integer>> mappingData,List<String> ap) {
+        this.position_ap = mappingData;
+        this.ap_list = ap;
+        this.positionSet = new ArrayList<Point>(position_ap.keySet());
+        this.nn = train_data();
     }
 
     public static void setMap1(HashMap<Point, HashMap<String, Integer>> map1) {
@@ -194,15 +204,52 @@ public class Testing {
         Point nearest3_position = new Point(0,0);
 
         int sum = 0;
+        float min_similarity = Float.MAX_VALUE;
+        Point point_with_min_sim = new Point(0,0);
         for (Point point : position_list) {
-            for (String j : bssid) {
-                if (position_ap.get(point).containsKey(j)) {
+            System.out.println("point: "+point);
+            System.out.println("length: "+position_ap.get(point).size());
+
+            HashMap<String,Integer> x;
+            float similarity = 0;
+            float x_length = 0;
+            float y_length = 0;
+
+            if(position_ap.get(point).size()>bssid.size()){
+                x = position_ap.get(point);
+            }
+            else{
+                x = bssid_rssi;
+            }
+
+            for (String j : x.keySet()) {
+                if (position_ap.get(point).containsKey(j)&&bssid_rssi.containsKey(j)) {
                     sum += Math.pow((int) position_ap.get(point).get(j) - bssid_rssi.get(j), 2);
+//                    System.out.println("position ap: "+position_ap.get(point).get(j));
+//                    System.out.println("bssid: "+bssid_rssi.get(j));
+                    similarity += (int)position_ap.get(point).get(j) * bssid_rssi.get(j)*1f;
+
                 } else {
-                    sum += Math.pow(bssid_rssi.get(j), 2);
+                    //sum += Math.pow(bssid_rssi.get(j), 2);
+                    sum += Integer.MAX_VALUE; // abs(rssi) is smaller, the signal is stronger => put a large number to indicate the ap is not detected in both positions
+                    similarity += Float.MAX_VALUE;
+
                 }
             }
+            System.out.println("sum: "+sum);
+
             float dev = (float) Math.sqrt(sum);
+
+            x_length = (float)Math.sqrt(x_length);
+            y_length = (float)Math.sqrt(y_length);
+
+            similarity = similarity/(x_length*y_length);
+            if(min_similarity>similarity){
+                min_similarity = similarity;
+                point_with_min_sim = point;
+            }
+
+            System.out.println("similarity: "+min_similarity);
 
             // Nearest 1<2<3
             float temp;
@@ -225,42 +272,39 @@ public class Testing {
                 dev_point = temp_point;
             }
             if(dev < nearest3){
-                temp = nearest3;
-                temp_point = nearest3_position;
                 nearest3 = dev;
                 nearest3_position = dev_point;
             }
-            /*if (dev < nearest1) {
-                if (nearest1 < nearest2) {
-                    nearest2 = dev;
-                    nearest2_position = point;
-                } else {
-                    nearest1 = dev;
-                    nearest1_position = point;
-                }
-
-            } else if (dev < nearest2) {
-                nearest2 = dev;
-                nearest2_position = point;
-            }*/
             sum = 0;
         }
 
-        double x, y;
+        Log.i("TTTTT","nearest 1: "+ nearest1_position + "\tsum: "+nearest1);
+        Log.i("TTTTT","nearest 2: "+ nearest2_position + "\tsum: "+nearest2);
+        Log.i("TTTTT","nearest 3: "+ nearest3_position + "\tsum: "+nearest3);
 
+        double x, y;
         if (nearest1 == 0 && nearest2 == 0 && nearest3 ==0) {
             x = (nearest1_position.getX() + nearest2_position.getX()+nearest3_position.getX())/3;
             y = (nearest1_position.getY() + nearest2_position.getY()+nearest3_position.getY())/3 ;
-        } else {
-            x = nearest1_position.getX() * (nearest2 + nearest3) / (nearest1 + nearest2 + nearest3) +
-                    nearest2_position.getX() * (nearest1 + nearest3) / (nearest1 + nearest2 + nearest3) +
-                    nearest3_position.getX() * (nearest1 + nearest2) / (nearest1 + nearest2 + nearest3);
-            y = nearest1_position.getY() * (nearest2 + nearest3) / (nearest1 + nearest2 + nearest3) +
-                    nearest2_position.getY() * (nearest1 + nearest3) / (nearest1 + nearest2 + nearest3) +
-                    nearest3_position.getY() * (nearest1 + nearest2) / (nearest1 + nearest2 + nearest3);
         }
-
-        return new Point(x, y);
+        else if(nearest1 == 0 && nearest2 == 0){
+            x = (nearest1_position.getX() + nearest2_position.getX())/2;
+            y = (nearest1_position.getY() + nearest2_position.getY())/2 ;
+        }
+        else if(nearest1 == 0){
+            x = nearest1_position.getX();
+            y = nearest1_position.getY();
+        }
+        else {
+            float v = 1 / nearest1 + 1 / nearest2 + 1 / nearest3;
+            x = nearest1_position.getX() * (1/nearest1) / v +
+                    nearest2_position.getX() * (1/nearest2) / v +
+                    nearest3_position.getX() * (1/nearest3) / v;
+            y = nearest1_position.getY() * (1/nearest1) / v +
+                    nearest2_position.getY() * (1/nearest2) / v +
+                    nearest3_position.getY() * (1/nearest3) / v;
+        }
+        return new Point(((int)x+point_with_min_sim.getX())/2, ((int)y+point_with_min_sim.getY())/2);
     }
 
     public Point predict() {
@@ -330,8 +374,6 @@ public class Testing {
         return position_ap;
     }
 
-
-
     public Point predict_thread(){
 
         if(position_ap.isEmpty()){
@@ -375,6 +417,92 @@ public class Testing {
                 nearest2_position.getY()*nearest2/(nearest1+nearest2);
 
         return new Point(x,y);
+    }
+
+    /*****************************************************
+     * Position (Point) * bssid (String) * rssi (Integer)*
+     * ***************************************************
+     *  (0,0)           * XX:XX:XX:XX:XX * -XX           *
+     *  (0,0)           * XX:XX:XX:XX:XX * -XX           *
+     *  (0,0)           * XX:XX:XX:XX:XX * -XX           *
+     *  (0,5)           * XX:XX:XX:XX:XX * -XX           *
+     *  (0,5)           * XX:XX:XX:XX:XX * -XX           *
+     *  (0,5)           * XX:XX:XX:XX:XX * -XX           *
+     *  ......          * ......         * ......        *
+     *****************************************************/
+
+    /**
+     * Used in Neural Network model, train model using the data set that is obtained in get_data*/
+    public static NeuralNetwork train_data(){
+
+        //HashMap<Point,HashMap<String,Integer>> dataSet = position_ap;
+        //List<String> ap_list = Mapping.getAp_list();
+        //ArrayList<Point> positionSet = new ArrayList<Point>(position_ap.keySet());
+        int num_of_positions = position_ap.size();
+        int num_of_aps = ap_list.size();
+        nn = new NeuralNetwork(num_of_aps, num_of_positions,num_of_positions);
+        double[][] x = new double[num_of_positions][num_of_aps];
+
+        for(int i=0;i<num_of_positions;i++){
+            for(int j = 0; j< num_of_aps; j++){
+                // position.set(i) => Specific position which index is i in the positionSet
+                // bssid.get(j) => Specific bssid which index is j in the list of bssid
+                // dataSet.get(position.set(j)) => HashMap of (bssid,rssi) at that position
+                // dataSet.get(position.set(j)).get(bssid.get(i)) => rssi value at position i, bssid j
+                /************************************************************************************** (width: num of aps)
+                 * bssid (String)   * X1:X1:X1:X1:X1 * X2:X2:X2:X2:X2 * X3:X3:X3:X3:X3 * ......       *
+                 * position (Point) *                                                                 *
+                 * ************************************************************************************
+                 *  (0,0)           * -XX            * -XX            * -XX            * ......       *
+                 *  (0,5)           * -XX            * -XX            * -XX            * ......       *
+                 *  (0,10)          * -XX            * -XX            * -XX            * ......       *
+                 *  (5,0)           * -XX            * -XX            * -XX            * ......       *
+                 *  (10,0)          * -XX            * -XX            * -XX            * ......       *
+                 *  (5,5)           * -XX            * -XX            * -XX            * ......       *
+                 *  ......          * ......         * ......         * ......         * ......       *
+                 **************************************************************************************
+                 (length : num of positions) */
+                if(position_ap.get(positionSet.get(i)).containsKey(ap_list.get(j))){
+                    x[i][j] = (double)position_ap.get(positionSet.get(i)).get(ap_list.get(j));
+                }
+                else{
+                    x[i][j] = -Double.MAX_VALUE;
+                }
+            }
+        }
+
+        double[][] y = new double[num_of_positions][2];
+        for(int i = 0; i< num_of_positions; i++){
+            /*************
+             * x   * y   *
+             * 0   * 0   *
+             * 0   * 5   *
+             * 0   * 10  *
+             * 5   * 0   *
+             * ... * ... *
+             *************
+             (length: num of positions)
+             * dimension: (num of positions)*2 */
+            y[i][0]= positionSet.get(i).getX();
+            y[i][1]=positionSet.get(i).getY();
+        }
+
+        nn.fit(y,x,50000);   // train nn model
+        return nn;
+    }
+
+    public static Point predict_nn(){
+        double[] x = new double[ap_list.size()];
+        for(int i = 0;i<ap_list.size();i++){
+            if(bssid_rssi.containsKey(ap_list.get(i))){
+                x[i] = (double)bssid_rssi.get(ap_list.get(i));
+            }
+            else{
+                x[i] = -Double.MAX_VALUE;
+            }
+        }
+        List<Double> output = nn.predict(x);
+        return new Point(output.get(0),output.get(1));
     }
 
     class CalculationThread extends Thread {

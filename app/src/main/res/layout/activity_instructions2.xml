@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Instructions.Instructions2">
+
+    <TextView
+        android:id="@+id/tvHold"
+        style="@style/appHeaders"
+        android:layout_marginTop="40dp"
+        android:text="2. Hold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvInstructions2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="To indicate current location, tap and hold down on the image and a point should appear."
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvHold" />
+
+    <ImageView
+        android:id="@+id/ivHold"
+        android:layout_width="344dp"
+        android:layout_height="401dp"
+        android:src="@drawable/hold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInstructions2" />
+
+    <Button
+        android:id="@+id/buttHoldNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_button"
+        android:text="Next"
+        app:layout_constraintTop_toBottomOf="@id/ivHold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        tools:layout_editor_absoluteX="323dp" />
+
+    <Button
+        android:id="@+id/buttHoldPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_button"
+        android:text="Back"
+        app:layout_constraintTop_toBottomOf="@id/ivHold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        tools:layout_editor_absoluteX="323dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

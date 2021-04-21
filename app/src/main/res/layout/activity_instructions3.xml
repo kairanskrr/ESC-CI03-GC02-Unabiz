@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Instructions.Instructions3">
+
+
+    <TextView
+        android:id="@+id/tvPress"
+        style="@style/appHeaders"
+        android:layout_marginTop="40dp"
+        android:text="3. Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvInstructions3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="To map current location that you are standing on, press the 'save current position' button."
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPress" />
+
+    <ImageView
+        android:id="@+id/ivPress"
+        android:layout_width="396dp"
+        android:layout_height="428dp"
+        android:src="@drawable/press"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInstructions3" />
+
+    <Button
+        android:id="@+id/buttPressNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_button"
+        android:text="Next"
+        app:layout_constraintTop_toBottomOf="@id/ivPress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        tools:layout_editor_absoluteX="323dp" />
+
+    <Button
+        android:id="@+id/buttPressPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_button"
+        android:text="Back"
+        app:layout_constraintTop_toBottomOf="@id/ivPress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        tools:layout_editor_absoluteX="323dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Instructions.Instructions1">
+
+    <TextView
+        android:id="@+id/tvZoom"
+        style="@style/appHeaders"
+        android:layout_marginTop="40dp"
+        android:text="1. Zoom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvInstructions1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="To zoom, pinch open with 2 fingers close together on the screen and move them apart without lifting them from the screen."
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvZoom" />
+
+    <ImageView
+        android:id="@+id/ivZoom"
+        android:layout_width="344dp"
+        android:layout_height="401dp"
+        android:src="@drawable/zoom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.522"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInstructions1"
+        app:layout_constraintVertical_bias="0.305" />
+
+    <Button
+        android:id="@+id/buttZoomNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_button"
+        android:text="Next"
+        app:layout_constraintTop_toBottomOf="@id/ivZoom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        tools:layout_editor_absoluteX="323dp" />
+
+    <Button
+        android:id="@+id/buttZoomPrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/my_button"
+        android:text="Back"
+        app:layout_constraintTop_toBottomOf="@id/ivZoom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        tools:layout_editor_absoluteX="323dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

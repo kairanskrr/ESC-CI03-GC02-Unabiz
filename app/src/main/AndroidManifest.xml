@@ -17,7 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Esc_project.NoActionBar">
-        <activity android:name=".mappingModeDisplay.StorageChoser"></activity>
+        <activity android:name=".Instructions.Instructions3"></activity>
+        <activity android:name=".Instructions.Instructions1" />
+        <activity android:name=".Instructions.Instructions2" />
+        <activity android:name=".mappingModeDisplay.StorageChoser" />
         <activity android:name=".MappingActivity" />
         <activity android:name=".mappingModeDisplay.DisplayMap" />
         <activity android:name=".MappingMode" />

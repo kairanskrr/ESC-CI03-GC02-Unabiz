@@ -1,0 +1,16 @@
+package com.kairan.esc_project.Instructions;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+import com.kairan.esc_project.R;
+
+public class Instructions3 extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_instructions3);
+    }
+}

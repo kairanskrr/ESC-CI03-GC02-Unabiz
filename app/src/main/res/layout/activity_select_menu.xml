@@ -33,7 +33,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.844" />
+
+    <Button
+        android:id="@+id/Instructions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/my_button"
+        android:text="Mapping Instructions"
+        app:layout_constraintTop_toBottomOf="@id/WifiScannerButton"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/MappingModeButton"

@@ -45,6 +45,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kairan.esc_project.KairanTriangulationAlgo.Point;
 import com.kairan.esc_project.KairanTriangulationAlgo.Testing;
+import com.kairan.esc_project.KairanTriangulationAlgo.Testing2;
 import com.kairan.esc_project.KairanTriangulationAlgo.WifiScan;
 import com.kairan.esc_project.UIStuff.CircleView;
 import com.kairan.esc_project.UIStuff.PinView;
@@ -71,6 +72,7 @@ public class TestingMode extends AppCompatActivity {
     List<ScanResult> scanList;
     String DownloadURL = null;
     Testing testing;
+    Testing2 testing2;
 
     Canvas mCanvas;
     private final Paint mPaint = new Paint();
@@ -113,6 +115,8 @@ public class TestingMode extends AppCompatActivity {
             // instantiate Test Object
             //testing = new Testing(DownloadURL);  //
             testing = new Testing(MappingActivity.getMappingData());
+            testing2 = new Testing2(MappingActivity.getMappingData(),MappingActivity.getAPs());
+            //testing = new Testing(MappingActivity.getMappingData(),MappingActivity.getAPs());
         }
 
 
@@ -135,15 +139,21 @@ public class TestingMode extends AppCompatActivity {
                 wifiScan.getWifiNetworksList();
                 // store this list into scanList
                 scanList = wifiScan.getScanList();
+                Log.i("AAAAA",scanList.toString());
                 if(scanList != null){
+                    testing2.setScanResult(scanList);
+                    Point result = testing2.predict();
                     testing.setScanResults(scanList);
                     // using predict() knn to predict where user is:
                     // use local data
-                    Point result = testing.predict();
+                    //Point result = testing.predict();
 
                     // use firebase retrieving data (not working: dataSet is still empty)
 //                    Log.i("TTTTT","Download URL: "+DownloadURL);
 //                    Point result = Testing.get_data_for_testing(DownloadURL);
+
+                    // use NN model
+                    //Point result = Testing.predict_nn();
                     if(result == null){
                         Log.i("TTTTT","data set is empty");
                         Toast.makeText(TestingMode.this,"Please complete mapping first before testing",Toast.LENGTH_LONG).show();
@@ -152,7 +162,7 @@ public class TestingMode extends AppCompatActivity {
                         Toast.makeText(TestingMode.this, "Not able to make prediction for current position",Toast.LENGTH_LONG).show();
                     }
                     else{
-                        Toast.makeText(TestingMode.this,"Prediction has been made!",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(TestingMode.this,"Prediction has been made!",Toast.LENGTH_SHORT).show();
                         textView_predictedPosition.setText(result.toString());
 
                         // draw circle

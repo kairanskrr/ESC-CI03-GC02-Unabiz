@@ -1,6 +1,9 @@
 package com.kairan.esc_project.KairanTriangulationAlgo;
 
+import android.util.Log;
+
 import java.util.List;
+import java.util.Random;
 
 /**
  * Build basic neural network model to train data and make prediction*/
@@ -19,6 +22,9 @@ public class NeuralNetwork {
 
     public NeuralNetwork(int i,int h,int o) {
         weights_ih = new Matrix(h,i);
+        Log.i("TTTTT","i: "+i);
+        Log.i("TTTTT","h: "+h);
+        Log.i("TTTTT","o: "+o);
         weights_ho = new Matrix(o,h);
 
         bias_h= new Matrix(h,1);
@@ -95,7 +101,8 @@ public class NeuralNetwork {
     {
         for(int i=0;i<epochs;i++)
         {
-            int sampleN = (int)(Math.random() * X.length);
+            //int sampleN = (int)(Math.random() * X.length);
+            int sampleN = new Random().nextInt(X.length);
             this.train(X[sampleN], Y[sampleN]);
         }
     }

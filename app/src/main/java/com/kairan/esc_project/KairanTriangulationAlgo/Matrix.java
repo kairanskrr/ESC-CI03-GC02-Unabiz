@@ -1,5 +1,7 @@
 package com.kairan.esc_project.KairanTriangulationAlgo;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,8 @@ public class Matrix {
     int rows,cols;
 
     public Matrix(int rows, int cols){
+        Log.i("TTTTT","rows: "+rows);
+        Log.i("TTTTT","cols: "+cols);
         data = new double[rows][cols];
         this.rows = rows;
         this.cols = cols;
@@ -66,7 +70,7 @@ public class Matrix {
             for(int j=0;j<temp.cols;j++)
             {
                 float sum=0;
-                for(int k=0;k<a.cols;k++)
+                for(int k=0;k<temp.rows;k++)
                 {
                     sum+=a.data[i][k]*b.data[k][j];
                 }

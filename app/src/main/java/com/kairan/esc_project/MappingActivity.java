@@ -1,5 +1,6 @@
 package com.kairan.esc_project;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +27,9 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.kairan.esc_project.KairanTriangulationAlgo.Mapping2;
 import com.kairan.esc_project.KairanTriangulationAlgo.Testing;
 import com.kairan.esc_project.KairanTriangulationAlgo.Testing2;
@@ -114,7 +118,7 @@ public class MappingActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
-        storage = FirebaseStorage.getInstance().getReference(user.getUid());
+        storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Mapped");
 
         // retrieve from database
         // Load the new image that is selected by the user
@@ -124,6 +128,7 @@ public class MappingActivity extends AppCompatActivity {
          */
         Intent intent = getIntent();
             DownloadURL = intent.getStringExtra("Imageselected");
+            mImageUri = Uri.parse(DownloadURL);
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.init(config);
@@ -248,6 +253,18 @@ public class MappingActivity extends AppCompatActivity {
                 } else {
                     mapping.send_data_to_database(DownloadURL, getApplicationContext());
                     mapping2.send_data();
+                    DatabaseReference database2 = FirebaseDatabase.getInstance().getReference("MappedMaps");
+                    database2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long number = snapshot.getChildrenCount()+1;
+                            database2.child(Long.toString(number)).setValue(DownloadURL);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
                     //mapping2.train_data(5);
                     aps = mapping.getAp_list();
                     aps = mapping2.getAp_list();

@@ -21,7 +21,7 @@ public class SelectMenu extends AppCompatActivity {
 
         MappingButton = findViewById(R.id.MappingModeButton);
         TestingButton = findViewById(R.id.TestingModeButton);
-        WifiScanningButton = findViewById(R.id.WifiScannerButton);
+//        WifiScanningButton = findViewById(R.id.WifiScannerButton);
 
         MappingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,12 +39,12 @@ public class SelectMenu extends AppCompatActivity {
             }
         });
 
-        WifiScanningButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
-        });
+//        WifiScanningButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 }

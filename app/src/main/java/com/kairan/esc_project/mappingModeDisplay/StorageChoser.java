@@ -1,5 +1,6 @@
 package com.kairan.esc_project.mappingModeDisplay;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -17,7 +19,11 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -38,6 +44,7 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
     RecyclerView.LayoutManager layoutManager;
     FirebaseUser user;
     StorageReference storage;
+    DatabaseReference database;
     ProgressBar progressBar;
     ArrayList<String> outsideimagelist = new ArrayList<>();
     String CallingActivity= null;
@@ -53,6 +60,7 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
+        database = FirebaseDatabase.getInstance().getReference("MappedMaps");
 
         ArrayList<String> imagelist = new ArrayList<>();
 
@@ -67,9 +75,27 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
         Intent intent = getIntent();
         CallingActivity = intent.getStringExtra("CallingActivity");
 
-        
-        // this can be a problem if the user does not select from images
-        storage.child("document").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+        if (CallingActivity.equals("TestingMode")){
+            database.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                        imagelist.add(snapshot1.getValue().toString());
+                        outsideimagelist.add(snapshot1.getValue().toString());
+
+                    }
+                    recyclerView.setAdapter(imageAdapter);
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
+
+
+        else{storage.child("document").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
                 for (StorageReference fileRef : listResult.getItems()){
@@ -88,7 +114,8 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
                     });}
                 }
             }
-        });}
+        });
+        }}
 
 // Sending the file
     @Override

@@ -82,14 +82,12 @@ public class MappingActivity extends AppCompatActivity {
     private PointF currPos;
     private Bitmap pin;
 
-
     private float x;
     private float y;
 
     // save data
     private static HashMap<Point,HashMap<String, Integer>> mappingData = new HashMap<>();
     private static List<String> aps = new ArrayList<>();
-
 
     DatabaseReference database;
     FirebaseUser user;
@@ -118,12 +116,11 @@ public class MappingActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
-
         // retrieve from database
         // Load the new image that is selected by the user
 
         /**
-         * Getting the image that the user first wanted in the MappingMode and displaying it
+         * Getting the image that the user first wanted in the MappingMode and displaying it using the URL of the map
          */
         Intent intent = getIntent();
             DownloadURL = intent.getStringExtra("Imageselected");
@@ -141,7 +138,9 @@ public class MappingActivity extends AppCompatActivity {
         // setting the zoom
         imageToMap.setMinimumDpi(20);
 
-
+        /**
+         * When a user long press on the screen, the user shld see a location pin in the map
+         */
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
                 @SuppressLint("ClickableViewAccessibility")
@@ -171,6 +170,11 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * When the user saves the position of the map, the app scans and get a scanresult, then save the data of the location,
+         * The app then displays to the user a circled area around the point that has been mapped,
+         * In order to show the location that has been mapped around it
+         */
         button_savePosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,6 +233,10 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * When the user press complete mapping, all the data of the different location of the map will be sent to the database,
+         * mapping completed
+         */
         button_complete_mapping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

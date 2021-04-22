@@ -60,6 +60,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * The Testing Mode of the app, where the user can check where he is
+ */
 public class TestingMode extends AppCompatActivity {
     SubsamplingScaleImageView image_mappedMap;
     TextView textView_predictedPosition;
@@ -96,6 +99,9 @@ public class TestingMode extends AppCompatActivity {
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
+        /**
+         * Get the downloadURL of the Map from the selected map, if applicable, and display it on the map
+         */
         Intent intent = getIntent();
         if (intent.getStringExtra("Imageselected") != null) {
             DownloadURL = intent.getStringExtra("Imageselected");
@@ -118,8 +124,6 @@ public class TestingMode extends AppCompatActivity {
             testing2 = new Testing2(MappingActivity.getMappingData(),MappingActivity.getAPs());
             //testing = new Testing(MappingActivity.getMappingData(),MappingActivity.getAPs());
         }
-
-
 
         /**
          Purpose: get prediction of user current position

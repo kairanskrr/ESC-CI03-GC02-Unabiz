@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 /**
- * The Main Activity page to select which mode of usage the user wants
+ * The Main Activity page to select which mode of usage the user wants, with different buttons
  */
 
 public class SelectMenu extends AppCompatActivity {

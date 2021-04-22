@@ -63,8 +63,8 @@ import java.util.List;
 
 /**
  * The first activity inside the mapping mode where we ask the user for how they want to map,
- *  either by using an exisitng map from firebase,
- *  or by uploading their own map using URL or local device
+ *  either by using an existing map from firebase,
+ *  or by uploading their own map using local device
  */
 
 public class MappingMode extends AppCompatActivity {
@@ -179,7 +179,7 @@ public class MappingMode extends AppCompatActivity {
         });
 
         /**
-         *Change current image after uploading
+         * Change current image after uploading
          */
         ChangeImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,8 +226,9 @@ public class MappingMode extends AppCompatActivity {
                             } else {
                             }
                         }
-                    });
-                } else if (URLlink != null){
+                    }); }
+                // Might need to remove the downloadURLs
+                else if (URLlink != null){
                     FirebaseDatabase.getInstance().getReference("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -243,7 +244,6 @@ public class MappingMode extends AppCompatActivity {
                         }
                     });
                 }
-
                 else {
                     Toast.makeText(MappingMode.this,"Authentication Failed",Toast.LENGTH_LONG).show();    // display an error message
                     TextViewInvalidPhoto.setText(invalidPhotoText);
@@ -263,7 +263,7 @@ public class MappingMode extends AppCompatActivity {
     }
 
     /**
-     * Download from the internet using the URL, image
+     * Download image from the internet using the image URL
      */
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;

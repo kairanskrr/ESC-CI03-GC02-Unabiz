@@ -27,6 +27,11 @@ import com.kairan.esc_project.TestingMode;
 
 import java.util.ArrayList;
 
+/**
+ * This class contains all the maps inside the database,
+ * whenever a map is chosen,
+ * the map's url is taken and sent to the calling activity(testing or mapping mode)
+ */
 public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnNoteListener {
     RecyclerView recyclerView;
     RecyclerView.Adapter imageAdapter;
@@ -62,6 +67,8 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
         Intent intent = getIntent();
         CallingActivity = intent.getStringExtra("CallingActivity");
 
+        
+        // this can be a problem if the user does not select from images
         storage.child("document").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
@@ -81,13 +88,9 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
                     });}
                 }
             }
-        });
+        });}
 
-
-
-// send the file selected into MappingActivity
-
-    }
+// Sending the file
     @Override
     public void onNoteClick(int position) {
 //        Log.i("TESTT","onNoteClick");

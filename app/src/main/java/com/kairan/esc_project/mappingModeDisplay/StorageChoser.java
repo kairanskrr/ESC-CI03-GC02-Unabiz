@@ -60,7 +60,7 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
-        database = FirebaseDatabase.getInstance().getReference("MappedMaps").child(user.getUid());
+        database = FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid());
 
         ArrayList<String> imagelist = new ArrayList<>();
 

@@ -128,7 +128,6 @@ public class MappingActivity extends AppCompatActivity {
          */
         Intent intent = getIntent();
             DownloadURL = intent.getStringExtra("Imageselected");
-            mImageUri = Uri.parse(DownloadURL);
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.init(config);
@@ -253,18 +252,18 @@ public class MappingActivity extends AppCompatActivity {
                 } else {
                     //mapping.send_data_to_database(DownloadURL, getApplicationContext());
                     mapping2.send_data(DownloadURL, getApplicationContext());
-                    DatabaseReference database2 = FirebaseDatabase.getInstance().getReference("MappedMaps").child(user.getUid());
-                    database2.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            long number = snapshot.getChildrenCount()+1;
-                            database2.child(Long.toString(number)).setValue(DownloadURL);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                        }
-                    });
+//                    DatabaseReference database2 = FirebaseDatabase.getInstance().getReference("MappedMaps").child(user.getUid());
+//                    database2.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            long number = snapshot.getChildrenCount()+1;
+//                            database2.child(Long.toString(number)).setValue(DownloadURL);
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//                        }
+//                    });
                     //mapping2.train_data(5);
                     aps = mapping.getAp_list();
                     aps = mapping2.getAp_list();
@@ -331,12 +330,12 @@ public class MappingActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
-            mImageUri = data.getData();
-            imageToMap.setImage(ImageSource.uri(mImageUri));
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+//            mImageUri = data.getData();
+//            imageToMap.setImage(ImageSource.uri(mImageUri));
+//        }
+//    }
     }

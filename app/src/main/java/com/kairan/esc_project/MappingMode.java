@@ -114,7 +114,7 @@ public class MappingMode extends AppCompatActivity {
 
 
        /**
-        Either Upload a Map from device/URL or choose a Map from the existing firebase storage
+        Either Upload a Map from device or choose a Map from the existing firebase storage, the URL part has been commented out
          */
         DeviceUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,11 +146,11 @@ public class MappingMode extends AppCompatActivity {
                 intent.putExtra("CallingActivity", "MappingMode");
                 startActivity(intent);
             }
-
         });
-        /**
-         * The confirmation button for URL uploading, displays the image uploaded through URL
-         */
+
+//        /**
+//         * The confirmation button for URL uploading, displays the image uploaded through URL
+//         */
 //        ConfirmURL.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -180,7 +180,7 @@ public class MappingMode extends AppCompatActivity {
 //        });
 
         /**
-         * Change current image after uploading
+         * Change current image to upload a different image
          */
         ChangeImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,12 +196,12 @@ public class MappingMode extends AppCompatActivity {
         });
 
         /**
-         Confirm the selected image: upload the image to firebase and go to mapping activity, depending on the how the user uploaded the image
+         Confirm the selected image: upload the image to firebase and go to mapping activity
          */
         ConfirmImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // if the image that wants to be sent is from local device
+                // Get the storage count of the current device, store the data based on the storage count to avoid path problems
                 if (mImageUri != null){
                     storage.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                         @Override
@@ -226,7 +226,6 @@ public class MappingMode extends AppCompatActivity {
                                         Intent intent = new Intent(MappingMode.this,MappingActivity.class);
                                         intent.putExtra("Imageselected", URLlink);
                                         startActivity(intent);
-                                    } else {
                                     }
                                 }
                             });
@@ -234,7 +233,9 @@ public class MappingMode extends AppCompatActivity {
                         }
                     });
                      }
-                // Might need to remove the downloadURLs
+                /**
+                 * Downloading the URL part is commented out for now as we are not using it
+                 */
 //                else if (URLlink != null){
 //                    FirebaseDatabase.getInstance().getReference("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
 //                        @Override
@@ -251,7 +252,7 @@ public class MappingMode extends AppCompatActivity {
 //                    });
 //                }
                 else {
-                    Toast.makeText(MappingMode.this,"Authentication Failed",Toast.LENGTH_LONG).show();    // display an error message
+//                    Toast.makeText(MappingMode.this,"Please sel",Toast.LENGTH_LONG).show();    // display an error message
                     TextViewInvalidPhoto.setText(invalidPhotoText);
                 }
             }

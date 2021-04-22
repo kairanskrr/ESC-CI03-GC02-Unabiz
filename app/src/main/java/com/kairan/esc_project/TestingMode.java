@@ -143,7 +143,7 @@ public class TestingMode extends AppCompatActivity {
                 wifiScan.getWifiNetworksList();
                 // store this list into scanList
                 scanList = wifiScan.getScanList();
-                Log.i("AAAAA",scanList.toString());
+//                Log.i("AAAAA",scanList.toString());
                 if(scanList != null){
                     testing2.setScanResult(scanList);
                     Point result = testing2.predict();

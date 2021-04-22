@@ -26,6 +26,7 @@ public class Mapping2 {
     private HashMap<String,Integer> mac_rssi;
     List<String> ap_list = new ArrayList<>();
     public HashMap<Point,HashMap<String, Integer>> position_ap = new HashMap<>();
+    Map<String, HashMap> position_apclone = new HashMap<>();
     List<Point> position_list;
     int num_of_data;
     private final float learning_rate = 0.2f;
@@ -96,6 +97,7 @@ public class Mapping2 {
     public void add_data(Point position, List<ScanResult> scanResult){
         mac_rssi = cleanData(scanResult);
         position_ap.put(position, mac_rssi);
+        if(mac_rssi != null){position_apclone.put(position.toString(), mac_rssi);}
         num_of_data++;
     }
 
@@ -105,7 +107,7 @@ public class Mapping2 {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long number = snapshot.getChildrenCount()+1;
-                database.child(Long.toString(number)).setValue(position_ap);
+                database.child(Long.toString(number)).setValue(position_apclone);
                 FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid()).child(Long.toString(number)).setValue(DownloadURL);
                 Toast.makeText(context, "Mapping has been completed",Toast.LENGTH_SHORT).show();
             }

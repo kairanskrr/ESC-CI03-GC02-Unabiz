@@ -34,7 +34,7 @@ public class Testing2 {
     private String DownloadURL;
 
     public static final int K = 5;
-    private final double alpha = 0.5;
+    private final double alpha = 0.7;
 
     static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
@@ -48,54 +48,6 @@ public class Testing2 {
         this.positionSet = new ArrayList<Point>(position_ap.keySet());
     }
 
-    public Testing2(String Download){
-        this.DownloadURL = Download;
-    }
-
-    /**
-     * Initialize testing class with the scan result of the unknown position
-     */
-    public void get_data_for_testing(String URLlink){
-        //retrieve data from database
-        HashMap<Point,HashMap<String, Integer>> dataSet = new HashMap<>();
-        final Point[] prediction = new Point[1];
-        MapUrls.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1 : snapshot.getChildren()){
-                    if (snapshot1.getValue().toString().equals(URLlink) ){
-                        database.child(Objects.requireNonNull(snapshot1.getKey())).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                Map<String, Map> map = (Map<String, Map>) snapshot.getValue();
-                                for (String key: map.keySet()){
-                                    HashMap<String, Integer> rssivalues = new HashMap<>();
-                                    String[] separated = key.split(",");
-                                    Point p = new Point(Double.parseDouble(separated[0]),Double.parseDouble(separated[1]));
-//                                            Log.i("Test",p.toString());
-//                                            Log.i("Test", separated[0]);
-//                                            Log.i("Test", separated[1]);
-                                    for(Object key1: map.get(key).keySet()){
-                                        rssivalues.put(key1.toString(), Integer.valueOf(map.get(key).get(key1).toString()));
-                                    }
-                                    dataSet.put(p,rssivalues);
-                                }
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
 
 
     public void setScanResult(List<ScanResult> scanResult) {
@@ -112,6 +64,43 @@ public class Testing2 {
                 } else {
                     mac_rssi.put(bssid, scanResult.get(i).level);
                 }
+            }
+        }
+        bssid = new ArrayList<>(mac_rssi.keySet());
+    }
+
+    public HashMap<String,Integer> cleanScanResult(List<ScanResult> scanResult){
+        if(scanResult==null){
+            return null;
+        }
+        HashMap<String,Integer> mac_rssi2 = new HashMap<>();
+        for (int i = 0; i < scanResult.size(); i++) {
+            String bssid = scanResult.get(i).BSSID;
+            bssid = bssid.substring(0, bssid.length() - 1);
+            if (Math.abs(scanResult.get(i).level) < 70) {
+                if (mac_rssi2.keySet() != null && mac_rssi2.keySet().contains(bssid)) {
+                    int level = (mac_rssi2.get(bssid) + scanResult.get(i).level) / 2;
+                    mac_rssi2.put(bssid, level);
+                } else {
+                    mac_rssi2.put(bssid, scanResult.get(i).level);
+                }
+            }
+        }
+        return mac_rssi2;
+    }
+
+    public void setScanResult(List<ScanResult> scanResult,List<ScanResult> scanResult2) {
+        HashMap<String,Integer> mac_rssi1 = cleanScanResult(scanResult);
+        HashMap<String,Integer> mac_rssi2 = cleanScanResult(scanResult2);
+        for(String mac:mac_rssi1.keySet()){
+            mac_rssi.put(mac,mac_rssi1.get(mac));
+        }
+        for(String mac2:mac_rssi2.keySet()){
+            if(mac_rssi.containsKey(mac2)){
+                int temp = (mac_rssi.get(mac2)+mac_rssi2.get(mac2))/2;
+                mac_rssi.put(mac2,temp);
+            }else{
+                mac_rssi.put(mac2,mac_rssi2.get(mac2));
             }
         }
         bssid = new ArrayList<>(mac_rssi.keySet());
@@ -176,18 +165,18 @@ public class Testing2 {
 
         distance_point = sortByComparator(distance_point, true);
         similarity_point = sortByComparator(similarity_point, true);
-        /*Point DP = getPoint(distance_point);
+        Point DP = getPoint(distance_point);
         Point SP = getPoint(similarity_point);
 
         Log.i("TTTTT","DP: "+DP.toString());
         Log.i("TTTTT","SP: "+SP.toString());
 
-        return new Point(DP.getX() * alpha + SP.getX() * (1 - alpha), DP.getY() * alpha + SP.getY() * (1 - alpha));*/
-        Point DP = new ArrayList<Point>(distance_point.keySet()).get(0);
+        return new Point(DP.getX() * alpha + SP.getX() * (1 - alpha), DP.getY() * alpha + SP.getY() * (1 - alpha));
+        /*Point DP = new ArrayList<Point>(distance_point.keySet()).get(0);
         Point SP = new ArrayList<Point>(similarity_point.keySet()).get(0);
         Log.i("TTTTT","DP: "+DP.toString());
         Log.i("TTTTT","SP: "+SP.toString());
-        return DP;
+        return new Point(DP.getX()*alpha+SP.getX()*(1-alpha),DP.getY()*alpha+SP.getY()*(1-alpha));*/
 
 
     }
@@ -196,8 +185,11 @@ public class Testing2 {
         int count = 0;
         double x = 0;
         double y = 0;
-        for (Point point : input.keySet()) {
-            if (input.get(point) == 0) {
+        float[] values = new float[K];
+        ArrayList<Point> points = new ArrayList<>(input.keySet());
+        for(int i = 0; i< K;i++){
+            Point point = points.get(i);
+            if (input.get(point) <= 0.2) {
                 x += point.getX();
                 y += point.getY();
                 count += 1;
@@ -206,10 +198,25 @@ public class Testing2 {
                 y = y / count;
                 break;
             } else {
-                x += point.getX() / K;
-                y += point.getY() / K;
+                x += point.getX()/K;
+                y += point.getY()/K;
             }
+            Log.i("TTTTT","x: "+x);
+            Log.i("TTTTT","y: "+y);
         }
+
+        /*float v = 0;
+        if(count==0){
+            for(int i=0;i < K; i++){
+                v += values[i];
+            }
+            for(int ii = 0;ii<K;ii++){
+                x = points.get(ii).getX()/values[ii]/v;
+                y = points.get(ii).getY()/values[ii]/v;
+            }
+        }*/
+
+
         return new Point(x, y);
     }
 

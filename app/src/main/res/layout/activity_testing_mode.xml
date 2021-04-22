@@ -8,54 +8,75 @@
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/image_mappedFloorPlan"
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_width="410dp"
+        android:layout_height="374dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.131"
+        app:layout_constraintVertical_bias="0.077"
         app:srcCompat="@drawable/ic_launcher_background"
         tools:ignore="VectorDrawableCompat"
         tools:srcCompat="?android:attr/scrollbarTrackVertical" />
 
     <TextView
         android:id="@+id/textView_predictedPosition"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="end"
+        android:layout_width="150dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="aaaaaaaaaaaaaaaa"
+        android:textColor="@color/coordinate_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_mappedFloorPlan"
-        app:layout_constraintVertical_bias="0.028" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewYourLocation"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <Button
+        android:id="@+id/button_selectMap"
+        style="@style/confirmButton"
+        android:layout_margin="20dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/select_avail_map"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.625"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView_predictedPosition"
-        android:orientation="vertical">
+        app:layout_constraintTop_toBottomOf="@+id/textView_predictedPosition" />
 
-        <Button
-            android:id="@+id/button_selectMap"
-            style="@style/confirmButton"
-            android:layout_margin="20dp"
-            android:text="@string/select_avail_map" />
+    <Button
+        android:id="@+id/button_back"
+        style="@style/confirmButton"
+        android:layout_margin="20dp"
+        android:text="@string/testing_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_getLocation" />
 
-        <Button
-            android:id="@+id/button_getLocation"
-            style="@style/confirmButton"
-            android:layout_margin="20dp"
-            android:text="@string/where_am_i" />
+    <Button
+        android:id="@+id/button_getLocation"
+        style="@style/confirmButton"
+        android:layout_margin="20dp"
+        android:text="@string/where_am_i"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_selectMap" />
 
-        <Button
-            android:id="@+id/button_back"
-            style="@style/confirmButton"
-            android:layout_margin="20dp"
-            android:text="@string/testing_back" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/textViewYourLocation"
+        style="@style/appHeaders"
+        android:layout_width="133dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="8dp"
+        android:gravity="left"
+        android:text="Your location:"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_mappedFloorPlan" />
 
     <!---<Button
         android:id="@+id/button_selectMap"

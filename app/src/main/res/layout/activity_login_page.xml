@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/textViewLogin"
         style="@style/appHeaders"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:text="@string/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

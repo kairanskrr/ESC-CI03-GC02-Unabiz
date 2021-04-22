@@ -22,6 +22,7 @@
         android:padding="20dp"
         android:text="To zoom, pinch open with 2 fingers close together on the screen and move them apart without lifting them from the screen."
         android:textSize="18sp"
+        android:justificationMode="inter_word"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvZoom" />

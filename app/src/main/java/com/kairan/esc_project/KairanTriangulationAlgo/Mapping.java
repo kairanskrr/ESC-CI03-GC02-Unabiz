@@ -83,7 +83,7 @@ public class Mapping {
 
         num_of_data++;
 
-        
+
     }
 
     public void send_data_to_database(String DownloadURL, Context context){

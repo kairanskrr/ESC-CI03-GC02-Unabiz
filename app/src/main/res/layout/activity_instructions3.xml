@@ -23,6 +23,7 @@
         android:padding="20dp"
         android:text="To map current location that you are standing on, press the 'save current position' button."
         android:textSize="18sp"
+        android:justificationMode="inter_word"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPress" />

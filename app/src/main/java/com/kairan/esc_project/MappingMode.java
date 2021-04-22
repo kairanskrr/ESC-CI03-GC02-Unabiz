@@ -63,8 +63,8 @@ import java.util.List;
 
 /**
  * The first activity inside the mapping mode where we ask the user for how they want to map,
- *  either by using an exisitng map from firebase,
- *  or by uploading their own map using URL or local device
+ *  either by using an existing map from firebase,
+ *  or by uploading their own map using local device
  */
 
 public class MappingMode extends AppCompatActivity {
@@ -96,19 +96,19 @@ public class MappingMode extends AppCompatActivity {
 
 
         DeviceUpload = findViewById(R.id.DeviceUpload);
-        UrlUpload = findViewById(R.id.UrlUpload);
+//        UrlUpload = findViewById(R.id.UrlUpload);
         FirebaseUpload = findViewById(R.id.FirebaseUpload);
         PreviewImage = findViewById(R.id.PreviewImage);
-        ConfirmURL = findViewById(R.id.ConfirmURL);
-        URLBox = findViewById(R.id.UrlBox);
-        URLEntry = findViewById(R.id.UrlEntry);
+//        ConfirmURL = findViewById(R.id.ConfirmURL);
+//        URLBox = findViewById(R.id.UrlBox);
+//        URLEntry = findViewById(R.id.UrlEntry);
         ConfirmImage = findViewById(R.id.button_confirm);
         ChangeImage = findViewById(R.id.button_changeImage);
         TextViewInvalidPhoto = findViewById(R.id.tvInvalidPhoto);
         invalidPhotoText = "Please Select a Photo";
 
-        URLBox.setVisibility(View.GONE);
-        ConfirmURL.setVisibility(View.GONE);
+//        URLBox.setVisibility(View.GONE);
+//        ConfirmURL.setVisibility(View.GONE);
         ConfirmImage.setVisibility(View.GONE);
         ChangeImage.setVisibility(View.GONE);
 
@@ -121,23 +121,23 @@ public class MappingMode extends AppCompatActivity {
             public void onClick(View v) {
                 openFileChoser();
                 DeviceUpload.setVisibility(View.GONE);
-                UrlUpload.setVisibility(View.GONE);
+//                UrlUpload.setVisibility(View.GONE);
                 FirebaseUpload.setVisibility(View.GONE);
                 ConfirmImage.setVisibility(View.VISIBLE);
                 ChangeImage.setVisibility(View.VISIBLE);
             }
         });
 
-        UrlUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeviceUpload.setVisibility(View.GONE);
-                FirebaseUpload.setVisibility(View.GONE);
-                UrlUpload.setVisibility(View.GONE);
-                URLBox.setVisibility(View.VISIBLE);
-                ConfirmURL.setVisibility(View.VISIBLE);
-            }
-        });
+//        UrlUpload.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                DeviceUpload.setVisibility(View.GONE);
+//                FirebaseUpload.setVisibility(View.GONE);
+//                UrlUpload.setVisibility(View.GONE);
+//                URLBox.setVisibility(View.VISIBLE);
+//                ConfirmURL.setVisibility(View.VISIBLE);
+//            }
+//        });
 
         FirebaseUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,44 +151,45 @@ public class MappingMode extends AppCompatActivity {
         /**
          * The confirmation button for URL uploading, displays the image uploaded through URL
          */
-        ConfirmURL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                URLlink = URLEntry.getText().toString();
-                if (URLlink.isEmpty()){
-                    Toast.makeText(MappingMode.this, "Please Enter An URL", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingMode.this).build();
-                    ImageLoader imageLoader = ImageLoader.getInstance();
-                    imageLoader.init(config);
-                    imageLoader.loadImage(URLlink,new SimpleImageLoadingListener(){
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            PreviewImage.setImage(ImageSource.bitmap(loadedImage));  // subscaling
-                        }
-                    });
-                    DeviceUpload.setVisibility(View.GONE);
-                    UrlUpload.setVisibility(View.GONE);
-                    URLBox.setVisibility(View.GONE);
-                    ConfirmURL.setVisibility(View.GONE);
-                    ConfirmImage.setVisibility(View.VISIBLE);
-                    ChangeImage.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+//        ConfirmURL.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                URLlink = URLEntry.getText().toString();
+//                if (URLlink.isEmpty()){
+//                    Toast.makeText(MappingMode.this, "Please Enter An URL", Toast.LENGTH_SHORT).show();
+//                }
+//                else{
+//                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingMode.this).build();
+//                    ImageLoader imageLoader = ImageLoader.getInstance();
+//                    imageLoader.init(config);
+//                    imageLoader.loadImage(URLlink,new SimpleImageLoadingListener(){
+//                        @Override
+//                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                            PreviewImage.setImage(ImageSource.bitmap(loadedImage));  // subscaling
+//                            mImageUri = Uri.parse(imageUri);
+//                        }
+//                    });
+//                    DeviceUpload.setVisibility(View.GONE);
+//                    UrlUpload.setVisibility(View.GONE);
+//                    URLBox.setVisibility(View.GONE);
+//                    ConfirmURL.setVisibility(View.GONE);
+//                    ConfirmImage.setVisibility(View.VISIBLE);
+//                    ChangeImage.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
 
         /**
-         *Change current image after uploading
+         * Change current image after uploading
          */
         ChangeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DeviceUpload.setVisibility(View.VISIBLE);
-                UrlUpload.setVisibility(View.VISIBLE);
+//                UrlUpload.setVisibility(View.VISIBLE);
                 FirebaseUpload.setVisibility(View.VISIBLE);
-                URLBox.setVisibility(View.GONE);
-                ConfirmURL.setVisibility(View.GONE);
+//                URLBox.setVisibility(View.GONE);
+//                ConfirmURL.setVisibility(View.GONE);
                 ConfirmImage.setVisibility(View.GONE);
                 ChangeImage.setVisibility(View.GONE);
             }
@@ -202,48 +203,53 @@ public class MappingMode extends AppCompatActivity {
             public void onClick(View v) {
                 // if the image that wants to be sent is from local device
                 if (mImageUri != null){
-                    StorageReference storage1 = storage.child(mImageUri.getPath());
-                     storage1.putFile(mImageUri);
-
-                    storage1.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    storage.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                         @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-
-                            // Continue with the task to get the download URL
-                            return storage1.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                URLlink = task.getResult().toString();
-                                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
-                                intent.putExtra("Imageselected", URLlink);
-                                startActivity(intent);
-                            } else {
-                            }
-                        }
-                    });
-                } else if (URLlink != null){
-                    FirebaseDatabase.getInstance().getReference("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            FirebaseDatabase.getInstance().getReference("DownloadURLs").setValue(URLlink);
-                            Intent intent = new Intent(MappingMode.this,MappingActivity.class);
-                            intent.putExtra("Imageselected", URLlink);
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                        public void onSuccess(ListResult listResult) {
+                            int n = listResult.getItems().size()+1;
+                            StorageReference storage1 = storage.child(Integer.toString(n));
+                            storage1.putFile(mImageUri);
+                            storage1.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
+                                    }
+                                    // Continue with the task to get the download URL
+                                    return storage1.getDownloadUrl();
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        URLlink = task.getResult().toString();
+                                        Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                                        intent.putExtra("Imageselected", URLlink);
+                                        startActivity(intent);
+                                    } else {
+                                    }
+                                }
+                            });
 
                         }
                     });
-                }
-
+                     }
+                // Might need to remove the downloadURLs
+//                else if (URLlink != null){
+//                    FirebaseDatabase.getInstance().getReference("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            FirebaseDatabase.getInstance().getReference("DownloadURLs").setValue(URLlink);
+//                            Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+//                            intent.putExtra("Imageselected", URLlink);
+//                            startActivity(intent);
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//                        }
+//                    });
+//                }
                 else {
                     Toast.makeText(MappingMode.this,"Authentication Failed",Toast.LENGTH_LONG).show();    // display an error message
                     TextViewInvalidPhoto.setText(invalidPhotoText);
@@ -263,7 +269,7 @@ public class MappingMode extends AppCompatActivity {
     }
 
     /**
-     * Download from the internet using the URL, image
+     * Download image from the internet using the image URL
      */
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;

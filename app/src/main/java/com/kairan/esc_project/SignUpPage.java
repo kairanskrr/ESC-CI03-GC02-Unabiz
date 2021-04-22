@@ -17,8 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * This is the sign up page
- *
+ * The sign up page
  * */
 
 public class SignUpPage extends AppCompatActivity {
@@ -37,12 +36,9 @@ public class SignUpPage extends AppCompatActivity {
         RegisterButton = findViewById(R.id.buttonRegister);
         fAuth = FirebaseAuth.getInstance();
 
-        // is the name used here?
-
         /**
          * The register button, when clicked, check if all the fields are filled up and correct, then create user in firebase
          * */
-
 
         RegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override

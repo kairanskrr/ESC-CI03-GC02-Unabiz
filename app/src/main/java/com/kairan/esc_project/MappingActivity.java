@@ -1,5 +1,6 @@
 package com.kairan.esc_project;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,6 +27,12 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.kairan.esc_project.KairanTriangulationAlgo.Mapping2;
+import com.kairan.esc_project.KairanTriangulationAlgo.Testing;
+import com.kairan.esc_project.KairanTriangulationAlgo.Testing2;
 import com.kairan.esc_project.UIStuff.CircleView;
 import com.kairan.esc_project.UIStuff.PinView;
 
@@ -61,6 +68,7 @@ public class MappingActivity extends AppCompatActivity {
     SubsamplingScaleImageView imageToMap;
     TextView textView_currentPosition;
     Mapping mapping = new Mapping();
+    Mapping2 mapping2 = new Mapping2();
     private List<ScanResult> scanList;
     Button button_savePosition, button_complete_mapping;
     private PinView view;
@@ -78,13 +86,12 @@ public class MappingActivity extends AppCompatActivity {
     private PointF currPos;
     private Bitmap pin;
 
-
     private float x;
     private float y;
 
     // save data
     private static HashMap<Point,HashMap<String, Integer>> mappingData = new HashMap<>();
-
+    private static List<String> aps = new ArrayList<>();
 
     DatabaseReference database;
     FirebaseUser user;
@@ -111,17 +118,17 @@ public class MappingActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
-        storage = FirebaseStorage.getInstance().getReference(user.getUid());
-
+        storage = FirebaseStorage.getInstance().getReference(user.getUid()).child("Mapped");
 
         // retrieve from database
         // Load the new image that is selected by the user
 
         /**
-         * Getting the image that the user first wanted in the MappingMode and displaying it
+         * Getting the image that the user first wanted in the MappingMode and displaying it using the URL of the map
          */
         Intent intent = getIntent();
             DownloadURL = intent.getStringExtra("Imageselected");
+            mImageUri = Uri.parse(DownloadURL);
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingActivity.this).build();
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.init(config);
@@ -136,6 +143,9 @@ public class MappingActivity extends AppCompatActivity {
         // setting the zoom
         imageToMap.setMinimumDpi(20);
 
+        /**
+         * When a user long press on the screen, the user shld see a location pin in the map
+         */
         imageToMap.setOnTouchListener(new View.OnTouchListener() {
             GestureDetector gestureDetector = new GestureDetector(getApplicationContext(),new GestureDetector.SimpleOnGestureListener(){
                 @SuppressLint("ClickableViewAccessibility")
@@ -143,6 +153,8 @@ public class MappingActivity extends AppCompatActivity {
                 public void onLongPress(MotionEvent e) {
                     x = (float)Math.floor(e.getX()*100)/100;
                     y = (float)Math.floor(e.getY()*100)/100;
+                    Log.i("TTTTT","HEIGHT: "+imageToMap.getSHeight());
+                    Log.i("TTTTT","WIDTH: "+imageToMap.getSWidth());
                     // textView_currentPosition.setText(imageToMap.viewToSourceCoord(x,y).toString());
                     currPos = imageToMap.viewToSourceCoord(x,y);
                     // current position printed out, this position is wrt to the image!
@@ -163,6 +175,11 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * When the user saves the position of the map, the app scans and get a scanresult, then save the data of the location,
+         * The app then displays to the user a circled area around the point that has been mapped,
+         * In order to show the location that has been mapped around it
+         */
         button_savePosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,6 +198,7 @@ public class MappingActivity extends AppCompatActivity {
                         // mapping.add_data first filters scanList then append to position_ap.
                         // debug because the point on screen is not the same as the one stored in position_ap
                         mapping.add_data(new Point(currPos.x, currPos.y), scanList);
+                        mapping2.add_data(new Point(currPos.x, currPos.y), scanList);
 
                         // print out point
                         Log.d("PRESS", "The Point is + " + String.valueOf(new Point(currPos.x, currPos.y)));
@@ -220,31 +238,65 @@ public class MappingActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * When the user press complete mapping, all the data of the different location of the map will be sent to the database,
+         * mapping completed
+         */
         button_complete_mapping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // send image to database
-                mapping.send_data_to_database(DownloadURL,getApplicationContext());
-                HashMap<Point, HashMap<String,Integer>> test = mapping.getPosition_ap();
-                List<Point> test_point = new ArrayList<>(test.keySet());
-                for(Point x:test_point){
-                    Log.i("AAAAAA",x.toString());
-                    Log.i("AAAAAA",test.get(x).toString());
-                }
                 mappingData = mapping.getPosition_ap();
-                Intent intent = new Intent(MappingActivity.this,SelectMenu.class);
-                startActivity(intent);
+                mappingData = mapping2.getPosition_ap();
+
+                if (mappingData.size() < Testing2.K) {
+                    Toast.makeText(MappingActivity.this, String.format("At least %d entried are needed to complete mapping", Testing2.K), Toast.LENGTH_LONG).show();
+                } else {
+                    //mapping.send_data_to_database(DownloadURL, getApplicationContext());
+                    mapping2.send_data(DownloadURL, getApplicationContext());
+                    DatabaseReference database2 = FirebaseDatabase.getInstance().getReference("MappedMaps").child(user.getUid());
+                    database2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long number = snapshot.getChildrenCount()+1;
+                            database2.child(Long.toString(number)).setValue(DownloadURL);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                    //mapping2.train_data(5);
+                    aps = mapping.getAp_list();
+                    aps = mapping2.getAp_list();
+
+                    HashMap<Point, HashMap<String, Integer>> test = mapping.getPosition_ap();
+                    List<Point> test_point = new ArrayList<>(test.keySet());
+                    for (Point x : test_point) {
+                        Log.i("AAAAAA", x.toString());
+                        Log.i("AAAAAA", test.get(x).toString());
+                    }
+                    Log.i("TTTTT", mappingData.toString());
+                    Log.i("TTTTT", aps.size() + "\t" + aps.toString());
+                    Intent intent = new Intent(MappingActivity.this, SelectMenu.class);
+                    startActivity(intent);
+                }
             }
         });
+    }
+
+
+    public static HashMap<Point, HashMap<String, Integer>> getMappingData() {
+        return mappingData;
+    }
+
+    public static List<String> getAPs(){
+        Log.i("TTTTT","return aps"+aps.size()+"\t"+aps.toString());
+        return aps;
     }
 
     /**
      * Download the image using URL from the internet to display
      */
-    public static HashMap<Point, HashMap<String, Integer>> getMappingData() {
-        return mappingData;
-    }
-
     private class LoadImage extends AsyncTask<String, Void, Bitmap> {
         SubsamplingScaleImageView imageView;
         URL url;

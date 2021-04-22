@@ -70,6 +70,7 @@ public class MappingActivity extends AppCompatActivity {
     Mapping mapping = new Mapping();
     Mapping2 mapping2 = new Mapping2();
     private List<ScanResult> scanList;
+    private List<ScanResult> scanList2;
     Button button_savePosition, button_complete_mapping;
     private PinView view;
 
@@ -190,15 +191,24 @@ public class MappingActivity extends AppCompatActivity {
                     Log.d("PRESS", "BUTTON SAVE PRESSED");
 
                     // each time button clicked, 1 scan performed
+                    Toast.makeText(MappingActivity.this,"Scannign WiFi...",Toast.LENGTH_LONG).show();
                     WifiScan wifiScan = new WifiScan(getApplicationContext(), MappingActivity.this);
                     wifiScan.getWifiNetworksList();
                     scanList = wifiScan.getScanList();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                    }
+                    wifiScan.getWifiNetworksList();
+                    scanList2 = wifiScan.getScanList();
 
-                    if(scanList != null){
+
+                    if(scanList != null && scanList2 != null){
                         // mapping.add_data first filters scanList then append to position_ap.
                         // debug because the point on screen is not the same as the one stored in position_ap
                         mapping.add_data(new Point(currPos.x, currPos.y), scanList);
-                        mapping2.add_data(new Point(currPos.x, currPos.y), scanList);
+                        mapping2.add_data(new Point(currPos.x, currPos.y), scanList,scanList2);
 
                         // print out point
                         Log.d("PRESS", "The Point is + " + String.valueOf(new Point(currPos.x, currPos.y)));

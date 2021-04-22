@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class Mapping2 {
-    private HashMap<String,Integer> mac_rssi;
+    private HashMap<String,Integer> mac_rssi = new HashMap<>();
     List<String> ap_list = new ArrayList<>();
     public HashMap<Point,HashMap<String, Integer>> position_ap = new HashMap<>();
     Map<String, HashMap> position_apclone = new HashMap<>();
@@ -96,6 +96,26 @@ public class Mapping2 {
 
     public void add_data(Point position, List<ScanResult> scanResult){
         mac_rssi = cleanData(scanResult);
+        position_ap.put(position, mac_rssi);
+        if(mac_rssi != null){position_apclone.put(position.toString(), mac_rssi);}
+        num_of_data++;
+    }
+
+    public void add_data(Point position, List<ScanResult> scanResult,List<ScanResult> scanResult2){
+        HashMap<String,Integer> mac_rssi1 = cleanData(scanResult);
+        HashMap<String,Integer> mac_rssi2 = cleanData(scanResult2);
+        for(String p:mac_rssi1.keySet()){
+            mac_rssi.put(p,mac_rssi1.get(p));
+        }
+        for(String p:mac_rssi2.keySet()){
+            if(mac_rssi.containsKey(p)){
+                int temp = (mac_rssi.get(p)+mac_rssi2.get(p))/2;
+                mac_rssi.put(p,temp);
+            }else{
+                mac_rssi.put(p,mac_rssi2.get(p));
+            }
+        }
+        Log.i("TTTTT","mac_rssi: "+mac_rssi);
         position_ap.put(position, mac_rssi);
         if(mac_rssi != null){position_apclone.put(position.toString(), mac_rssi);}
         num_of_data++;

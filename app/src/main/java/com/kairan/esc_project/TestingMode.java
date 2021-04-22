@@ -77,7 +77,7 @@ public class TestingMode extends AppCompatActivity {
     DatabaseReference MapUrls;
     DatabaseReference database;
     StorageReference storage;
-    List<ScanResult> scanList;
+    List<ScanResult> scanList,scanList2;
     String DownloadURL = null;
     Testing testing;
     Testing2 testing2;
@@ -152,7 +152,15 @@ public class TestingMode extends AppCompatActivity {
                 // store this list into scanList
                 scanList = wifiScan.getScanList();
 //                Log.i("AAAAA",scanList.toString());
-                if(scanList != null){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                }
+                wifiScan.getWifiNetworksList();
+                scanList2 = wifiScan.getScanList();
+
+                if(scanList != null && scanList2 != null){
                     HashMap<Point,HashMap<String, Integer>> dataSet = new HashMap<>();
                     List<String> ap_list = new ArrayList<>();
                     MapUrls.addValueEventListener(new ValueEventListener() {
@@ -183,7 +191,7 @@ public class TestingMode extends AppCompatActivity {
                                             Log.i("TTTTT","data set: "+dataSet);
 
                                             Testing2 testt = new Testing2(dataSet,ap_list);
-                                            testt.setScanResult(scanList);
+                                            testt.setScanResult(scanList,scanList2);
                                             Point result = testt.predict();
                                             textView_predictedPosition.setText(result.toString());
 
@@ -274,7 +282,7 @@ public class TestingMode extends AppCompatActivity {
                     }*/
                 }
                 else{
-                    Toast.makeText(TestingMode.this, "Unable to get WiFi scan result",Toast.LENGTH_LONG).show();
+                    Toast.makeText(TestingMode.this, "Initializing WiFi scan... please try again",Toast.LENGTH_LONG).show();
                 }
             }
         });

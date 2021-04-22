@@ -203,30 +203,37 @@ public class MappingMode extends AppCompatActivity {
             public void onClick(View v) {
                 // if the image that wants to be sent is from local device
                 if (mImageUri != null){
-                    StorageReference storage1 = storage.child(mImageUri.getPath());
-                     storage1.putFile(mImageUri);
+                    storage.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            int n = listResult.getItems().size()+1;
+                            StorageReference storage1 = storage.child(Integer.toString(n));
+                            storage1.putFile(mImageUri);
+                            storage1.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                                @Override
+                                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                    if (!task.isSuccessful()) {
+                                        throw task.getException();
+                                    }
+                                    // Continue with the task to get the download URL
+                                    return storage1.getDownloadUrl();
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    if (task.isSuccessful()) {
+                                        URLlink = task.getResult().toString();
+                                        Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                                        intent.putExtra("Imageselected", URLlink);
+                                        startActivity(intent);
+                                    } else {
+                                    }
+                                }
+                            });
 
-                    storage1.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-                            // Continue with the task to get the download URL
-                            return storage1.getDownloadUrl();
                         }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                URLlink = task.getResult().toString();
-                                Intent intent = new Intent(MappingMode.this,MappingActivity.class);
-                                intent.putExtra("Imageselected", URLlink);
-                                startActivity(intent);
-                            } else {
-                            }
-                        }
-                    }); }
+                    });
+                     }
                 // Might need to remove the downloadURLs
 //                else if (URLlink != null){
 //                    FirebaseDatabase.getInstance().getReference("DownloadURLs").push().addValueEventListener(new ValueEventListener() {

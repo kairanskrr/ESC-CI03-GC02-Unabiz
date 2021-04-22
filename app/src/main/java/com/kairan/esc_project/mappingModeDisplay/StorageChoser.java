@@ -95,7 +95,7 @@ public class StorageChoser extends AppCompatActivity implements ImageAdapter.OnN
         }
 
 
-        else{storage.child("document").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+        else{storage.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
                 for (StorageReference fileRef : listResult.getItems()){

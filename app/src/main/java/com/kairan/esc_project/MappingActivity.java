@@ -253,7 +253,7 @@ public class MappingActivity extends AppCompatActivity {
                 } else {
                     mapping.send_data_to_database(DownloadURL, getApplicationContext());
                     mapping2.send_data();
-                    DatabaseReference database2 = FirebaseDatabase.getInstance().getReference("MappedMaps");
+                    DatabaseReference database2 = FirebaseDatabase.getInstance().getReference("MappedMaps").child(user.getUid());
                     database2.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {

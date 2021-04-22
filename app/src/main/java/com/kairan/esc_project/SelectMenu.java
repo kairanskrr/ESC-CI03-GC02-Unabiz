@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.kairan.esc_project.Instructions.Instructions1;
+
 /**
  * The Main Activity page to select which mode of usage the user wants
  */
 
 public class SelectMenu extends AppCompatActivity {
-    Button MappingButton, TestingButton, WifiScanningButton;
+    Button MappingButton, TestingButton, WifiScanningButton, InstructionsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,7 @@ public class SelectMenu extends AppCompatActivity {
         MappingButton = findViewById(R.id.MappingModeButton);
         TestingButton = findViewById(R.id.TestingModeButton);
         WifiScanningButton = findViewById(R.id.WifiScannerButton);
+        InstructionsButton = findViewById(R.id.Instructions);
 
         MappingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +46,14 @@ public class SelectMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        InstructionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Instructions1.class);
                 startActivity(intent);
             }
         });

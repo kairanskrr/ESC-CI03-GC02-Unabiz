@@ -33,7 +33,7 @@ public class Mapping2 {
     private final int ERROR = 10;
 
     static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
+    static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults");
     static DatabaseReference MapUrls = FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid());
     static HashMap<Point, HashMap<String,Integer>> Map1;
 
@@ -127,7 +127,7 @@ public class Mapping2 {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 long number = snapshot.getChildrenCount()+1;
-                database.child(Long.toString(number)).setValue(position_apclone);
+                database.child(user.getUid()).child(Long.toString(number)).setValue(position_apclone);
                 FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid()).child(Long.toString(number)).setValue(DownloadURL);
                 Toast.makeText(context, "Mapping has been completed",Toast.LENGTH_SHORT).show();
             }

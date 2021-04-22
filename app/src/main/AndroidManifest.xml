@@ -17,15 +17,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Esc_project.NoActionBar">
-        <activity android:name=".mappingModeDisplay.StorageChoser"></activity>
-        <activity android:name=".MappingActivity" />
-        <activity android:name=".mappingModeDisplay.DisplayMap" />
-        <activity android:name=".MappingMode" />
-        <activity android:name=".TestingMode" />
-        <activity android:name=".SelectMenu" />
-        <activity android:name=".SignUpPage" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginPage">
+        <activity
+            android:name=".Instructions.Instructions3"
+            android:screenOrientation="portrait"/>
+        <activity 
+            android:name=".Instructions.Instructions1"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Instructions.Instructions2"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".mappingModeDisplay.StorageChoser"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MappingActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".mappingModeDisplay.DisplayMap"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MappingMode"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".TestingMode"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".SelectMenu"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".SignUpPage"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".LoginPage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,6 +63,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

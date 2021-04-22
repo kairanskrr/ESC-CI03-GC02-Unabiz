@@ -251,8 +251,8 @@ public class MappingActivity extends AppCompatActivity {
                 if (mappingData.size() < Testing2.K) {
                     Toast.makeText(MappingActivity.this, String.format("At least %d entried are needed to complete mapping", Testing2.K), Toast.LENGTH_LONG).show();
                 } else {
-                    mapping.send_data_to_database(DownloadURL, getApplicationContext());
-                    mapping2.send_data();
+                    //mapping.send_data_to_database(DownloadURL, getApplicationContext());
+                    mapping2.send_data(DownloadURL, getApplicationContext());
                     DatabaseReference database2 = FirebaseDatabase.getInstance().getReference("MappedMaps").child(user.getUid());
                     database2.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

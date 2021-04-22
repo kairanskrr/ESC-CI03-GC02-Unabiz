@@ -58,7 +58,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * The Testing Mode of the app, where the user can check where he is
@@ -70,6 +74,7 @@ public class TestingMode extends AppCompatActivity {
     Button button_getLocation;
     Button button_back;
     FirebaseUser user;
+    DatabaseReference MapUrls;
     DatabaseReference database;
     StorageReference storage;
     List<ScanResult> scanList;
@@ -85,6 +90,8 @@ public class TestingMode extends AppCompatActivity {
     private Bitmap pin;
     private Bitmap loadImage;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +104,7 @@ public class TestingMode extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
+        MapUrls = FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid());
         storage = FirebaseStorage.getInstance().getReference(user.getUid());
 
         /**
@@ -119,8 +127,8 @@ public class TestingMode extends AppCompatActivity {
                 }
             });
             // instantiate Test Object
-            //testing = new Testing(DownloadURL);  //
-            testing = new Testing(MappingActivity.getMappingData());
+            testing = new Testing(DownloadURL);  //
+            //testing = new Testing(MappingActivity.getMappingData());
             testing2 = new Testing2(MappingActivity.getMappingData(),MappingActivity.getAPs());
             //testing = new Testing(MappingActivity.getMappingData(),MappingActivity.getAPs());
         }
@@ -145,7 +153,83 @@ public class TestingMode extends AppCompatActivity {
                 scanList = wifiScan.getScanList();
 //                Log.i("AAAAA",scanList.toString());
                 if(scanList != null){
-                    testing2.setScanResult(scanList);
+                    HashMap<Point,HashMap<String, Integer>> dataSet = new HashMap<>();
+                    List<String> ap_list = new ArrayList<>();
+                    MapUrls.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()){
+                                if (snapshot1.getValue().toString().equals(DownloadURL) ){
+                                    database.child(Objects.requireNonNull(snapshot1.getKey())).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            Map<String, Map> map = (Map<String, Map>) snapshot.getValue();
+                                            for (String key: map.keySet()){
+                                                HashMap<String, Integer> rssivalues = new HashMap<>();
+                                                String[] separated = key.split(",");
+                                                Point p = new Point(Double.parseDouble(separated[0]),Double.parseDouble(separated[1]));
+//                                            Log.i("Test",p.toString());
+//                                            Log.i("Test", separated[0]);
+//                                            Log.i("Test", separated[1]);
+                                                for(Object key1: map.get(key).keySet()){
+                                                    rssivalues.put(key1.toString(), Integer.valueOf(map.get(key).get(key1).toString()));
+                                                    if(!ap_list.contains(key1.toString())){
+                                                        ap_list.add(key1.toString());
+                                                    }
+                                                }
+                                                dataSet.put(p,rssivalues);
+                                            }
+                                            Log.i("TTTTT","URL: "+DownloadURL);
+                                            Log.i("TTTTT","data set: "+dataSet);
+
+                                            Testing2 testt = new Testing2(dataSet,ap_list);
+                                            testt.setScanResult(scanList);
+                                            Point result = testt.predict();
+                                            textView_predictedPosition.setText(result.toString());
+
+                                            // draw circle
+                                            mCanvas = new Canvas(mBitmap);
+                                            mCanvas.drawColor(0,PorterDuff.Mode.CLEAR);
+                                            mCanvas.drawBitmap(loadImage.copy(Bitmap.Config.ARGB_8888,true),0,0,null);
+                                            mPaint.setColor(Color.BLACK);
+                                            mPaint.setStrokeWidth(10);
+                                            mPaint.setStyle(Paint.Style.STROKE);
+                                            mPaint.setAlpha(alpha);
+                                            // offset x and y so that it appears at centre of arrow
+                                            Log.i("TTTTT","x: "+result.getX());
+                                            Log.i("TTTTT","y: "+result.getY());
+                                            mCanvas.drawCircle((float)result.getX(), (float)result.getY(), radius, mPaint);
+                                            pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+                                            Log.i("TTTTT","draw bitmap");
+                                            mCanvas.drawBitmap(pin,(float)result.getX()-(pin.getWidth()/2),(float)result.getY() -(pin.getHeight()),null);
+                                            //v.draw(mCanvas);
+                                            Log.i("TTTTT","invalidate");
+                                            v.invalidate();
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+
+
+
+
+
+
+
+
+                    /////////////////////////////////////////////////
+                    /*testing2.setScanResult(scanList);
                     Point result = testing2.predict();
                     testing.setScanResults(scanList);
                     // using predict() knn to predict where user is:
@@ -187,7 +271,7 @@ public class TestingMode extends AppCompatActivity {
                         //v.draw(mCanvas);
                         Log.i("TTTTT","invalidate");
                         v.invalidate();
-                    }
+                    }*/
                 }
                 else{
                     Toast.makeText(TestingMode.this, "Unable to get WiFi scan result",Toast.LENGTH_LONG).show();

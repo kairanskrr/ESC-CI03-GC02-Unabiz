@@ -1,12 +1,19 @@
 package com.kairan.esc_project.KairanTriangulationAlgo;
 
+import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,8 +99,22 @@ public class Mapping2 {
         num_of_data++;
     }
 
-    public void send_data(){
+    public void send_data(String DownloadURL, Context context){
         position_list = new ArrayList<>(position_ap.keySet());
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long number = snapshot.getChildrenCount()+1;
+                database.child(Long.toString(number)).setValue(position_ap);
+                FirebaseDatabase.getInstance().getReference("MapURLs").child(user.getUid()).child(Long.toString(number)).setValue(DownloadURL);
+                Toast.makeText(context, "Mapping has been completed",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void train_data(int numOfRounds){

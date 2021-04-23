@@ -34,8 +34,8 @@ public class Testing2 {
     static ArrayList<Point> positionSet;
     private String DownloadURL;
 
-    public static final int K = 3;
-    private final double alpha = 0.6;
+    public static final int K = 2;
+    private final double alpha = 0.7;
 
     static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());

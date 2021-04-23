@@ -31,17 +31,17 @@
         app:layout_constraintTop_toBottomOf="@+id/PreviewImage"
         tools:layout_editor_absoluteX="40dp" />
 
-<!--    <Button-->
-<!--        android:id="@+id/UrlUpload"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="20dp"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:background="@drawable/my_button"-->
-<!--        android:gravity="center"-->
-<!--        android:text="UPLOAD FROM URL"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/button_changeImage"-->
-<!--        tools:layout_editor_absoluteX="40dp" />-->
+    <Button
+        android:id="@+id/UrlUpload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/my_button"
+        android:gravity="center"
+        android:text="UPLOAD FROM URL"
+        app:layout_constraintTop_toBottomOf="@+id/button_changeImage"
+        tools:layout_editor_absoluteX="40dp" />
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/PreviewImage"
@@ -58,45 +58,45 @@
         tools:ignore="VectorDrawableCompat"
         tools:srcCompat="?android:attr/scrollbarTrackVertical" />
 
-<!--    <com.google.android.material.textfield.TextInputLayout-->
-<!--        android:id="@+id/UrlBox"-->
-<!--        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginLeft="20dp"-->
-<!--        android:layout_marginRight="20dp"-->
-<!--        android:inputType="textEmailAddress"-->
-<!--        app:boxCornerRadiusBottomEnd="15dp"-->
-<!--        app:boxCornerRadiusBottomStart="15dp"-->
-<!--        app:boxCornerRadiusTopEnd="15dp"-->
-<!--        app:boxCornerRadiusTopStart="15dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/DeviceUpload">-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/UrlBox"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:inputType="textEmailAddress"
+        app:boxCornerRadiusBottomEnd="15dp"
+        app:boxCornerRadiusBottomStart="15dp"
+        app:boxCornerRadiusTopEnd="15dp"
+        app:boxCornerRadiusTopStart="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DeviceUpload">
 
-<!--        <com.google.android.material.textfield.TextInputEditText-->
-<!--            android:id="@+id/UrlEntry"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:ellipsize="end"-->
-<!--            android:ems="10"-->
-<!--            android:hint="URL"-->
-<!--            android:maxLines="2"-->
-<!--            tools:ignore="KeyboardInaccessibleWidget" />-->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/UrlEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:ems="10"
+            android:hint="URL"
+            android:maxLines="2"
+            tools:ignore="KeyboardInaccessibleWidget" />
 
-<!--    </com.google.android.material.textfield.TextInputLayout>-->
+    </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <Button-->
-<!--        android:id="@+id/ConfirmURL"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="4dp"-->
-<!--        android:layout_marginRight="20dp"-->
-<!--        android:layout_marginLeft="20dp"-->
-<!--        android:background="@drawable/my_button"-->
-<!--        android:text="Confirm URL"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/button_confirm"-->
-<!--        tools:layout_editor_absoluteX="24dp" />-->
+    <Button
+        android:id="@+id/ConfirmURL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/my_button"
+        android:text="Confirm URL"
+        app:layout_constraintTop_toBottomOf="@+id/UrlBox"
+        tools:layout_editor_absoluteX="24dp" />
 
     <Button
         android:id="@+id/button_confirm"
@@ -105,7 +105,7 @@
         android:layout_margin="20dp"
         android:background="@drawable/my_button"
         android:text="Start Mapping"
-        app:layout_constraintTop_toBottomOf="@+id/FirebaseUpload"
+        app:layout_constraintTop_toBottomOf="@+id/button_changeImage"
         tools:layout_editor_absoluteX="60dp" />
 
     <Button
@@ -127,7 +127,7 @@
         android:layout_weight="1"
         android:background="@drawable/my_button"
         android:text="Choose from Uploaded Maps"
-        app:layout_constraintTop_toBottomOf="@+id/button_changeImage"
+        app:layout_constraintTop_toBottomOf="@+id/UrlUpload"
         tools:layout_editor_absoluteX="20dp" />
 
     <TextView

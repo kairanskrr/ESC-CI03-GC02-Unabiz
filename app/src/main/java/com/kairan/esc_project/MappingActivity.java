@@ -190,7 +190,7 @@ public class MappingActivity extends AppCompatActivity {
                     Log.d("PRESS", "BUTTON SAVE PRESSED");
 
                     // each time button clicked, 1 scan performed
-                    Toast.makeText(MappingActivity.this,"Scannign WiFi...",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MappingActivity.this,"Scanning WiFi...",Toast.LENGTH_LONG).show();
                     WifiScan wifiScan = new WifiScan(getApplicationContext(), MappingActivity.this);
                     wifiScan.getWifiNetworksList();
                     scanList = wifiScan.getScanList();
@@ -340,12 +340,12 @@ public class MappingActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
-//            mImageUri = data.getData();
-//            imageToMap.setImage(ImageSource.uri(mImageUri));
-//        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            mImageUri = data.getData();
+            imageToMap.setImage(ImageSource.uri(mImageUri));
+        }
+    }
     }

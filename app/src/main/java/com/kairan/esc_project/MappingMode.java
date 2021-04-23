@@ -96,19 +96,19 @@ public class MappingMode extends AppCompatActivity {
 
 
         DeviceUpload = findViewById(R.id.DeviceUpload);
-//        UrlUpload = findViewById(R.id.UrlUpload);
+        UrlUpload = findViewById(R.id.UrlUpload);
         FirebaseUpload = findViewById(R.id.FirebaseUpload);
         PreviewImage = findViewById(R.id.PreviewImage);
-//        ConfirmURL = findViewById(R.id.ConfirmURL);
-//        URLBox = findViewById(R.id.UrlBox);
-//        URLEntry = findViewById(R.id.UrlEntry);
+        ConfirmURL = findViewById(R.id.ConfirmURL);
+        URLBox = findViewById(R.id.UrlBox);
+        URLEntry = findViewById(R.id.UrlEntry);
         ConfirmImage = findViewById(R.id.button_confirm);
         ChangeImage = findViewById(R.id.button_changeImage);
         TextViewInvalidPhoto = findViewById(R.id.tvInvalidPhoto);
         invalidPhotoText = "Please Select a Photo";
 
-//        URLBox.setVisibility(View.GONE);
-//        ConfirmURL.setVisibility(View.GONE);
+        URLBox.setVisibility(View.GONE);
+        ConfirmURL.setVisibility(View.GONE);
         ConfirmImage.setVisibility(View.GONE);
         ChangeImage.setVisibility(View.GONE);
 
@@ -121,23 +121,23 @@ public class MappingMode extends AppCompatActivity {
             public void onClick(View v) {
                 openFileChoser();
                 DeviceUpload.setVisibility(View.GONE);
-//                UrlUpload.setVisibility(View.GONE);
+                UrlUpload.setVisibility(View.GONE);
                 FirebaseUpload.setVisibility(View.GONE);
                 ConfirmImage.setVisibility(View.VISIBLE);
                 ChangeImage.setVisibility(View.VISIBLE);
             }
         });
 
-//        UrlUpload.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                DeviceUpload.setVisibility(View.GONE);
-//                FirebaseUpload.setVisibility(View.GONE);
-//                UrlUpload.setVisibility(View.GONE);
-//                URLBox.setVisibility(View.VISIBLE);
-//                ConfirmURL.setVisibility(View.VISIBLE);
-//            }
-//        });
+        UrlUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeviceUpload.setVisibility(View.GONE);
+                FirebaseUpload.setVisibility(View.GONE);
+                UrlUpload.setVisibility(View.GONE);
+                URLBox.setVisibility(View.VISIBLE);
+                ConfirmURL.setVisibility(View.VISIBLE);
+            }
+        });
 
         FirebaseUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,36 +148,36 @@ public class MappingMode extends AppCompatActivity {
             }
         });
 
-//        /**
-//         * The confirmation button for URL uploading, displays the image uploaded through URL
-//         */
-//        ConfirmURL.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                URLlink = URLEntry.getText().toString();
-//                if (URLlink.isEmpty()){
-//                    Toast.makeText(MappingMode.this, "Please Enter An URL", Toast.LENGTH_SHORT).show();
-//                }
-//                else{
-//                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingMode.this).build();
-//                    ImageLoader imageLoader = ImageLoader.getInstance();
-//                    imageLoader.init(config);
-//                    imageLoader.loadImage(URLlink,new SimpleImageLoadingListener(){
-//                        @Override
-//                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                            PreviewImage.setImage(ImageSource.bitmap(loadedImage));  // subscaling
+        /**
+         * The confirmation button for URL uploading, displays the image uploaded through URL
+         */
+        ConfirmURL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                URLlink = URLEntry.getText().toString();
+                if (URLlink.isEmpty()){
+                    Toast.makeText(MappingMode.this, "Please Enter An URL", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(MappingMode.this).build();
+                    ImageLoader imageLoader = ImageLoader.getInstance();
+                    imageLoader.init(config);
+                    imageLoader.loadImage(URLlink,new SimpleImageLoadingListener(){
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            PreviewImage.setImage(ImageSource.bitmap(loadedImage));  // subscaling
 //                            mImageUri = Uri.parse(imageUri);
-//                        }
-//                    });
-//                    DeviceUpload.setVisibility(View.GONE);
-//                    UrlUpload.setVisibility(View.GONE);
-//                    URLBox.setVisibility(View.GONE);
-//                    ConfirmURL.setVisibility(View.GONE);
-//                    ConfirmImage.setVisibility(View.VISIBLE);
-//                    ChangeImage.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
+                        }
+                    });
+                    DeviceUpload.setVisibility(View.GONE);
+                    UrlUpload.setVisibility(View.GONE);
+                    URLBox.setVisibility(View.GONE);
+                    ConfirmURL.setVisibility(View.GONE);
+                    ConfirmImage.setVisibility(View.VISIBLE);
+                    ChangeImage.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         /**
          * Change current image to upload a different image
@@ -186,10 +186,10 @@ public class MappingMode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DeviceUpload.setVisibility(View.VISIBLE);
-//                UrlUpload.setVisibility(View.VISIBLE);
+                UrlUpload.setVisibility(View.VISIBLE);
                 FirebaseUpload.setVisibility(View.VISIBLE);
-//                URLBox.setVisibility(View.GONE);
-//                ConfirmURL.setVisibility(View.GONE);
+                URLBox.setVisibility(View.GONE);
+                ConfirmURL.setVisibility(View.GONE);
                 ConfirmImage.setVisibility(View.GONE);
                 ChangeImage.setVisibility(View.GONE);
             }
@@ -236,21 +236,11 @@ public class MappingMode extends AppCompatActivity {
                 /**
                  * Downloading the URL part is commented out for now as we are not using it
                  */
-//                else if (URLlink != null){
-//                    FirebaseDatabase.getInstance().getReference("DownloadURLs").push().addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            FirebaseDatabase.getInstance().getReference("DownloadURLs").setValue(URLlink);
-//                            Intent intent = new Intent(MappingMode.this,MappingActivity.class);
-//                            intent.putExtra("Imageselected", URLlink);
-//                            startActivity(intent);
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//                        }
-//                    });
-//                }
+                else if (URLlink != null){
+                            Intent intent = new Intent(MappingMode.this,MappingActivity.class);
+                            intent.putExtra("Imageselected", URLlink);
+                            startActivity(intent);
+                        }
                 else {
 //                    Toast.makeText(MappingMode.this,"Please sel",Toast.LENGTH_LONG).show();    // display an error message
                     TextViewInvalidPhoto.setText(invalidPhotoText);

@@ -190,24 +190,67 @@ public class MappingActivity extends AppCompatActivity {
                     Log.d("PRESS", "BUTTON SAVE PRESSED");
 
                     // each time button clicked, 1 scan performed
-                    Toast.makeText(MappingActivity.this,"Scannign WiFi...",Toast.LENGTH_LONG).show();
                     WifiScan wifiScan = new WifiScan(getApplicationContext(), MappingActivity.this);
-                    wifiScan.getWifiNetworksList();
-                    scanList = wifiScan.getScanList();
                     try {
-                        Thread.sleep(1000);
+                        for(int i = 0; i<3;i++){
+                            wifiScan.getWifiNetworksList();
+                            scanList = wifiScan.getScanList();
+                            mapping2.add_scanList(new Point(currPos.x, currPos.y), scanList);
+                            Thread.sleep(1000);
+                        }
                     } catch (InterruptedException e) {
                         //e.printStackTrace();
                     }
-                    wifiScan.getWifiNetworksList();
-                    scanList2 = wifiScan.getScanList();
+//                    wifiScan.getWifiNetworksList();
+//                    scanList2 = wifiScan.getScanList();
 
 
-                    if(scanList != null && scanList2 != null){
+                    if(!mapping2.isEmpty()){
+                        // mapping.add_data first filters scanList then append to position_ap.
+                        // debug because the point on screen is not the same as the one stored in position_ap
+//                        mapping.add_data(new Point(currPos.x, currPos.y), scanList);
+//                        mapping2.add_data(new Point(currPos.x, currPos.y), scanList,scanList2);
+
+                        // print out point
+                        Log.d("PRESS", "The Point is + " + String.valueOf(new Point(currPos.x, currPos.y)));
+                        Log.d("PRESS", "position_ap is" + mapping.position_ap);
+                        // DEBUG: REMOVE LATER, SCROLL VIEW TO DISPLAY WIFI_AP
+                        textViewPositionAP.setText(String.valueOf(mapping2.getPosition_ap()));
+
+                        Log.d("PRESS", "ADDED DATA COMPLETE!!");
+                        Toast.makeText(MappingActivity.this,"Save successfully",Toast.LENGTH_LONG).show();
+                        // debug log to make list shop
+                        Log.d("PRESS", "PRESSED SAVE");
+                        // debug to show scanList
+                        Log.d("PRESS", scanList.toString());
+
+                        // clear the textView_currentPosition
+                        textView_currentPosition.setText("");
+                        view.setVisibility(View.INVISIBLE);
+
+                        // draw circle
+                        mCanvas = new Canvas(mBitmap);
+                        mPaint.setColor(getResources().getColor(R.color.coordinate_color));
+                        mPaint.setStrokeWidth(10);
+                        mPaint.setStyle(Paint.Style.STROKE);
+                        mPaint.setAlpha(alpha);
+
+                        // offset x and y so that it appears at centre of arrow
+                        mCanvas.drawCircle(currPos.x, currPos.y, radius, mPaint);
+
+                        // draw a circle at the center of the big one to indicate where you pressed
+                        mCanvas.drawCircle(currPos.x, currPos.y, 10, mPaint);
+
+                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.green_pin);
+                        mCanvas.drawBitmap(pin,currPos.x-(pin.getWidth()/2),currPos.y -(pin.getHeight()),null);
+                        v.invalidate();
+                    }
+
+                    /*if(scanList != null){
                         // mapping.add_data first filters scanList then append to position_ap.
                         // debug because the point on screen is not the same as the one stored in position_ap
                         mapping.add_data(new Point(currPos.x, currPos.y), scanList);
-                        mapping2.add_data(new Point(currPos.x, currPos.y), scanList,scanList2);
+                        mapping2.add_data(new Point(currPos.x, currPos.y), scanList);
 
                         // print out point
                         Log.d("PRESS", "The Point is + " + String.valueOf(new Point(currPos.x, currPos.y)));
@@ -242,7 +285,7 @@ public class MappingActivity extends AppCompatActivity {
                         pin = BitmapFactory.decodeResource(getResources(), R.drawable.green_pin);
                         mCanvas.drawBitmap(pin,currPos.x-(pin.getWidth()/2),currPos.y -(pin.getHeight()),null);
                         v.invalidate();
-                    }
+                    }*/
                 }
             }
         });

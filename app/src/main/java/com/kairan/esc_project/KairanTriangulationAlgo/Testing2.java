@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.nostra13.universalimageloader.utils.L.d;
 import static com.nostra13.universalimageloader.utils.L.i;
 
 public class Testing2 {
@@ -33,8 +34,8 @@ public class Testing2 {
     static ArrayList<Point> positionSet;
     private String DownloadURL;
 
-    public static final int K = 5;
-    private final double alpha = 0.7;
+    public static final int K = 3;
+    private final double alpha = 0.6;
 
     static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults").child(user.getUid());
@@ -45,12 +46,34 @@ public class Testing2 {
     public Testing2(HashMap<Point, HashMap<String, Integer>> mappingData, List<String> ap) {
         this.position_ap = mappingData;
         this.ap_list = ap;
+        //this.position_ap = Mapping2.train_data(10,mappingData);
         this.positionSet = new ArrayList<Point>(position_ap.keySet());
     }
 
+    public Testing2(){
 
+    }
+
+    public void setPosition_ap(HashMap<Point, HashMap<String, Integer>> position_ap) {
+        this.position_ap = position_ap;
+    }
+
+    public static void setAp_list(List<String> ap_list) {
+        Testing2.ap_list = ap_list;
+    }
+
+    public static void setPositionSet(ArrayList<Point> positionSet) {
+        Testing2.positionSet = positionSet;
+    }
+
+    public void setDownloadURL(String downloadURL) {
+        DownloadURL = downloadURL;
+    }
 
     public void setScanResult(List<ScanResult> scanResult) {
+        if(scanResult==null){
+            return;
+        }
         for (int i = 0; i < scanResult.size(); i++) {
             String bssid = scanResult.get(i).BSSID;
             bssid = bssid.substring(0, bssid.length() - 1);
@@ -107,7 +130,32 @@ public class Testing2 {
     }
 
     public boolean isEmpty() {
-        return position_ap.isEmpty();
+        return mac_rssi.isEmpty();
+
+    }
+
+    public void add_scanList(List<ScanResult> scanResult){
+        if(mac_rssi.isEmpty()){
+            setScanResult(scanResult);
+        }else{
+            HashMap<String,Integer> mac_rssi1 = cleanScanResult(scanResult);
+            HashMap<String,Integer> mac_rssi2 = mac_rssi;
+            for(String p:mac_rssi1.keySet()){
+                mac_rssi.put(p,mac_rssi1.get(p));
+            }
+            for(String mac:mac_rssi1.keySet()){
+                mac_rssi.put(mac,mac_rssi1.get(mac));
+            }
+            for(String mac2:mac_rssi2.keySet()){
+                if(mac_rssi.containsKey(mac2)){
+                    int temp = (mac_rssi.get(mac2)+mac_rssi2.get(mac2))/2;
+                    mac_rssi.put(mac2,temp);
+                }else{
+                    mac_rssi.put(mac2,mac_rssi2.get(mac2));
+                }
+            }
+            bssid = new ArrayList<>(mac_rssi.keySet());
+        }
     }
 
 
@@ -146,27 +194,33 @@ public class Testing2 {
                 if (position_ap.get(point).containsKey(j) && mac_rssi.containsKey(j)) {
                     sum += Math.pow((int) position_ap.get(point).get(j) - mac_rssi.get(j), 2);
                     similarity += position_ap.get(point).get(j) * mac_rssi.get(j) * 1f;
+                    x_length += Math.pow(position_ap.get(point).get(j),2);
+                    y_length += Math.pow(position_ap.get(point).get(j),2);
+                    //Log.i("TTTTT","sum1: " + sum);
                 } else {
-                    sum += Integer.MAX_VALUE; // abs(rssi) is smaller, the signal is stronger => put a large number to indicate the ap is not detected in both positions
-                    similarity += Float.MAX_VALUE;
+                    sum += 1000; // abs(rssi) is smaller, the signal is stronger => put a large number to indicate the ap is not detected in both positions
+                    //Log.i("TTTTT","sum2: " + sum);
                 }
             }
 
-            System.out.println("sum: " + sum);
+            //Log.i("TTTTT","sum: " + sum);
             float dev = (float) Math.sqrt(sum);
+            Log.i("TTTTT","dev: "+dev);
             distance_point.put(point, dev);
 
             x_length = (float) Math.sqrt(x_length);
             y_length = (float) Math.sqrt(y_length);
             similarity = similarity / (x_length * y_length);
+            Log.i("TTTTT","x_length: "+x_length);
+            Log.i("TTTTT","y_length: "+y_length);
             System.out.println("similarity: " + similarity);
             similarity_point.put(point, similarity);
         }
 
         distance_point = sortByComparator(distance_point, true);
         similarity_point = sortByComparator(similarity_point, true);
-        Point DP = getPoint(distance_point);
-        Point SP = getPoint(similarity_point);
+        Point DP = getDP(distance_point);
+        Point SP = getSP(similarity_point);
 
         Log.i("TTTTT","DP: "+DP.toString());
         Log.i("TTTTT","SP: "+SP.toString());
@@ -181,7 +235,7 @@ public class Testing2 {
 
     }
 
-    public Point getPoint(Map<Point, Float> input) {
+    public Point getDP(Map<Point, Float> input) {
         int count = 0;
         double x = 0;
         double y = 0;
@@ -200,22 +254,84 @@ public class Testing2 {
             } else {
                 x += point.getX()/K;
                 y += point.getY()/K;
+                values[i] = 1/input.get(point);
+
             }
-            Log.i("TTTTT","x: "+x);
-            Log.i("TTTTT","y: "+y);
+            Log.i("TTTTT","i: "+i);
+            Log.i("TTTTT","x: "+point.getX());
+            Log.i("TTTTT","y: "+point.getY());
+            Log.i("TTTTT","distance: "+input.get(point));
         }
 
-        /*float v = 0;
+        float v = 0;
+        double xx = 0;
+        double yy = 0;
         if(count==0){
             for(int i=0;i < K; i++){
                 v += values[i];
             }
+            Log.i("TTTTT","vvvv: "+v);
             for(int ii = 0;ii<K;ii++){
-                x = points.get(ii).getX()/values[ii]/v;
-                y = points.get(ii).getY()/values[ii]/v;
+                xx += points.get(ii).getX()*(values[ii]/v);
+                yy += points.get(ii).getY()*(values[ii]/v);
+                Log.i("TTTTT","x2: "+xx);
+                Log.i("TTTTT","y2: "+yy);
+                Log.i("TTTTT","VALUE: "+values[ii]);
             }
-        }*/
+            x = xx;
+            y = yy;
+        }
 
+        return new Point(x, y);
+    }
+
+    public Point getSP(Map<Point, Float> input) {
+        int count = 0;
+        double x = 0;
+        double y = 0;
+        float[] values = new float[K];
+        ArrayList<Point> points = new ArrayList<>(input.keySet());
+        for(int i = 0; i< K;i++){
+            Point point = points.get(points.size()-i-1);
+            if (input.get(point) >Float.MAX_VALUE) {
+                x += point.getX();
+                y += point.getY();
+                count += 1;
+            } else if (count != 0) {
+                x = x / count;
+                y = y / count;
+                break;
+            } else {
+                x += point.getX()/K;
+                y += point.getY()/K;
+                values[i] = input.get(point);
+            }
+            Log.i("TTTTT","i: "+i);
+            Log.i("TTTTT","x: "+point.getX());
+            Log.i("TTTTT","y: "+point.getY());
+            Log.i("TTTTT","similarity: "+input.get(point));
+        }
+
+        float v = 0;
+        double xx = 0;
+        double yy = 0;
+        if(count==0){
+            for(int i=0;i < K; i++){
+                v += values[i];
+            }
+            Log.i("TTTTT","vvvv: "+v);
+            for(int ii = 0;ii<K;ii++){
+                xx += points.get(ii).getX()*(values[ii]/v);
+                yy += points.get(ii).getY()*(values[ii]/v);
+                Log.i("TTTTT","VALUE: "+values[ii]);
+                Log.i("TTTTT","x2: "+xx);
+                Log.i("TTTTT","y2: "+yy);
+            }
+            Log.i("TTTTT","x2: "+xx);
+            Log.i("TTTTT","y2: "+yy);
+            x = xx;
+            y = yy;
+        }
 
         return new Point(x, y);
     }

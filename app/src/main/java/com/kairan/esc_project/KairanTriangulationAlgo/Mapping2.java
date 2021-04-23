@@ -29,8 +29,8 @@ public class Mapping2 {
     Map<String, HashMap> position_apclone = new HashMap<>();
     List<Point> position_list;
     int num_of_data;
-    private final float learning_rate = 0.2f;
-    private final int ERROR = 10;
+    private static final float learning_rate = 0.2f;
+    private static final int ERROR = 10;
 
     static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     static DatabaseReference database = FirebaseDatabase.getInstance().getReference("ScanResults");
@@ -94,11 +94,37 @@ public class Mapping2 {
         return mac_rssi;
     }
 
+    public void add_scanList(Point position,List<ScanResult> scanResult){
+        if(!position_ap.containsKey(position)){
+            add_data(position,scanResult);
+        }else{
+            HashMap<String,Integer> mac_rssi1 = cleanData(scanResult);
+            HashMap<String,Integer> mac_rssi2 = position_ap.get(position);
+            for(String p:mac_rssi1.keySet()){
+                mac_rssi.put(p,mac_rssi1.get(p));
+            }
+            for(String p:mac_rssi2.keySet()){
+                if(mac_rssi.containsKey(p)){
+                    int temp = (mac_rssi.get(p)+mac_rssi2.get(p))/2;
+                    mac_rssi.put(p,temp);
+                }else{
+                    mac_rssi.put(p,mac_rssi2.get(p));
+                }
+            }
+            Log.i("TTTTT","mac_rssi: "+mac_rssi);
+            position_ap.put(position, mac_rssi);
+            if(mac_rssi != null){position_apclone.put(position.toString(), mac_rssi);}
+            Log.i("TTTTT",position_ap.toString());
+        }
+    }
+
     public void add_data(Point position, List<ScanResult> scanResult){
+        if(scanResult==null){
+            return;
+        }
         mac_rssi = cleanData(scanResult);
         position_ap.put(position, mac_rssi);
         if(mac_rssi != null){position_apclone.put(position.toString(), mac_rssi);}
-        num_of_data++;
     }
 
     public void add_data(Point position, List<ScanResult> scanResult,List<ScanResult> scanResult2){
@@ -139,15 +165,18 @@ public class Mapping2 {
         });
     }
 
-    public void train_data(int numOfRounds){
+    public static HashMap<Point,HashMap<String, Integer>> train_data(int numOfRounds, HashMap<Point,HashMap<String, Integer>> position_ap){
         for(int i=0;i<numOfRounds;i++){
-            train_data();
+            position_ap = train_data(position_ap);
         }
+        return position_ap;
     }
 
-    public void train_data(){
-        int num = new Random().nextInt(num_of_data);
-        position_list = new ArrayList<>(position_ap.keySet());
+    public static HashMap<Point,HashMap<String, Integer>> train_data(HashMap<Point,HashMap<String, Integer>> position_ap){
+        Log.i("TTTTT","size of position_ap: "+position_ap.size());
+        Log.i("TTTTT","size of position_ap2: "+position_ap.keySet().size());
+        int num = new Random().nextInt(position_ap.keySet().size());
+        ArrayList<Point> position_list = new ArrayList<>(position_ap.keySet());
         Point q = position_list.get(num);
         HashMap<String,Integer> mr1 = position_ap.get(q);
         double min_pos_val = Double.MIN_VALUE;
@@ -209,7 +238,10 @@ public class Mapping2 {
 
         position_ap.remove(q);
         position_ap.put(new Point(xx,yy),mrr);
+        return position_ap;
     }
 
-
+    public boolean isEmpty(){
+        return position_ap.isEmpty();
+    }
 }

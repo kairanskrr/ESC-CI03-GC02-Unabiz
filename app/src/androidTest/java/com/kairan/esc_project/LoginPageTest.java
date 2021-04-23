@@ -9,6 +9,8 @@ import androidx.test.espresso.Espresso;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import java.util.Random;
+
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -22,11 +24,14 @@ public class LoginPageTest {
     @Rule
     public ActivityTestRule<LoginPage> loginPageTestRule = new ActivityTestRule<LoginPage>(LoginPage.class);
 
-    private String username = "test123@email.com";
-    private String password = "123qweasd";
     private String cUsername = "zoezoe@gmail.com";
     private String cPassword = "123456";
     private String invalidC = "Invalid Credentials";
+
+    private static final String ALLOWED_CHARACTERS ="0123456789qwertyuiopasdfghjklzxcvbnm";
+    private final String name = random();
+    private final String incorrect_email = name + "@email.com";
+    private final String incorrect_pw = random();
 
     @Before
     public void setUp() throws Exception {
@@ -36,10 +41,10 @@ public class LoginPageTest {
     public void testUserInputScenario_LoginFalse() throws InterruptedException {
         // input invalid text into email and password box
         Espresso.onView(withId(R.id.editTextEmail)).perform(clearText());
-        Espresso.onView(withId(R.id.editTextEmail)).perform(typeText(username));
+        Espresso.onView(withId(R.id.editTextEmail)).perform(typeText(incorrect_email));
         Espresso.closeSoftKeyboard();
         Espresso.onView(withId(R.id.editTextPassword)).perform(clearText());
-        Espresso.onView(withId(R.id.editTextPassword)).perform(typeText(password));
+        Espresso.onView(withId(R.id.editTextPassword)).perform(typeText(incorrect_pw));
         Espresso.closeSoftKeyboard();
         // perform button click
         Espresso.onView(withId(R.id.buttonLogin)).perform(click());
@@ -66,5 +71,13 @@ public class LoginPageTest {
 
     @After
     public void tearDown() throws Exception {
+    }
+
+    public static String random() {
+        final Random random=new Random();
+        final StringBuilder sb=new StringBuilder(13);
+        for(int i = 0; i < 13; ++i)
+            sb.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
+        return sb.toString();
     }
 }

@@ -58,8 +58,13 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 
 /**
  * The first activity inside the mapping mode where we ask the user for how they want to map,
@@ -155,6 +160,13 @@ public class MappingMode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 URLlink = URLEntry.getText().toString();
+                URLlink = URLlink.replace("[^\\p{ASCII}]", "");
+                URLlink = Normalizer.normalize(URLlink, Normalizer.Form.NFKC);
+                Pattern pattern = Pattern.compile("<script>");
+                Matcher matcher = pattern.matcher(URLlink);
+                if (matcher.find()) {
+                    Toast.makeText(MappingMode.this, "Invalid URL", Toast.LENGTH_SHORT).show();
+                }
                 if (URLlink.isEmpty()){
                     Toast.makeText(MappingMode.this, "Please Enter An URL", Toast.LENGTH_SHORT).show();
                 }

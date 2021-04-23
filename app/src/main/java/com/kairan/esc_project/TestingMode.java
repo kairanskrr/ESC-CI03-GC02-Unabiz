@@ -177,38 +177,41 @@ public class TestingMode extends AppCompatActivity {
                                         Testing2 testt = new Testing2(dataSet,ap_list);
                                         WifiScan wifiScan = new WifiScan(getApplicationContext(), TestingMode.this);
                                         try {
+                                            for(int i=0;i<3;i++){
                                                 Thread.sleep(1000);
                                                 // store results of scan into wifiScan.scanList
                                                 wifiScan.getWifiNetworksList();
                                                 // store this list into scanList
                                                 scanList = wifiScan.getScanList();
                                                 testt.add_scanList(scanList);
+                                            }
                                         } catch (InterruptedException e) {
                                             //e.printStackTrace();
                                         }
                                         Point result = testt.predict();
 
-                                        textView_predictedPosition.setText(result.toString());
+                                        if(result!=null){
+                                            textView_predictedPosition.setText(result.toString());
 
-                                        // draw circle
-                                        mCanvas = new Canvas(mBitmap);
-                                        mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-                                        mCanvas.drawBitmap(loadImage.copy(Bitmap.Config.ARGB_8888, true), 0, 0, null);
-                                        mPaint.setColor(Color.BLACK);
-                                        mPaint.setStrokeWidth(10);
-                                        mPaint.setStyle(Paint.Style.STROKE);
-                                        mPaint.setAlpha(alpha);
-                                        // offset x and y so that it appears at centre of arrow
-                                        Log.i("TTTTT", "x: " + result.getX());
-                                        Log.i("TTTTT", "y: " + result.getY());
-                                        mCanvas.drawCircle((float) result.getX(), (float) result.getY(), radius, mPaint);
-                                        pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
-                                        Log.i("TTTTT", "draw bitmap");
-                                        mCanvas.drawBitmap(pin, (float) result.getX() - (pin.getWidth() / 2), (float) result.getY() - (pin.getHeight()), null);
-                                        //v.draw(mCanvas);
-                                        Log.i("TTTTT", "invalidate");
-                                        v.invalidate();
-
+                                            // draw circle
+                                            mCanvas = new Canvas(mBitmap);
+                                            mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+                                            mCanvas.drawBitmap(loadImage.copy(Bitmap.Config.ARGB_8888, true), 0, 0, null);
+                                            mPaint.setColor(Color.BLACK);
+                                            mPaint.setStrokeWidth(10);
+                                            mPaint.setStyle(Paint.Style.STROKE);
+                                            mPaint.setAlpha(alpha);
+                                            // offset x and y so that it appears at centre of arrow
+                                            Log.i("TTTTT", "x: " + result.getX());
+                                            Log.i("TTTTT", "y: " + result.getY());
+                                            mCanvas.drawCircle((float) result.getX(), (float) result.getY(), radius, mPaint);
+                                            pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+                                            Log.i("TTTTT", "draw bitmap");
+                                            mCanvas.drawBitmap(pin, (float) result.getX() - (pin.getWidth() / 2), (float) result.getY() - (pin.getHeight()), null);
+                                            //v.draw(mCanvas);
+                                            Log.i("TTTTT", "invalidate");
+                                            v.invalidate();
+                                        }
                                     }
 
                                     @Override

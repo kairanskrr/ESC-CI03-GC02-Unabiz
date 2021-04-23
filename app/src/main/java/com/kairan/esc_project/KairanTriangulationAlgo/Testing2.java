@@ -165,7 +165,7 @@ public class Testing2 {
      */
     public Point predict() {
 
-        if (position_ap.isEmpty()) {
+        if (position_ap.isEmpty()||mac_rssi.isEmpty()) {
             return null;
         }
 
@@ -226,12 +226,6 @@ public class Testing2 {
         Log.i("TTTTT","SP: "+SP.toString());
 
         return new Point(DP.getX() * alpha + SP.getX() * (1 - alpha), DP.getY() * alpha + SP.getY() * (1 - alpha));
-        /*Point DP = new ArrayList<Point>(distance_point.keySet()).get(0);
-        Point SP = new ArrayList<Point>(similarity_point.keySet()).get(0);
-        Log.i("TTTTT","DP: "+DP.toString());
-        Log.i("TTTTT","SP: "+SP.toString());
-        return new Point(DP.getX()*alpha+SP.getX()*(1-alpha),DP.getY()*alpha+SP.getY()*(1-alpha));*/
-
 
     }
 

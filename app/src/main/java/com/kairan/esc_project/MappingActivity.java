@@ -197,7 +197,7 @@ public class MappingActivity extends AppCompatActivity {
                             wifiScan.getWifiNetworksList();
                             scanList = wifiScan.getScanList();
                             mapping2.add_scanList(new Point(currPos.x, currPos.y), scanList);
-                            Thread.sleep(1000);
+                            Thread.sleep(100);
                         }
                     } catch (InterruptedException e) {
                         //e.printStackTrace();

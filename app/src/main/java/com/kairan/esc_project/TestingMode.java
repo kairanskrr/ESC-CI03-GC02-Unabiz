@@ -82,6 +82,7 @@ public class TestingMode extends AppCompatActivity {
     String DownloadURL = null;
     Testing testing;
     Testing2 testing2 = new Testing2();
+    PredictionThread[] predictionThreads = new PredictionThread[3];
 
     Canvas mCanvas;
     private final Paint mPaint = new Paint();
@@ -90,6 +91,7 @@ public class TestingMode extends AppCompatActivity {
     private final int alpha = 100;
     private Bitmap pin;
     private Bitmap loadImage;
+    private static boolean isThreadRunning = false;
 
 
 
@@ -144,90 +146,132 @@ public class TestingMode extends AppCompatActivity {
         button_getLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isThreadRunning){
+                    try {
+                        throw new InterruptedException();
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        Toast.makeText(TestingMode.this,"Please restart the prediction",Toast.LENGTH_SHORT).show();
+                    }
+                }
                 Log.d("BUTTON", "ButtonGetLocation!");
-                HashMap<Point, HashMap<String, Integer>> dataSet = new HashMap<>();
-                List<String> ap_list = new ArrayList<>();
-                MapUrls.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                            if (snapshot1.getValue().toString().equals(DownloadURL)) {
-                                database.child(Objects.requireNonNull(snapshot1.getKey())).addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        Map<String, Map> map = (Map<String, Map>) snapshot.getValue();
-                                        for (String key : map.keySet()) {
-                                            HashMap<String, Integer> rssivalues = new HashMap<>();
-                                            String[] separated = key.split(",");
-                                            Point p = new Point(Double.parseDouble(separated[0]), Double.parseDouble(separated[1]));
+                    HashMap<Point, HashMap<String, Integer>> dataSet = new HashMap<>();
+                    List<String> ap_list = new ArrayList<>();
+                    MapUrls.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                if (snapshot1.getValue().toString().equals(DownloadURL)) {
+                                    database.child(Objects.requireNonNull(snapshot1.getKey())).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            Map<String, Map> map = (Map<String, Map>) snapshot.getValue();
+                                            for (String key : map.keySet()) {
+                                                HashMap<String, Integer> rssivalues = new HashMap<>();
+                                                String[] separated = key.split(",");
+                                                Point p = new Point(Double.parseDouble(separated[0]), Double.parseDouble(separated[1]));
 //                                            Log.i("Test",p.toString());
 //                                            Log.i("Test", separated[0]);
 //                                            Log.i("Test", separated[1]);
-                                            for (Object key1 : map.get(key).keySet()) {
-                                                rssivalues.put(key1.toString(), Integer.valueOf(map.get(key).get(key1).toString()));
-                                                if (!ap_list.contains(key1.toString())) {
-                                                    ap_list.add(key1.toString());
+                                                for (Object key1 : map.get(key).keySet()) {
+                                                    rssivalues.put(key1.toString(), Integer.valueOf(map.get(key).get(key1).toString()));
+                                                    if (!ap_list.contains(key1.toString())) {
+                                                        ap_list.add(key1.toString());
+                                                    }
                                                 }
+                                                dataSet.put(p, rssivalues);
                                             }
-                                            dataSet.put(p, rssivalues);
-                                        }
-                                        Log.i("TTTTT", "URL: " + DownloadURL);
-                                        Log.i("TTTTT", "data set: " + dataSet);
+                                            Log.i("TTTTT", "URL: " + DownloadURL);
+                                            Log.i("TTTTT", "data set: " + dataSet);
 
-                                        Testing2 testt = new Testing2(dataSet,ap_list);
-                                        WifiScan wifiScan = new WifiScan(getApplicationContext(), TestingMode.this);
-                                        try {
-                                            for(int i=0;i<3;i++){
-                                                Thread.sleep(1000);
+                                            WifiScan wifiScan = new WifiScan(getApplicationContext(), TestingMode.this);
+                                            Testing2 testt = new Testing2(dataSet, ap_list);
+                                            for (int i = 0; i < 3; i++) {
+                                                Log.i("TTTTT","SCANNING WIFI "+i);
                                                 // store results of scan into wifiScan.scanList
                                                 wifiScan.getWifiNetworksList();
                                                 // store this list into scanList
                                                 scanList = wifiScan.getScanList();
                                                 testt.add_scanList(scanList);
                                             }
-                                        } catch (InterruptedException e) {
-                                            //e.printStackTrace();
+                                            Point result = testt.predict();
+
+                                            /*int count = 0;
+                                            double xx = 0;
+                                            double yy = 0;
+                                            try {
+                                                //Toast.makeText(TestingMode.this,"Collecting data...",Toast.LENGTH_LONG).show();
+                                                isThreadRunning = true;
+                                                for(int m=0;m<3;m++){
+                                                    Testing2 testt = new Testing2(dataSet, ap_list);
+                                                    for (int i = 0; i < 3; i++) {
+                                                        Log.i("TTTTT","SCANNING WIFI "+i);
+                                                        // store results of scan into wifiScan.scanList
+                                                        wifiScan.getWifiNetworksList();
+                                                        // store this list into scanList
+                                                        scanList = wifiScan.getScanList();
+                                                        testt.add_scanList(scanList);
+                                                        Thread.sleep(100);
+                                                    }
+                                                    predictionThreads[m] = new PredictionThread(testt);
+                                                    predictionThreads[m].start();
+                                                }
+                                                for(int m = 0;m<3;m++){
+                                                    predictionThreads[m].join();
+                                                }
+                                                for(int m = 0;m<3;m++){
+                                                    if(predictionThreads[m].getPoint()!= null){
+                                                        xx += predictionThreads[m].getPoint().getX();
+                                                        yy += predictionThreads[m].getPoint().getY();
+                                                        count++;
+                                                    }
+                                                }
+                                                isThreadRunning = false;
+                                            } catch (InterruptedException e) {
+                                                //e.printStackTrace();
+                                            }
+                                            Point result = null;
+                                            if(count>0){
+                                                result = new Point(xx/count,yy/count);
+                                            }*/
+                                            if (result != null) {
+                                                Toast.makeText(TestingMode.this,"Prediction has been made!",Toast.LENGTH_SHORT).show();
+                                                textView_predictedPosition.setText(result.toString());
+
+                                                // draw circle
+                                                mCanvas = new Canvas(mBitmap);
+                                                mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+                                                mCanvas.drawBitmap(loadImage.copy(Bitmap.Config.ARGB_8888, true), 0, 0, null);
+                                                mPaint.setColor(Color.BLACK);
+                                                mPaint.setStrokeWidth(10);
+                                                mPaint.setStyle(Paint.Style.STROKE);
+                                                mPaint.setAlpha(alpha);
+                                                // offset x and y so that it appears at centre of arrow
+                                                Log.i("TTTTT", "x: " + result.getX());
+                                                Log.i("TTTTT", "y: " + result.getY());
+                                                mCanvas.drawCircle((float) result.getX(), (float) result.getY(), radius, mPaint);
+                                                pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
+                                                Log.i("TTTTT", "draw bitmap");
+                                                mCanvas.drawBitmap(pin, (float) result.getX() - (pin.getWidth() / 2), (float) result.getY() - (pin.getHeight()), null);
+                                                //v.draw(mCanvas);
+                                                Log.i("TTTTT", "invalidate");
+                                                v.invalidate();
+                                            }
                                         }
-                                        Point result = testt.predict();
 
-                                        if(result!=null){
-                                            textView_predictedPosition.setText(result.toString());
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                            // draw circle
-                                            mCanvas = new Canvas(mBitmap);
-                                            mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
-                                            mCanvas.drawBitmap(loadImage.copy(Bitmap.Config.ARGB_8888, true), 0, 0, null);
-                                            mPaint.setColor(Color.BLACK);
-                                            mPaint.setStrokeWidth(10);
-                                            mPaint.setStyle(Paint.Style.STROKE);
-                                            mPaint.setAlpha(alpha);
-                                            // offset x and y so that it appears at centre of arrow
-                                            Log.i("TTTTT", "x: " + result.getX());
-                                            Log.i("TTTTT", "y: " + result.getY());
-                                            mCanvas.drawCircle((float) result.getX(), (float) result.getY(), radius, mPaint);
-                                            pin = BitmapFactory.decodeResource(getResources(), R.drawable.app_icon);
-                                            Log.i("TTTTT", "draw bitmap");
-                                            mCanvas.drawBitmap(pin, (float) result.getX() - (pin.getWidth() / 2), (float) result.getY() - (pin.getHeight()), null);
-                                            //v.draw(mCanvas);
-                                            Log.i("TTTTT", "invalidate");
-                                            v.invalidate();
                                         }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
+                                    });
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                    }
-                });
-
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
 
                 /////////////////////////////////////////////////
                     /*testing2.setScanResult(scanList);
@@ -273,8 +317,10 @@ public class TestingMode extends AppCompatActivity {
                         Log.i("TTTTT","invalidate");
                         v.invalidate();
                     }*/
+                //Toast.makeText(TestingMode.this,"Making predictions...",Toast.LENGTH_SHORT).show();
             }
         });
+
 
         /**
          Select map which has been mapped from database
@@ -330,6 +376,18 @@ public class TestingMode extends AppCompatActivity {
         }
     }
 
+    class PredictionThread extends Thread{
+        Testing2 testing2;
+        Point point;
+        PredictionThread(Testing2 testing2) {
+            this.testing2 = testing2;
+        }
+        public void run(){
+            point = testing2.predict();
+        }
 
-
+        public Point getPoint() {
+            return point;
+        }
+    }
 }
